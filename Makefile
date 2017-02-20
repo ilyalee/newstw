@@ -4,7 +4,7 @@ init:
 	pip3 install -r requirements.txt
 
 run:
-	python3 run.py
+	python3 -O run.py
 
 update_deps:
 	source ./venv/bin/activate

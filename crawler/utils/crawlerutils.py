@@ -168,6 +168,6 @@ def trimData(data, key, trimtext):
             data[key] = re.sub(u'%s$' % t, '', data[key])
     return data[key]
 
-def delKey(key, ok):
+def delKey(data, key, ok):
     if ok:
         data.pop(k, None)

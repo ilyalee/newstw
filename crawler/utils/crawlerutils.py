@@ -153,21 +153,21 @@ def _fetchNews(url):
                 if __debug__:
                     data['debug'] = err
 
-    delKey("_rawtime", (not __debug__))
+    delKey("_rawtime", (not __debug__), data)
 
-    data['summary'] = trimData(data, "summary", trimtext)
+    data['summary'] = trimDataVal("summary", trimtext, data)
     data['link'] = url
     data['from'] = source
 
     return data
 ################################################################################
 
-def trimData(data, key, trimtext):
+def trimDataVal(key, trimtext, data):
     if trimtext and key in data:
         for t in trimtext:
             data[key] = re.sub(u'%s$' % t, '', data[key])
     return data[key]
 
-def delKey(data, key, ok):
+def delKey(key, ok, data):
     if ok:
         data.pop(k, None)

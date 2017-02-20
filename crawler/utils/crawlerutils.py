@@ -20,6 +20,8 @@ def cleanHTML(html):
     pat = re.compile(r"<style[\s\S]+?/style>", re.MULTILINE)
     html = re.sub(pat, "", html)
 
+    html = re.sub(r"\u200b", "", html)
+
     return html
 
 ################################################################################
@@ -88,8 +90,7 @@ def loadTrimtext(source):
         return []
 
 def fetchNews(url):
-    source = detectNewsSource(url)
-    return _fetchNews(url, source)
+    return _fetchNews(url)
 
 ################################################################################
 import requests
@@ -100,12 +101,14 @@ import arrow
 def normalize(text):
     return unicodedata.normalize("NFKD", text)
 
-def _fetchNews(url, source):
+def _fetchNews(url):
+    r = requests.get(url)
+    url = r.url
+    source = detectNewsSource(url)
     context = loadContext(source)
     skips = loadSkips(source)
     trimtext = loadTrimtext(source)
 
-    r = requests.get(url)
     r.encoding = "utf-8"
     rawtext = r.text
     html = cleanHTML(rawtext)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from crawler.utils.crawlerutils import detectNewsSource, loadContext, loadSkips, fetchNews
+from crawler.utils.pprinthelper import pprint_color
 
 import unittest
 class TestCrawler(unittest.TestCase):
@@ -69,9 +70,13 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("link", news)
                 self.assertIn("from", news)
                 self.assertTrue(True)
-
-                from crawler.utils.pprinthelper import pprint_color
                 pprint_color(news)
+
+    def test_shortenUrl(self):
+        news = fetchNews("https://goo.gl/6IXNnC")
+        pprint_color(news)
+
+        self.assertIn("from", news)
 
     def tearDown(self):
         pass

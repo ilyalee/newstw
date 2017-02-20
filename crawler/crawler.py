@@ -3,7 +3,7 @@
 
 from sanic import Sanic
 from sanic.response import json
-from utils.crawlerutils import fetchNews
+from crawler.utils.crawlerutils import fetchNews
 
 app = Sanic(__name__)
 
@@ -16,7 +16,7 @@ async def index(request, methods=['GET']):
     else:
         return json({'newstw'})
 
-    return json(fetchNews(url))
+    return json(fetchNews(url), ensure_ascii=False)
 
 
 app.run(host="0.0.0.0", port=9527, debug=True)

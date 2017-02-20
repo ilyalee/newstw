@@ -4,7 +4,7 @@ init:
 	pip3 install -r requirements.txt
 
 run:
-	python3 crawler/crawler.py
+	python3 run.py
 
 update_deps:
 	source ./venv/bin/activate

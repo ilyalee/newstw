@@ -116,10 +116,10 @@ def _fetchNews(url):
 
     data = {}
     for c in context:
-        if 'save' not in c:
-            continue
+        continue if 'save' not in c
         if 'soup' not in c or not c['soup']:
             c['soup'] = 'select'
+
         text = ''
         if c['ind'] >= 0:
             try:

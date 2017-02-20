@@ -170,4 +170,4 @@ def trimDataVal(key, trimtext, data):
 
 def delKey(key, ok, data):
     if ok:
-        data.pop(k, None)
+        data.pop(key, None)

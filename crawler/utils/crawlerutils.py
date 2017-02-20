@@ -116,7 +116,8 @@ def _fetchNews(url):
 
     data = {}
     for c in context:
-        continue if 'save' not in c
+        if 'save' not in c:
+            continue
         if 'soup' not in c or not c['soup']:
             c['soup'] = 'select'
 
@@ -134,7 +135,6 @@ def _fetchNews(url):
             except IndexError as err:
                 if __debug__:
                     data['debug'] = err
-                pass
         else:
             tags = _soupFunc(soup, c['soup'], c['path'])
             text = ''.join([tag.text for tag in tags])
@@ -153,15 +153,21 @@ def _fetchNews(url):
                 if __debug__:
                     data['debug'] = err
 
-    if not __debug__:
-        data.pop('_rawtime', None)
+    delKey("_rawtime", (not __debug__))
 
-    if trimtext and 'summary' in data:
-        for t in trimtext:
-            data['summary'] = re.sub(u'%s$' % t, '', data['summary'])
-
+    data['summary'] = trimData(data, "summary", trimtext)
     data['link'] = url
     data['from'] = source
 
     return data
 ################################################################################
+
+def trimData(data, key, trimtext):
+    if trimtext and key in data:
+        for t in trimtext:
+            data[key] = re.sub(u'%s$' % t, '', data[key])
+    return data[key]
+
+def delKey(key, ok):
+    if ok:
+        data.pop(k, None)

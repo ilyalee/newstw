@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from crawler.utils.crawlerutils import detectNewsSource, loadContext, loadSkips, fetchNews
+from crawler.utils.crawlerutils import loadContext, loadSkips, loadTrimtext, detectNewsSource
+from crawler.utils.crawlerhelper import fetchNews
 from crawler.utils.pprinthelper import pprint_color
 
 import unittest

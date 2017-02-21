@@ -3,7 +3,7 @@
 
 from sanic import Sanic
 from sanic.response import json
-from crawler.utils.crawlerutils import fetchNews
+from crawler.utils.crawlerhelper import fetchNews
 
 app = Sanic(__name__)
 

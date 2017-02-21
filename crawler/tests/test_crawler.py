@@ -67,7 +67,7 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("title", news)
                 self.assertIn("summary", news)
                 self.assertIn("_rawtime", news)
-                self.assertIn("pubdate", news)
+                self.assertIn("published", news)
                 self.assertIn("link", news)
                 self.assertIn("from", news)
                 self.assertTrue(True)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from crawler.utils.datautils import delKey, trimDataVal
+
 import unittest
 class TestUtils(unittest.TestCase):
     def setUp(self):

@@ -76,9 +76,11 @@ class NewsDataProcessor:
             if self.data['_rawtime']:
                 try:
                     if 'format' in c:
-                        self.data['pubdate'] = arrow.get(self.data['_rawtime'], c['format']).replace(tzinfo=c['tzinfo']).format()
+                        published = arrow.get(self.data['_rawtime'], c['format'])
                     else:
-                        self.data['pubdate'] = arrow.get(self.data['_rawtime']).replace(tzinfo=c['tzinfo']).format()
+                        published = arrow.get(self.data['_rawtime'])
+                    self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
+
                 except arrow.parser.ParserError as err:
                     if __debug__:
                         self.data['debug'] = err

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bs4 import BeautifulSoup
 import arrow
 from crawler.utils.crawlerutils import loadContext, loadSkips, loadTrimtext, detectNewsSource

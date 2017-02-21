@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import requests
 from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawlerutils import cleanHTML

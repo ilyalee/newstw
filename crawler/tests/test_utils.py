@@ -3,7 +3,7 @@
 
 from crawler.utils.datautils import delKey, trimDataVal
 import unittest
-class TestCrawler(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     def setUp(self):
         pass
 

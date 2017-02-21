@@ -10,7 +10,7 @@ run_newsfeed:
 	python3 -O run_newsfeed.py
 
 update_deps:
-	source ./venv/bin/activate
+	source "./venv/bin/activate"
 	pip3 install --upgrade -r requirements.txt
 
 test:

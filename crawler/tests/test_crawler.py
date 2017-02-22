@@ -70,6 +70,7 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("published", news)
                 self.assertIn("link", news)
                 self.assertIn("from", news)
+                self.assertTrue(news["pass"])
                 self.assertTrue(True)
                 pprint_color(news)
 

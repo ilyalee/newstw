@@ -67,6 +67,15 @@ def dataUpdater(key, sKey, fn, go, items):
                 items[i][key] = obj[key]
     return items
 
+def dataUpdaterAsync(key, sKey, fn, go, items):
+    if go:
+        targets = dictFilter([sKey], items)
+        links = [target[sKey] for target in targets if sKey in target]
+        objs = fn(links)
+        for i in range(len(objs)):
+            items[i][key] = objs[i][key]
+    return items
+
 def cleanText(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')
     text = pat.sub('', text)

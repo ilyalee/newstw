@@ -3,8 +3,8 @@
 
 import feedparser
 import requests
-from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector, dataCleaner, dataFilter, dataInserter, dataUpdater
-from crawler.utils.crawlerhelper import fetchNews
+from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector, dataCleaner, dataFilter, dataInserter, dataUpdaterAsync
+from crawler.utils.crawlerhelper import fetchNewsAll
 
 class NewsFeedFilter:
     def __init__(self, url, includeText='', fullTextMode=False):
@@ -19,11 +19,11 @@ class NewsFeedFilter:
         items = {}
         rawdata = feedparser.parse(r.text)
         items = rawdata['entries']
-        items = self._data_process(items)
+        items = self._data_prepare(items)
         return items
 
-    def _data_process(self, items):
-        items = dataUpdater("summary", "link", fetchNews, self.fullTextMode, items)
+    def _data_prepare(self, items):
+        items = dataUpdaterAsync("summary", "link", fetchNewsAll, self.fullTextMode, items)
         return self._data_filter(items)
 
     def _data_filter(self, items):

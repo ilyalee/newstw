@@ -9,6 +9,9 @@ run_crawler:
 run_newsfeed:
 	python3 -O run_newsfeed.py
 
+deps:
+	pip3 freeze > ./requirements.txt
+
 update_deps:
 	source "./venv/bin/activate"
 	pip3 install --upgrade -r requirements.txt

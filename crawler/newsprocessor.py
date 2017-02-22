@@ -78,9 +78,9 @@ class NewsDataProcessor:
 
     def _time_corrector(self):
         for c in self.context:
-            published = None
             try:
                 if 'tzinfo' in c and self.data['_rawtime']:
+                    published = None
                     if 'format' in c and isinstance(c['format'], str):
                         c['format'] = [c['format']]
 
@@ -94,15 +94,14 @@ class NewsDataProcessor:
                                 raise
                             else:
                                 continue
-                else:
-                    published = arrow.get(self.data['_rawtime'])
-
-                if published:
-                    self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
+            
+                    if published:
+                        self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
 
             except arrow.parser.ParserError as err:
                 self.data['pass'] = False
-                if __debug__: self.data['debug'] = err
+                if __debug__:
+                    self.data['debug'] = err
 
     def _context_to_text(self, context):
         text = ''

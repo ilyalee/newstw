@@ -22,7 +22,7 @@ source['ebc'] = ["news.ebc.net.tw"]
 
 context['any'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
-    {'save': "summary", 'path': "article", 'ind': 0},
+    {'save': "summary", 'path': "", 'ind': 0},
     {'save': "_rawtime", 'path': "time", 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm:ss"}
 ]
@@ -36,7 +36,7 @@ context['ltn'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
     {'save': "summary", 'path': "#newstext > p", 'ind': -1},
     {'save': "_rawtime", 'path': "#newstext > span", 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD  HH:mm", "YYYY-MM-DD"]}
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD HH:mm", "YYYY-MM-DD"]}
 ]
 context['appledaily'] = [
     {'save': "title", 'path': "header > hgroup > h1", 'ind': 0},

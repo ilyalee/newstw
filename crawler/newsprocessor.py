@@ -89,12 +89,14 @@ class NewsDataProcessor:
                             published = arrow.get(self.data['_rawtime'], c['format'][i])
                             if 'pass' in self.data and not self.data['pass']:
                                 self.data.pop('pass', None)
+                            break
                         except arrow.parser.ParserError as err:
-                            if len(c['format']) <= i:
+                            print(i)
+                            if i >= (len(c['format']) - 1):
                                 raise
                             else:
                                 continue
-            
+
                     if published:
                         self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
 

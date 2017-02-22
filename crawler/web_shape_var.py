@@ -18,6 +18,7 @@ source['eranews'] = ["eranews.eracom.com.tw"]
 source['tvbs'] = ["news.tvbs.com.tw"]
 source['ctitv'] = ["gotv.ctitv.com.tw"]
 source['ettoday'] = ["www.ettoday.net"]
+source['ebc'] = ["news.ebc.net.tw"]
 
 context['any'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
@@ -90,6 +91,12 @@ context['ettoday'] = [
     {'save': "summary", 'path': "section > p", 'ind': -1},
     {'save': "_rawtime", 'path': ".news-time", 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY年MM月DD日 HH:mm"}
+]
+context['ebc'] = [
+    {'save': "title", 'path': ".newsTargetTitle > h1", 'ind': 0},
+    {'save': "summary", 'path': "#contentBody", 'ind': 0},
+    {'save': "_rawtime", 'path': ".ml15.mt10", 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
 ]
 
 skip['any'] = []

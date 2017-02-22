@@ -3,7 +3,7 @@
 
 import feedparser
 import requests
-from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector   , dataCleaner, dataFilter, dataInserter, dataUpdater
+from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector, dataCleaner, dataFilter, dataInserter, dataUpdater
 from crawler.utils.crawlerhelper import fetchNews
 
 class NewsFeedFilter:

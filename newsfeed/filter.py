@@ -28,7 +28,7 @@ class NewsFeedFilter:
         return self._data_filter(items)
 
     def _data_filter(self, items):
-        keys = ['title', 'published', 'link', 'summary', 'updated']
+        keys = ['title', 'published', 'link', 'summary', 'updated', 'fulltext']
         items = dictFilter(keys, items)
         items = timeCorrector("published", items)
         items = timeCorrector("updated", items)

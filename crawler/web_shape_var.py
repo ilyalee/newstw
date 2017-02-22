@@ -17,12 +17,13 @@ source['setn'] = ["www.setn.com"]
 source['eranews'] = ["eranews.eracom.com.tw"]
 source['tvbs'] = ["news.tvbs.com.tw"]
 source['ctitv'] = ["gotv.ctitv.com.tw"]
+source['ettoday'] = ["www.ettoday.net"]
 
 context['any'] = [
-    {'save': "title", 'path': "header > h1", 'ind': 0},
+    {'save': "title", 'path': "h1", 'ind': 0},
     {'save': "summary", 'path': "article", 'ind': 0},
     {'save': "_rawtime", 'path': "time", 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
+    {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm:ss"}
 ]
 context['chinatimes'] = [
     {'save': "title", 'path': "header > h1", 'ind': 0},
@@ -83,6 +84,12 @@ context['ctitv'] = [
     {'save': "summary", 'path': ".td-post-content > p", 'ind': -1},
     {'save': "_rawtime", 'soup': "attrs", 'path': {'time': "datetime"}, 'ind': 0},
     {'tzinfo': "Asia/Taipei"}
+]
+context['ettoday'] = [
+    {'save': "title", 'path': "h2", 'ind': 0},
+    {'save': "summary", 'path': "section > p", 'ind': -1},
+    {'save': "_rawtime", 'path': ".news-time", 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': "YYYY年MM月DD日 HH:mm"}
 ]
 
 skip['any'] = []

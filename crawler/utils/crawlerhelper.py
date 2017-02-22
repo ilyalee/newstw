@@ -6,10 +6,12 @@ from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawlerutils import cleanHTML
 
 def fetchNews(url, encoding='utf-8'):
+    output = {}
     r = requests.get(url)
     r.encoding = encoding
-    url = r.url
+    r.close()
     html = cleanHTML(r.text)
-    news = NewsDataProcessor(url, html)
-
-    return news.output()
+    news = NewsDataProcessor(r.url, html)
+    output = news.output()
+    
+    return output

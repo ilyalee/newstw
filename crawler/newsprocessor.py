@@ -10,14 +10,14 @@ class NewsDataProcessor:
     def __init__(self, url, html):
         self.data = {}
         self.soup = BeautifulSoup(html, "html.parser")
-        self.url = url;
+        self.url = url
+        self.html = html
         self.source = detectNewsSource(self.url)
         self.context = loadContext(self.source)
         self.trimtext = loadTrimtext(self.source)
 
-        self._process(html)
-
     def output(self):
+        self._process(self.html)
         return self.data
 
     def _process(self, html):

@@ -16,4 +16,5 @@ async def index(request, methods=['GET']):
     else:
         return json({'crawler'})
 
-    return json(fetchNews(url), ensure_ascii=False)
+    obj = fetchNews(url)
+    return json(obj, ensure_ascii=False)

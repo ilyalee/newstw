@@ -4,7 +4,7 @@
 #from functools import partial
 from dateutil import parser
 import arrow
-import re
+import re, html
 
 def dictFilter(keys, items):
     #return [*map(partial(_filterKeys, keys), items)]
@@ -39,20 +39,29 @@ def dataFilter(text, keys, items):
                 if i not in inds: inds.append(i)
     return found
 
-def dataInsert(val, key, items):
-    for item in items:
-        item[key] = val
+def dataInserter(val, key, items):
+    if val:
+        for item in items:
+            item[key] = val
+    return items
+
+def dataUpdater(key, sKey, fn, go, items):
+    if go:
+        targets = dictFilter([sKey], items)
+        for i in range(len(targets)):
+            obj = fn(targets[i][sKey])
+            if key in obj:
+                items[i][key] = obj[key]
     return items
 
 def cleanText(text):
+    tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+    text = tag_re.sub('', text)
+    text = html.escape(text)
     # remove all newlines
     text = re.sub(r"\n", "", text)
-
-    #remove all img tag
-    pat = re.compile(r"<img[\s\S]+?>", re.MULTILINE)
-    text = re.sub(pat, "", text)
-
-    return text.strip(' ')
+    text = text.strip(' ')
+    return text
 '''
 def _filterKeys(keys, item):
     #return dict(filter(lambda d: d[0] in keys, obj.items()))

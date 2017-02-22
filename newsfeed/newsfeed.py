@@ -10,14 +10,23 @@ app = Sanic(__name__)
 
 @app.route("/")
 async def index(request, methods=['GET']):
-    url = ''
+    urls = []
     if 'url' in request.args:
-        url = request.args['url'][0]
+        urls = request.args['url']
     else:
         return json({'newsfeed'})
 
-    filterText = ''
+    includeText = ''
     if 'include' in request.args:
         includeText = request.args['include'][0]
 
-    return json(fetchFeed(url, includeText), ensure_ascii=False)
+    fulltext = False
+    if 'fulltext' in request.args:
+        if request.args['fulltext'][0].lower() == 'true':
+            fulltext = True
+
+    feed = []
+    for url in urls:
+        feed += fetchFeed(url, includeText, fulltext=fulltext)
+
+    return json(feed, ensure_ascii=False)

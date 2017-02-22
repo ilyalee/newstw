@@ -41,24 +41,12 @@ def detectNewsSource(url):
 
 def loadContext(source):
     from crawler.web_shape_var import context
-
-    if source in context:
-        return context[source]
-    else:
-        return context['any']
+    return context.get(source, context.get("any", []))
 
 def loadSkips(source):
     from crawler.web_shape_var import skip
-
-    if source in skip:
-        return skip[source]
-    else:
-        return []
+    return skip.get(source, [])
 
 def loadTrimtext(source):
     from crawler.web_shape_var import trimtext
-
-    if source in trimtext:
-        return trimtext[source]
-    else:
-        return []
+    return trimtext.get(source, [])

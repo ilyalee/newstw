@@ -10,10 +10,8 @@ app = Sanic(__name__)
 
 @app.route("/")
 async def index(request, methods=['GET']):
-    url = ''
-    if 'url' in request.args:
-        url = request.args['url'][0]
-    else:
+    url = request.args.get('url')
+    if not url:
         return json({'crawler'})
 
     obj = fetchNews(url)

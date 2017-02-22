@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-import arrow
 from crawler.utils.crawlerutils import loadContext, loadSkips, loadTrimtext, detectNewsSource
-from crawler.utils.datautils import normalizeNews, delKey, trimDataVal
+from crawler.utils.datautils import normalizeNews, delKey, trimDataVal, fixDatetime
 
 class NewsDataProcessor:
     def __init__(self, url, html):
@@ -18,8 +17,7 @@ class NewsDataProcessor:
 
     def output(self):
         self._process(self.html)
-        if 'pass' not in self.data:
-            self.data['pass'] = True
+        self.data['pass'] = self.data.get("pass", True)
         return self.data
 
     def _process(self, html):
@@ -55,62 +53,34 @@ class NewsDataProcessor:
     def _soupFindAll(self, path):
         return self.soup.find_all(path)
 
-    def _soup(self, html, skips):
-        if skips:
-            for tag in self.soup(skips):
+    def _soup(self, skips):
+        for skip in skips:
+            for tag in self.soup(skip):
                 tag.decompose()
 
     def _news_processor(self, html):
         skips = loadSkips(self.source)
-        self._soup(skips, html)
-
-        for context in self.context:
-            if 'save' not in context:
-                continue
-            if 'soup' not in context or not context['soup']:
-                context['soup'] = 'select'
-
-            text = self._context_to_text(context)
-            text = normalizeNews(text)
+        self._soup(skips)
+        for c in (context for context in self.context if 'save' in context):
+            c['soup'] = c.get("soup", "select")
+            text = normalizeNews(self._context_to_text(c))
+            self.data[c['save']] = text
             if not text:
                 self.data['pass'] = False
-            self.data[context['save']] = text
 
     def _time_corrector(self):
-        for c in self.context:
-            try:
-                if 'tzinfo' in c and self.data['_rawtime']:
-                    published = None
-                    if 'format' in c and isinstance(c['format'], str):
-                        c['format'] = [c['format']]
-
-                    for i in range(len(c['format'])):
-                        try:
-                            published = arrow.get(self.data['_rawtime'], c['format'][i])
-                            if 'pass' in self.data and not self.data['pass']:
-                                self.data.pop('pass', None)
-                            break
-                        except arrow.parser.ParserError as err:
-                            print(i)
-                            if i >= (len(c['format']) - 1):
-                                raise
-                            else:
-                                continue
-
-                    if published:
-                        self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
-
-            except arrow.parser.ParserError as err:
+        for c in (c for c in self.context if '_rawtime' in self.data):
+            c['tzinfo'] = c.get("tzinfo", "")
+            c['format'] = c.get("format", [])
+            self.data['published'] = fixDatetime(self.data['_rawtime'], c['format'], c['tzinfo'], self.data)
+            if self.data['published'] == '':
                 self.data['pass'] = False
-                if __debug__:
-                    self.data['debug'] = err
 
     def _context_to_text(self, context):
         text = ''
         if context['ind'] >= 0:
             try:
-                if not 'path' in context:
-                    context['path'] = ''
+                context.get("path", "")
                 res = self._soupFunc(context['soup'], context['path'])
                 if isinstance(res, str):
                     text = res

@@ -18,11 +18,15 @@ class NewsDataProcessor:
 
     def output(self):
         self._process(self.html)
+        if 'pass' not in self.data:
+            self.data['pass'] = True
         return self.data
 
     def _process(self, html):
         self.data['link'] = self.url
         self.data['from'] = self.source
+        if self.source == 'any':
+            self.data['pass'] = False
 
         self._news_processor(html)
         self._time_corrector()
@@ -67,7 +71,10 @@ class NewsDataProcessor:
                 context['soup'] = 'select'
 
             text = self._context_to_text(context)
-            self.data[context['save']] = normalizeNews(text)
+            text = normalizeNews(text)
+            if not text:
+                self.data['pass'] = False
+            self.data[context['save']] = text
 
     def _time_corrector(self):
         for c in self.context:
@@ -82,6 +89,7 @@ class NewsDataProcessor:
                     self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
 
                 except arrow.parser.ParserError as err:
+                    self.data['pass'] = False
                     if __debug__:
                         self.data['debug'] = err
 
@@ -98,6 +106,7 @@ class NewsDataProcessor:
                     text = res[context['ind']].text
 
             except IndexError as err:
+                self.data['pass'] = False
                 if __debug__:
                     self.data['debug'] = err
         else:

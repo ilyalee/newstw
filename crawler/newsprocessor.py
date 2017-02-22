@@ -78,20 +78,30 @@ class NewsDataProcessor:
 
     def _time_corrector(self):
         for c in self.context:
-            if 'tzinfo' not in c:
-                continue
-            if self.data['_rawtime']:
+            if 'tzinfo' in c and self.data['_rawtime']:
                 try:
+                    published = None
                     if 'format' in c:
-                        published = arrow.get(self.data['_rawtime'], c['format'])
+                        if isinstance(c['format'], list):
+                            for i in range(len(c['format'])):
+                                try:
+                                    published = arrow.get(self.data['_rawtime'], c['format'][i])
+                                    if 'pass' in self.data and not self.data['pass']: self.data.pop('pass', None)
+                                except arrow.parser.ParserError as err:
+                                    if len(c['format']) <= i:
+                                        raise
+                                    else:
+                                        continue
+                        else:
+                            published = arrow.get(self.data['_rawtime'], c['format'])
                     else:
                         published = arrow.get(self.data['_rawtime'])
-                    self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
+
+                    if published: self.data['published'] = published.replace(tzinfo=c['tzinfo']).format()
 
                 except arrow.parser.ParserError as err:
                     self.data['pass'] = False
-                    if __debug__:
-                        self.data['debug'] = err
+                    if __debug__: self.data['debug'] = err
 
     def _context_to_text(self, context):
         text = ''
@@ -107,8 +117,7 @@ class NewsDataProcessor:
 
             except IndexError as err:
                 self.data['pass'] = False
-                if __debug__:
-                    self.data['debug'] = err
+                if __debug__: self.data['debug'] = err
         else:
             tags = self._soupFunc(context['soup'], context['path'])
             text = ''.join([tag.text for tag in tags])

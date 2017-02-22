@@ -24,7 +24,7 @@ async def index(request, methods=['GET']):
     if 'fulltext' in request.args:
         if request.args['fulltext'][0].lower() == 'true':
             fulltext = True
-
+        
     feed = []
     for url in urls:
         feed += fetchFeed(url, includeText, fulltext=fulltext)

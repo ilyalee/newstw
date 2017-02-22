@@ -5,6 +5,7 @@
 from dateutil import parser
 import arrow
 import re, html
+from urllib.parse import urlparse, parse_qs
 
 def dictFilter(keys, items):
     #return [*map(partial(_filterKeys, keys), items)]
@@ -13,13 +14,24 @@ def dictFilter(keys, items):
 def timeCorrector(key, items):
     #return [*map(partial(_updateTime, key), items)]
     for item in items:
-        item[key] = arrow.get(parser.parse(item[key])).format()
+        if key in item:
+            item[key] = arrow.get(parser.parse(item[key])).format()
+    return items
+
+def linkCorrector(key, items):
+    for item in items:
+        if key in item:
+            o = urlparse(item[key])
+            q = parse_qs(o.query)
+            if 'url' in q:
+                item[key] = q['url']
     return items
 
 def dataCleaner(key, items):
     #return [*map(partial(partial(_updateText, cleanText), key), items)]
     for item in items:
-        item[key] = cleanText(item[key])
+        if key in item:
+            item[key] = cleanText(item[key])
     return items
 
 def dataFilter(text, keys, items):
@@ -36,7 +48,8 @@ def dataFilter(text, keys, items):
                         break
             if match:
                 found.append(items[i])
-                if i not in inds: inds.append(i)
+                if i not in inds:
+                    inds.append(i)
     return found
 
 def dataInserter(val, key, items):
@@ -55,8 +68,8 @@ def dataUpdater(key, sKey, fn, go, items):
     return items
 
 def cleanText(text):
-    tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
-    text = tag_re.sub('', text)
+    pat = re.compile(r'(<!--.*?-->|<[^>]*>)')
+    text = pat.sub('', text)
     text = html.escape(text)
     # remove all newlines
     text = re.sub(r"\n", "", text)

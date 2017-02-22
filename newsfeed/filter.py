@@ -3,7 +3,7 @@
 
 import feedparser
 import requests
-from newsfeed.utils.datautils import dictFilter, timeCorrector, dataCleaner, dataFilter, dataInserter, dataUpdater
+from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector   , dataCleaner, dataFilter, dataInserter, dataUpdater
 from crawler.utils.crawlerhelper import fetchNews
 
 class NewsFeedFilter:
@@ -30,6 +30,8 @@ class NewsFeedFilter:
         keys = ['title', 'published', 'link', 'summary', 'updated']
         items = dictFilter(keys, items)
         items = timeCorrector("published", items)
+        items = timeCorrector("updated", items)
+        items = linkCorrector("link", items)
         items = dataCleaner("summary", items)
         items = dataFilter(self.includeText, ["summary", "title"], items)
         items = dataInserter(self.includeText, "keyword", items)

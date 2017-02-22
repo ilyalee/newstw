@@ -67,11 +67,11 @@ def dataUpdater(key, sKey, fn, go, items):
                 items[i][key] = obj[key]
     return items
 
-def dataUpdaterAsync(key, sKey, fn, go, items):
+def dataUpdaterAll(key, sKey, fn, go, items):
     if go:
         targets = dictFilter([sKey], items)
-        links = [target[sKey] for target in targets if sKey in target]
-        objs = fn(links)
+        sources = [target[sKey] for target in targets if sKey in target]
+        objs = fn(sources)
         for i in range(len(objs)):
             items[i][key] = objs[i][key]
     return items

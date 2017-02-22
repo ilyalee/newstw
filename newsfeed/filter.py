@@ -3,7 +3,7 @@
 
 import feedparser
 import requests
-from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector, dataCleaner, dataFilter, dataInserter, dataUpdaterAsync
+from newsfeed.utils.datautils import dictFilter, timeCorrector, linkCorrector, dataCleaner, dataFilter, dataInserter, dataUpdaterAll
 from crawler.utils.crawlerhelper import fetchNewsAll
 
 class NewsFeedFilter:
@@ -23,7 +23,7 @@ class NewsFeedFilter:
         return items
 
     def _data_prepare(self, items):
-        items = dataUpdaterAsync("summary", "link", fetchNewsAll, self.fullTextMode, items)
+        items = dataUpdaterAll("summary", "link", fetchNewsAll, self.fullTextMode, items)
         return self._data_filter(items)
 
     def _data_filter(self, items):

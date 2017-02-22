@@ -39,4 +39,4 @@ def _hook(*encoding):
 
 def exception_handler(request, exception):
     if __debug__:
-        print "Request failed: %s" % exception
+        print("Request failed: %s") % exception

@@ -6,7 +6,10 @@ from newsfeed.utils.data_utils import data_cleaner, data_filter
 from newsfeed.utils.pprint_helper import pprint_color
 
 import unittest
+
+
 class TestNewsFeed(unittest.TestCase):
+
     def setUp(self):
         pass
 

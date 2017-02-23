@@ -65,7 +65,8 @@ context['ftv'] = [
 context['setn'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
     {'save': "summary", 'path': "article", 'ind': 0},
-    {'save': "_rawtime", 'path': [".titleBtnBlock > .title-left-area > .date", ".titleBtnBlock > .time"], 'ind': 0},
+    {'save': "_rawtime", 'path': [
+        ".titleBtnBlock > .title-left-area > .date", ".titleBtnBlock > .time"], 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY/MM/DD HH:mm:ss"}
 ]
 context['eranews'] = [

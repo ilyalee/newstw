@@ -6,7 +6,10 @@ from crawler.utils.crawler_helper import fetch_news
 from crawler.utils.pprint_helper import pprint_color
 
 import unittest
+
+
 class TestCrawler(unittest.TestCase):
+
     def setUp(self):
         url = self.urls = {}
         # 四大報

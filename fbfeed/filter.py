@@ -4,7 +4,9 @@
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from fbfeed.utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner
 
+
 class FbFeedFilter:
+
     def __init__(self, fbid, num, include_text='', search=False):
         self.fbid = fbid
         self.num = int(num)
@@ -17,7 +19,8 @@ class FbFeedFilter:
         items = []
         group = load_group(self.graph, self.fbid, search=self.search)
         if group:
-            items = load_pages(self.graph, self.fbid, "feed", self.num, search=self.search, date_format="U")
+            items = load_pages(self.graph, self.fbid, "feed", self.num,
+                               search=self.search, date_format="U")
         return self._data_prepare(items)
 
     def _data_prepare(self, items):

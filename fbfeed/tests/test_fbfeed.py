@@ -6,7 +6,10 @@ from fbfeed.utils.data_utils import data_filter
 from fbfeed.utils.pprint_helper import pprint_color
 
 import unittest
+
+
 class TestFBFeed(unittest.TestCase):
+
     def setUp(self):
         pass
 

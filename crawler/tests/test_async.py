@@ -5,7 +5,10 @@ from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.pprint_helper import pprint_color
 
 import unittest
+
+
 class TestAsyncs(unittest.TestCase):
+
     def setUp(self):
         pass
 

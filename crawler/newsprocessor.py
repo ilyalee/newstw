@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
 from crawler.utils.data_utils import normalize_news, del_key, trim_data_val, fix_datetime
 
+
 class NewsDataProcessor:
+
     def __init__(self, url, html):
         self.data = {}
         self.soup = BeautifulSoup(html, "html.parser")
@@ -72,7 +74,8 @@ class NewsDataProcessor:
         for c in (c for c in self.context if '_rawtime' in self.data):
             c['tzinfo'] = c.get("tzinfo", "")
             c['format'] = c.get("format", [])
-            self.data['published'] = fix_datetime(self.data['_rawtime'], c['format'], c['tzinfo'], self.data)
+            self.data['published'] = fix_datetime(
+                self.data['_rawtime'], c['format'], c['tzinfo'], self.data)
             if self.data['published'] == '':
                 self.data['pass'] = False
 
@@ -88,7 +91,8 @@ class NewsDataProcessor:
                     text = res[context['ind']].text
             except IndexError as err:
                 self.data['pass'] = False
-                if __debug__: self.data['debug'] = err
+                if __debug__:
+                    self.data['debug'] = err
         else:
             tags = self._soup_func(context['soup'], context['path'])
             text = ''.join([tag.text for tag in tags])

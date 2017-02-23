@@ -4,7 +4,10 @@
 from crawler.utils.data_utils import del_key, trim_data_val
 
 import unittest
+
+
 class TestUtils(unittest.TestCase):
+
     def setUp(self):
         pass
 

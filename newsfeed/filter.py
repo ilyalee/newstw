@@ -6,7 +6,9 @@ import requests
 from newsfeed.utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater_all
 from crawler.utils.crawler_helper import fetch_news_all
 
+
 class NewsFeedFilter:
+
     def __init__(self, url, include_text='', full_text=False):
         self.url = url
         self.full_text = full_text

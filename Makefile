@@ -9,6 +9,9 @@ run_crawler:
 run_newsfeed:
 	python3 -O run_newsfeed.py
 
+run_fbfeed:
+	python3 -O run_fbfeed.py
+
 deps:
 	pip3 freeze > ./requirements.txt
 

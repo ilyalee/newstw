@@ -35,22 +35,20 @@ def dataCleaner(key, items):
     return items
 
 def dataFilter(text, keys, items):
-    found = []
-    if isinstance(keys, list):
-        pat = re.compile(text, re.UNICODE)
-        inds = []
-        for i in range(len(items)):
-            match = None
-            if i not in inds:
-                for key in keys:
-                    match = re.search(pat, items[i][key])
-                    if match:
-                        break
-            if match:
-                found.append(items[i])
-                if i not in inds:
-                    inds.append(i)
-    return found
+    if not text: return items
+
+    collect = []
+    if isinstance(keys, str):
+        keys = [keys]
+    pat = re.compile(text, re.UNICODE)
+    seen = set()
+    for i in range(len(items)):
+        for key in keys:
+            if key in items[i]:
+                found = re.search(pat, items[i][key])
+                if found and (i not in seen and not seen.add(i)):
+                    collect.append(items[i])
+    return collect
 
 def dataInserter(val, key, items):
     if val:

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from fbfeed.utils.fbfeedutils import FBInit, loadGroup, loadPages
-from fbfeed.utils.datautils import FBTimeToLocal, dataFilter
+from fbfeed.utils.datautils import FBTimeToLocal, dataFilter, dataInserter, dataCleaner
 
 class FBFeedFilter:
     def __init__(self, fbid, num, includeText='', search=False):
@@ -27,6 +27,10 @@ class FBFeedFilter:
 
     def _data_filter(self, items):
         items = dataFilter(self.includeText, ["message", "story"], items)
+        items = dataCleaner("message", items)
+        items = dataCleaner("story", items)
+        items = dataInserter(self.includeText, "keyword", items)
+        items = dataInserter(self.fbid, "fbid", items)
         return items
 
     def output(self):

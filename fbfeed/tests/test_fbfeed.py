@@ -16,6 +16,7 @@ class TestFBFeed(unittest.TestCase):
         feed = fetchFeed(fbid, num)
         predict = ['failed']
         pprint_color(feed[0])
+        self.assertIn("fbid", feed[0])
         self.assertEqual(len(feed), num)
 
     def test_dataFilter(self):

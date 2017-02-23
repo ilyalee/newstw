@@ -36,5 +36,9 @@ def loadPages(graph, fbid, connection, num=1, **args):
     collect = []
     gen = getAllConnections(graph, fbid, connection, **args)
     for i in range(num):
-        collect.append(next(gen))
+        data = next(gen, None)
+        if data:
+            collect.append(data)
+        else:
+            break
     return collect

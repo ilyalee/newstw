@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from crawler.utils.crawlerutils import loadContext, loadSkips, loadTrimtext, detectNewsSource
-from crawler.utils.crawlerhelper import fetchNews
-from crawler.utils.pprinthelper import pprint_color
+from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
+from crawler.utils.crawler_helper import fetch_news
+from crawler.utils.pprint_helper import pprint_color
 
 import unittest
 class TestCrawler(unittest.TestCase):
@@ -43,27 +43,27 @@ class TestCrawler(unittest.TestCase):
         url['ctitv'] = [None] * 1
         url['ctitv'][0] = "http://gotv.ctitv.com.tw/2017/02/384052.htm"
 
-    def test_detectNewsSource(self):
+    def test_detect_news_source(self):
         for source, urls in self.urls.items():
             for url in urls:
-                self.assertEqual(detectNewsSource(url), source)
+                self.assertEqual(detect_news_source(url), source)
 
-    def test_loadContext(self):
+    def test_load_context(self):
         from crawler.web_shape_var import context
 
         for c, _ in self.urls.items():
-            self.assertNotEqual(loadContext(c), {})
-            self.assertNotEqual(loadContext(c), context['any'], "(%s)" % c)
+            self.assertNotEqual(load_context(c), {})
+            self.assertNotEqual(load_context(c), context['any'], "(%s)" % c)
 
-    def test_loadSkips(self):
+    def test_load_skips(self):
         for c, _ in self.urls.items():
-            loadSkips(c)
+            load_skips(c)
             self.assertTrue(True)
 
-    def test_fetchNews(self):
+    def test_fetch_news(self):
         for c, urls in self.urls.items():
             for url in urls:
-                news = fetchNews(url)
+                news = fetch_news(url)
                 self.assertIn("title", news)
                 self.assertIn("summary", news)
                 self.assertIn("_rawtime", news)
@@ -74,8 +74,8 @@ class TestCrawler(unittest.TestCase):
                 self.assertTrue(True)
                 pprint_color(news)
 
-    def test_shortenUrl(self):
-        news = fetchNews("https://goo.gl/6IXNnC")
+    def test_shorten_url(self):
+        news = fetch_news("https://goo.gl/6IXNnC")
         pprint_color(news)
 
         self.assertIn("from", news)

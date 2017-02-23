@@ -3,8 +3,8 @@
 
 from sanic import Sanic
 from sanic.response import json
-from newsfeed.utils.newsfeedhelper import flag
-from newsfeed.utils.newsfeedhelper import fetchFeed
+from newsfeed.utils.newsfeed_helper import flag
+from newsfeed.utils.newsfeed_helper import fetch_feed
 
 app = Sanic(__name__)
 
@@ -15,8 +15,8 @@ async def index(request, methods=['GET']):
     if not 'url':
         return json({'newsfeed'})
 
-    includeText = request.args.get('include')
-    fulltext = flag(request.args.get('fulltext', False))
-    feed = fetchFeed(url, includeText, fulltext=fulltext)
+    include_text = request.args.get('include')
+    full_text = flag(request.args.get('full_text', False))
+    feed = fetch_feed(url, include_text, full_text=full_text)
 
     return json(feed, ensure_ascii=False)

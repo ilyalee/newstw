@@ -7,18 +7,18 @@ import arrow
 import re, html
 from urllib.parse import urlparse, parse_qs
 
-def dictFilter(keys, items):
-    #return [*map(partial(_filterKeys, keys), items)]
+def dict_filter(keys, items):
+    #return [*map(partial(_filter_keys, keys), items)]
     return [{k: v for k, v in item.items() if k in keys} for item in items]
 
-def timeCorrector(key, items):
-    #return [*map(partial(_updateTime, key), items)]
+def time_corrector(key, items):
+    #return [*map(partial(_update_time, key), items)]
     for item in items:
         if key in item:
             item[key] = arrow.get(parser.parse(item[key])).format()
     return items
 
-def linkCorrector(key, items):
+def link_corrector(key, items):
     for item in items:
         if key in item:
             o = urlparse(item[key])
@@ -27,14 +27,14 @@ def linkCorrector(key, items):
                 item[key] = q['url']
     return items
 
-def dataCleaner(key, items):
-    #return [*map(partial(partial(_updateText, cleanText), key), items)]
+def data_cleaner(key, items):
+    #return [*map(partial(partial(_update_text, clean_text), key), items)]
     for item in items:
         if key in item:
-            item[key] = cleanText(item[key])
+            item[key] = clean_text(item[key])
     return items
 
-def dataFilter(text, keys, items):
+def data_filter(text, keys, items):
     if not text: return items
 
     collect = []
@@ -50,31 +50,31 @@ def dataFilter(text, keys, items):
                     collect.append(items[i])
     return collect
 
-def dataInserter(val, key, items):
+def data_inserter(val, key, items):
     if val:
         for item in items:
             item[key] = val
     return items
 
-def dataUpdater(key, sKey, fn, go, items):
+def data_updater(key, sKey, fn, go, items):
     if go:
-        targets = dictFilter([sKey], items)
+        targets = dict_filter([sKey], items)
         for i in range(len(targets)):
             obj = fn(targets[i][sKey])
             if key in obj:
                 items[i][key] = obj[key]
     return items
 
-def dataUpdaterAll(key, sKey, fn, go, items):
+def data_updater_all(key, sKey, fn, go, items):
     if go:
-        targets = dictFilter([sKey], items)
+        targets = dict_filter([sKey], items)
         sources = [target[sKey] for target in targets if sKey in target]
         objs = fn(sources)
         for i in range(len(objs)):
             items[i][key] = objs[i][key]
     return items
 
-def cleanText(text):
+def clean_text(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')
     text = pat.sub('', text)
     text = html.escape(text)
@@ -83,22 +83,22 @@ def cleanText(text):
     text = text.strip(' ')
     return text
 '''
-def _filterKeys(keys, item):
+def _filter_keys(keys, item):
     #return dict(filter(lambda d: d[0] in keys, obj.items()))
     return {k: v for k, v in item.items() if k in keys}
 '''
 '''
-def _updateTime(key, item):
+def _update_time(key, item):
     item.__setitem__(key, arrow.get(parser.parse(item[key])).format())
     return item
 '''
 '''
-def _updateText(key, item):
-    item.__setitem__(key, cleanText(item[key]))
+def _update_text(key, item):
+    item.__setitem__(key, clean_text(item[key]))
     return item
 '''
 '''
-def _updateText(fn, key, item):
+def _update_text(fn, key, item):
     item.__setitem__(key, fn(item[key]))
     return item
 '''

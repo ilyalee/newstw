@@ -5,18 +5,18 @@ import unicodedata
 import re
 import arrow
 
-def normalizeNews(text):
+def normalize_news(text):
     return unicodedata.normalize("NFKD", text)
 
-def trimDataVal(key, trimtext, data):
+def trim_data_val(key, trimtext, data):
     if isinstance(trimtext, str) and key in data:
         data[key] = re.sub(u'%s$' % trimtext, '', data[key])
 
-def delKey(key, ok, data):
+def del_key(key, ok, data):
     if ok:
         data.pop(key, None)
 
-def fixDatetime(source, formats, tzinfo, data):
+def fix_datetime(source, formats, tzinfo, data):
     if isinstance(formats, str):
         formats = [formats]
     for i in range(len(formats)):

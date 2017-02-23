@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from fbfeed.filter import FBFeedFilter
+from newsfeed.filter import NewsFeedFilter
 
-def fetchFeed(url, pages, includeText='', search=False):
-    feed = FBFeedFilter(url, pages, includeText, search)
+def fetch_feed(url, include_text='', full_text=False):
+    feed = NewsFeedFilter(url, include_text, full_text)
     return feed.output()
 
 def flag(t):

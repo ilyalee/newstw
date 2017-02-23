@@ -71,7 +71,7 @@ context['setn'] = [
 context['eranews'] = [
     {'save': "title", 'path': "#LT_1_1", 'ind': 0},
     {'save': "summary", 'path': "#LT_1_3_1", 'ind': 0},
-    {'save': "_rawtime", 'soup': 'findAll', 'path': 'text', 'ind': 4},
+    {'save': "_rawtime", 'soup': 'find_all', 'path': 'text', 'ind': 4},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY/MM/DD"}
 ]
 context['tvbs'] = [

@@ -4,27 +4,27 @@
 import requests
 import grequests
 from crawler.newsprocessor import NewsDataProcessor
-from crawler.utils.crawlerutils import cleanHTML
+from crawler.utils.crawler_utils import clean_html
 
-def fetchNews(url, encoding='utf-8'):
+def fetch_news(url, encoding='utf-8'):
     output = {}
     r = requests.get(url)
     r.encoding = encoding
     r.close()
-    html = cleanHTML(r.text)
+    html = clean_html(r.text)
     news = NewsDataProcessor(r.url, html)
     output = news.output()
 
     return output
 
-def fetchNewsAll(urls, encoding='utf-8'):
+def fetch_news_all(urls, encoding='utf-8'):
     collect = []
     resopones = []
     if isinstance(urls, list):
         rs = (grequests.get(url, hooks={'response': _hook(encoding)}) for url in urls)
         resopones = grequests.map(rs, size=20, exception_handler=exception_handler)
         for r in resopones:
-            html = cleanHTML(r.text)
+            html = clean_html(r.text)
             news = NewsDataProcessor(r.url, html)
             output = news.output()
             collect.append(output)

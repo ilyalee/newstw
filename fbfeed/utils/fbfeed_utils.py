@@ -6,14 +6,14 @@ import settings
 from urllib.parse import urlparse, parse_qs
 from itertools import islice
 
-def FBInit():
+def fb_init():
     return facebook.GraphAPI(access_token=settings.FACEBOOK_ACCESS_TOKEN, version=settings.FACEBOOK_API_VERSION)
 
 '''
 ref:  https://github.com/mobolic/facebook-sdk/issues/85
       https://github.com/mobolic/facebook-sdk/pull/298
 '''
-def getAllConnections(graph, fbid, connection, **args):
+def get_all_connections(graph, fbid, connection, **args):
     while True:
         page = graph.get_connections(fbid, connection, **args)
         for post in page['data']:
@@ -24,7 +24,7 @@ def getAllConnections(graph, fbid, connection, **args):
         args = parse_qs(urlparse(next).query)
         del args['access_token']
 
-def loadGroup(graph, fbid, **args):
+def load_group(graph, fbid, **args):
     try:
         group = graph.get_object(fbid, **args)
         return group
@@ -33,7 +33,7 @@ def loadGroup(graph, fbid, **args):
             print(err)
         return None
 
-def loadPages(graph, fbid, connection, num=1, **args):
-    gen = getAllConnections(graph, fbid, connection, **args)
+def load_pages(graph, fbid, connection, num=1, **args):
+    gen = get_all_connections(graph, fbid, connection, **args)
     collect = list(islice(gen, 0, num))
     return collect

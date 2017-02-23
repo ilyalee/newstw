@@ -3,7 +3,7 @@
 
 import re
 
-def cleanHTML(html):
+def clean_html(html):
     # remove all whitespaces
     pat = re.compile(r"(^[\s]+)|([\s]+$)", re.MULTILINE)
     html = re.sub(pat, "", html)
@@ -26,7 +26,7 @@ def cleanHTML(html):
 
 ################################################################################
 
-def detectNewsSource(url):
+def detect_news_source(url):
     any_in = lambda a, b: any(i in b for i in a)
 
     from crawler.web_shape_var import source, source_default
@@ -39,14 +39,14 @@ def detectNewsSource(url):
             break
     return target
 
-def loadContext(source):
+def load_context(source):
     from crawler.web_shape_var import context
     return context.get(source, context.get("any", []))
 
-def loadSkips(source):
+def load_skips(source):
     from crawler.web_shape_var import skip
     return skip.get(source, [])
 
-def loadTrimtext(source):
+def load_trimtext(source):
     from crawler.web_shape_var import trimtext
     return trimtext.get(source, [])

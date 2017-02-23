@@ -1,36 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from fbfeed.utils.fbfeedutils import FBInit, loadGroup, loadPages
-from fbfeed.utils.datautils import FBTimeToLocal, dataFilter, dataInserter, dataCleaner
+from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
+from fbfeed.utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner
 
-class FBFeedFilter:
-    def __init__(self, fbid, num, includeText='', search=False):
+class FbFeedFilter:
+    def __init__(self, fbid, num, include_text='', search=False):
         self.fbid = fbid
         self.num = int(num)
-        self.includeText = includeText
-        self.graph = FBInit()
+        self.include_text = include_text
+        self.graph = fb_init()
         self.tzinfo = "Asia/Taipei"
         self.search = search
 
     def _download(self, encoding='utf-8'):
         items = []
-        group = loadGroup(self.graph, self.fbid, search=self.search)
+        group = load_group(self.graph, self.fbid, search=self.search)
         if group:
-            items = loadPages(self.graph, self.fbid, "feed", self.num, search=self.search, date_format="U")
+            items = load_pages(self.graph, self.fbid, "feed", self.num, search=self.search, date_format="U")
         return self._data_prepare(items)
 
     def _data_prepare(self, items):
-        items = FBTimeToLocal("created_time", self.tzinfo, items)
-        items = FBTimeToLocal("updated_time", self.tzinfo, items)
+        items = fb_time_to_local("created_time", self.tzinfo, items)
+        items = fb_time_to_local("updated_time", self.tzinfo, items)
         return self._data_filter(items)
 
     def _data_filter(self, items):
-        items = dataFilter(self.includeText, ["message", "story"], items)
-        items = dataCleaner("message", items)
-        items = dataCleaner("story", items)
-        items = dataInserter(self.includeText, "keyword", items)
-        items = dataInserter(self.fbid, "fbid", items)
+        items = data_filter(self.include_text, ["message", "story"], items)
+        items = data_cleaner("message", items)
+        items = data_cleaner("story", items)
+        items = data_inserter(self.include_text, "keyword", items)
+        items = data_inserter(self.fbid, "fbid", items)
         return items
 
     def output(self):

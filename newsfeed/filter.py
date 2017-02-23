@@ -24,7 +24,6 @@ class NewsFeedFilter:
 
     def _data_prepare(self, items):
         items = dataUpdaterAll("summary", "link", fetchNewsAll, self.fullTextMode, items)
-        items = dataInserter(self.fullTextMode, "fulltext", items)
         return self._data_filter(items)
 
     def _data_filter(self, items):

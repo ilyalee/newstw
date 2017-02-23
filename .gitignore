@@ -92,3 +92,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# alembic
+prod.ini
+dev.ini

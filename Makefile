@@ -21,3 +21,21 @@ update_deps:
 
 test:
 	python3 -m unittest discover
+
+revision:
+	alembic -c dev.ini revision --autogenerate
+
+upgrade:
+	alembic -c dev.ini upgrade head
+
+downgrade:
+	alembic -c dev.ini downgrade head
+
+revision_prod:
+	alembic -c prod.ini revision --autogenerate
+
+upgrade_prod:
+	alembic -c prod.ini upgrade head
+
+downgrade_prod:
+	alembic -c prod.ini downgrade head

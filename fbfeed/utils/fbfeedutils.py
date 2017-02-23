@@ -4,6 +4,7 @@
 import facebook
 import settings
 from urllib.parse import urlparse, parse_qs
+from itertools import islice
 
 def FBInit():
     return facebook.GraphAPI(access_token=settings.FACEBOOK_ACCESS_TOKEN, version=settings.FACEBOOK_API_VERSION)
@@ -33,12 +34,6 @@ def loadGroup(graph, fbid, **args):
         return None
 
 def loadPages(graph, fbid, connection, num=1, **args):
-    collect = []
     gen = getAllConnections(graph, fbid, connection, **args)
-    for i in range(num):
-        data = next(gen, None)
-        if data:
-            collect.append(data)
-        else:
-            break
+    collect = list(islice(gen, 0, num))
     return collect

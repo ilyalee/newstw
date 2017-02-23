@@ -16,7 +16,7 @@ async def index(request, methods=['GET']):
         return json({'newsfeed'})
 
     include_text = request.args.get('include')
-    full_text = flag(request.args.get('full_text', False))
+    full_text = flag(request.args.get('fulltext', False))
     feed = fetch_feed(url, include_text, full_text=full_text)
 
     return json(feed, ensure_ascii=False)

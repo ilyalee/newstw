@@ -1,4 +1,5 @@
 aiofiles==0.3.0
+alembic==0.8.10
 appdirs==1.4.0
 arrow==0.10.0
 attrs==16.3.0
@@ -22,6 +23,8 @@ import-string==0.1.0
 incremental==16.10.1
 jieba3k==0.35.1
 lxml==3.7.2
+Mako==1.0.6
+MarkupSafe==0.23
 newspaper3k==0.1.9
 nltk==3.2.2
 olefile==0.44
@@ -37,6 +40,7 @@ pyOpenSSL==16.2.0
 pyparsing==2.1.10
 python-dateutil==2.6.0
 python-dotenv==0.6.3
+python-editor==1.0.3
 PyYAML==3.12
 queuelib==1.4.2
 requests==2.13.0
@@ -44,6 +48,7 @@ requests-file==1.4.1
 sanic==0.3.1
 service-identity==16.0.0
 six==1.10.0
+SQLAlchemy==1.1.5
 tldextract==2.0.2
 Twisted==17.1.0
 ujson==1.35

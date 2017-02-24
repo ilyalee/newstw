@@ -12,6 +12,9 @@ run_newsfeed:
 run_fbfeed:
 	python3 -O run_fbfeed.py
 
+run_news_archiver:
+	python3 -O run_news_archiver.py
+
 deps:
 	pip3 freeze > ./requirements.txt
 

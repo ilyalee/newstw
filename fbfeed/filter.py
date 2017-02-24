@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
-from fbfeed.utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner
-
+from fbfeed.utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 
 class FbFeedFilter:
 
@@ -32,9 +31,13 @@ class FbFeedFilter:
 
     def _data_filter(self, items):
         items = data_filter(self.include_text, ["message", "story"], items)
+        return self._data_produce(items)
+
+    def _data_produce(self, items):
         items = data_cleaner("message", items)
         items = data_cleaner("story", items)
         items = data_inserter(self.include_text, "keyword", items)
+        items = data_hasher("hash", ["id", "updated_time"], items)
         return items
 
     def output(self):

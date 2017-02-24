@@ -19,13 +19,13 @@ class TestFBFeed(unittest.TestCase):
         feed = fetch_feed(fbid, num)
         predict = ['failed']
         pprint_color(feed[0])
-        self.assertIn("fbid", feed[0])
+        self.assertIn("name", feed[0])
+        self.assertIn("description", feed[0])
+        self.assertIn("message", feed[0])
+        self.assertIn("from", feed[0])
+        self.assertIn("permalink_url", feed[0])
+        self.assertIn("hash", feed[0])
         self.assertEqual(len(feed), num)
-
-    def test_data_filter(self):
-        items = [{'target': '123'}, {'target': 'test1'}, {'target': 'test2'}]
-        feed = data_filter("test", "target", items)
-        self.assertEqual(len(feed), 2)
 
     def tearDown(self):
         pass

@@ -4,19 +4,35 @@
 #from functools import partial
 from dateutil import parser
 import arrow
-import re, html
+import re
+import html
+from hashlib import sha1
 from urllib.parse import urlparse, parse_qs
 
+
+# ref: http://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git
+def githash(data, hexdigest=False):
+    s = sha1()
+    s.update("blob %u\0".encode('utf-8') % len(data))
+    s.update(str(data).encode('utf-8'))
+    if hexdigest:
+        return s.hexdigest()
+    else:
+        return s.digest()
+
+
 def dict_filter(keys, items):
-    #return [*map(partial(_filter_keys, keys), items)]
+    # return [*map(partial(_filter_keys, keys), items)]
     return [{k: v for k, v in item.items() if k in keys} for item in items]
 
+
 def time_corrector(key, items):
-    #return [*map(partial(_update_time, key), items)]
+    # return [*map(partial(_update_time, key), items)]
     for item in items:
         if key in item:
             item[key] = arrow.get(parser.parse(item[key])).format()
     return items
+
 
 def link_corrector(key, items):
     for item in items:
@@ -27,15 +43,18 @@ def link_corrector(key, items):
                 item[key] = q['url']
     return items
 
+
 def data_cleaner(key, items):
-    #return [*map(partial(partial(_update_text, clean_text), key), items)]
+    # return [*map(partial(partial(_update_text, clean_text), key), items)]
     for item in items:
         if key in item:
             item[key] = clean_text(item[key])
     return items
 
+
 def data_filter(text, keys, items):
-    if not text: return items
+    if not text:
+        return items
 
     collect = []
     if isinstance(keys, str):
@@ -50,11 +69,13 @@ def data_filter(text, keys, items):
                     collect.append(items[i])
     return collect
 
+
 def data_inserter(val, key, items):
     if val:
         for item in items:
             item[key] = val
     return items
+
 
 def data_updater(key, sKey, fn, go, items):
     if go:
@@ -65,6 +86,7 @@ def data_updater(key, sKey, fn, go, items):
                 items[i][key] = obj[key]
     return items
 
+
 def data_updater_all(key, sKey, fn, go, items):
     if go:
         targets = dict_filter([sKey], items)
@@ -73,6 +95,14 @@ def data_updater_all(key, sKey, fn, go, items):
         for i in range(len(objs)):
             items[i][key] = objs[i][key]
     return items
+
+
+def data_hasher(key, keys, items):
+    text = "".join(item[key] for key in keys for item in items)
+    for item in items:
+        item[key] = githash(text, hexdigest=True)
+    return items
+
 
 def clean_text(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')

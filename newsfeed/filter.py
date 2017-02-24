@@ -3,7 +3,7 @@
 
 import feedparser
 import requests
-from newsfeed.utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater_all
+from newsfeed.utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater_all, data_hasher
 from crawler.utils.crawler_helper import fetch_news_all
 
 
@@ -36,7 +36,11 @@ class NewsFeedFilter:
         items = link_corrector("link", items)
         items = data_cleaner("summary", items)
         items = data_filter(self.include_text, ["summary", "title"], items)
+        return self._data_produce(items)
+
+    def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
+        items = data_hasher("hash", ["title", "published"], items)
         return items
 
     def output(self):

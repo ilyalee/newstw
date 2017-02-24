@@ -52,8 +52,8 @@ def data_inserter(val, key, items):
 
 
 def data_hasher(key, keys, items):
-    text = "".join(item[key] for key in keys for item in items)
     for item in items:
+        text = "".join([item[key] for key in keys if key in item])
         item[key] = githash(text, hexdigest=True)
     return items
 

@@ -8,7 +8,7 @@ import re
 import html
 from hashlib import sha1
 from urllib.parse import urlparse, parse_qs
-
+from itertools import chain
 
 # ref: http://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git
 def githash(data, hexdigest=False):
@@ -98,8 +98,8 @@ def data_updater_all(key, sKey, fn, go, items):
 
 
 def data_hasher(key, keys, items):
-    text = "".join(item[key] for key in keys for item in items)
     for item in items:
+        text = "".join([item[key] for key in keys if key in item])
         item[key] = githash(text, hexdigest=True)
     return items
 

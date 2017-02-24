@@ -39,4 +39,4 @@ class NewsfeedController(HTTPMethodView):
                     ok_nums = ok_nums - 1
             dup_nums = dup_nums - ok_nums
 
-        return json({'status': 'ok', 'nums': ok_nums, 'info': 'Successfully created %d news archives, found %d duplicate items' % (ok_nums, dup_nums)})
+        return json({'nums': ok_nums, 'info': '%d successfully created, %d duplicates found' % (ok_nums, dup_nums)})

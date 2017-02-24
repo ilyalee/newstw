@@ -18,3 +18,8 @@ def scoped_session():
         raise
     finally:
         session.close()
+
+@contextmanager
+def query_session():
+    session = Session()
+    yield session

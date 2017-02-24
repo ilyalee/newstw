@@ -3,8 +3,7 @@
 
 from sanic import Sanic
 from sanic.response import json
-from fbfeed.utils.fbfeed_helper import flag
-from fbfeed.utils.fbfeed_helper import fetch_feed
+from fbfeed.utils.fbfeed_helper import flag, fetch_feed
 
 app = Sanic(__name__)
 

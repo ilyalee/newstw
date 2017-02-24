@@ -1,11 +1,11 @@
 from sqlalchemy import (
-    Column, String, Integer, DateTime, Text, Boolean
+    Column, String, Integer, DateTime, Text
 )
 
 from db.models import Base
+from arrow import Arrow
 
-
-class Archives(Base):
+class Archive(Base):
     __tablename__ = 'archives'
 
     id = Column(Integer, autoincrement=True, primary_key=True)

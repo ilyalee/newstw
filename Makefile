@@ -29,7 +29,7 @@ upgrade:
 	alembic -c dev.ini upgrade head
 
 downgrade:
-	alembic -c dev.ini downgrade head
+	alembic -c dev.ini downgrade -1
 
 revision_prod:
 	alembic -c prod.ini revision --autogenerate

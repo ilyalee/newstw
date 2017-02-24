@@ -16,6 +16,7 @@ feedparser==5.2.1
 gevent==1.2.1
 greenlet==0.4.12
 grequests==0.3.0
+hashids==1.2.0
 html5lib==0.9999999
 httptools==0.0.9
 idna==2.2

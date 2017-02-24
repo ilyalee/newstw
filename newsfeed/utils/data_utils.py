@@ -6,13 +6,13 @@ from dateutil import parser
 import arrow
 import re
 import html
-from hashlib import sha1
+from hashlib import sha3_224
 from urllib.parse import urlparse, parse_qs
 from itertools import chain
 
 # ref: http://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git
 def githash(data, hexdigest=False):
-    s = sha1()
+    s = sha3_224()
     s.update("blob %u\0".encode('utf-8') % len(data))
     s.update(str(data).encode('utf-8'))
     if hexdigest:

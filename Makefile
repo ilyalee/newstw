@@ -31,6 +31,9 @@ upgrade:
 downgrade:
 	alembic -c dev.ini downgrade -1
 
+reset_db:
+	alembic -c dev.ini downgrade base
+
 revision_prod:
 	alembic -c prod.ini revision --autogenerate
 

@@ -17,10 +17,10 @@ class Archive(Base):
 
 
     def __repr__(self):
-        return '<Archive: {}>'.format(self.title)
+        return '<Archive(title="%s")>'.format(self.title)
 
-    def disp(self):
-        return '<{}> {}：「{}」'.format(self.published, self.link, self.summary)
+    def show_detail(self):
+        return '<Archive(published="%s", link="%s", summary="%s")>'.format(self.published, self.link, self.summary)
 
     def disp_hash(self):
         return '#{}'.format(self.hash)

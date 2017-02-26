@@ -23,7 +23,7 @@ class TestNewsFeed(unittest.TestCase):
         self.assertNotIn("keyword", feed[0])
         feed = fetch_feed(url, '', True)
         self.assertIn("summary", feed[0])
-        pprint_color(feed[0])
+        #pprint_color(feed[0])
         feed = fetch_feed(url, "台灣")
         for item in feed:
             self.assertIn("title", item)
@@ -39,4 +39,4 @@ class TestNewsFeed(unittest.TestCase):
         pass
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(warnings='ignore')

@@ -18,7 +18,7 @@ class TestFBFeed(unittest.TestCase):
         num = 40
         feed = fetch_feed(fbid, num)
         predict = ['failed']
-        pprint_color(feed[0])
+        #pprint_color(feed[0])
         self.assertIn("message", feed[0])
         self.assertIn("from", feed[0])
         self.assertIn("permalink_url", feed[0])

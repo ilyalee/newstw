@@ -75,11 +75,11 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("from", news)
                 self.assertTrue(news["pass"])
                 self.assertTrue(True)
-                pprint_color(news)
+                #pprint_color(news)
 
     def test_shorten_url(self):
         news = fetch_news("https://goo.gl/6IXNnC")
-        pprint_color(news)
+        #pprint_color(news)
 
         self.assertIn("from", news)
 

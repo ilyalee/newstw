@@ -15,10 +15,10 @@ class TestAsyncs(unittest.TestCase):
     def test_fetch_news_all(self):
         url = ["https://goo.gl/rXe5sV", "https://goo.gl/bQMi1B", "https://goo.gl/IRJ7Pb"]
         collect = fetch_news_all(url)
-        pprint_color(collect)
+        #pprint_color(collect)
 
     def tearDown(self):
         pass
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(warnings='ignore')

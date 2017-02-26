@@ -11,11 +11,9 @@ from newsfeed.utils.newsfeed_helper import fetch_feed
 class NewsfeedController(HTTPMethodView):
 
     async def post(self, request):
-        """ create new archive for newsfeed.
+        """ create new archives for newsfeed from a feed url.
          Args:
              request (str): contains a str of feed url.
-         Returns:
-             json: containing key `status` with success/failure message
         """
         url = request.json.get('url')
         items = fetch_feed(url, full_text=False)

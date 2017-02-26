@@ -20,23 +20,31 @@ class NewsfeedController(HTTPMethodView):
         url = request.json.get('url')
         items = fetch_feed(url, full_text=False)
         hashs = [item['hash'] for item in items]
-        ok_nums = len(items)
-        dup_nums = ok_nums
+        save_nums = len(items)
+        dup_nums = save_nums
         #checking duplicate items by hash
         with query_session() as session:
             result_set = session.query(Archive).filter(Archive.hash.in_(hashs)).all()
             dups = [dup.__dict__['hash'] for dup in result_set]
-            objs = [Archive(**item) for item in items if item['hash'] not in dups]
-            ok_nums = len(objs)
+            items = [item for item in items if item['hash'] not in dups]
+            archives = [Archive(**item) for item in items]
+            save_nums = len(archives)
 
         #checking duplicate items by IntegrityError
         with scoped_session() as session:
-            for obj in objs:
+            for archive in archives:
                 try:
                    with session.begin_nested():
-                        session.add(obj)
+                        session.add(archive)
                 except exc.IntegrityError:
-                    ok_nums = ok_nums - 1
-            dup_nums = dup_nums - ok_nums
+                    save_nums = save_nums - 1
+            dup_nums = dup_nums - save_nums
 
-        return json({'nums': ok_nums, 'info': '%d successfully created, %d duplicates found' % (ok_nums, dup_nums)})
+        data = {
+            'save_nums': save_nums,
+            'dup_nums': dup_nums,
+            'items': items,
+            'info': '%d successfully created, %d duplicates found.' % (save_nums, dup_nums)
+        }
+
+        return json(data)

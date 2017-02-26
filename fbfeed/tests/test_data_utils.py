@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from fbfeed.utils.fbfeed_helper import fetch_feed
-from fbfeed.utils.data_utils import data_filter, githash
+from utils.data_utils import data_filter, githash
 from fbfeed.utils.pprint_helper import pprint_color
 
 import unittest
@@ -20,7 +19,7 @@ class TestDataUtils(unittest.TestCase):
 
     def test_githash(self):
         title = "標題測試"
-        hexstr = "77846ee3bc54633ee1b1683d8c5dc5d1bfa02a51"
+        hexstr = "df65291e1b9c75dde1a6066fe2cbfb66c4d8ee055daf60f6e5f3e648"
         hashed = githash(title.encode('utf-8'), hexdigest=True)
         self.assertEqual(hashed, hexstr)
 

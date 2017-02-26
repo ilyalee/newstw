@@ -18,7 +18,8 @@ class TestNewsArchive(unittest.TestCase):
             'title': "title test",
             'summary': "summary test",
             'link': "https://foo.bar.baz",
-            'hash': "hash test"
+            'hash': "hash test",
+            'source': "abc"
         }
 
     def test_crud(self):
@@ -35,7 +36,7 @@ class TestNewsArchive(unittest.TestCase):
             self.assertEqual(archive.summary, self.data['summary'])
             self.assertEqual(archive.link, self.data['link'])
             self.assertEqual(archive.hash, self.data['hash'])
-
+            self.assertEqual(archive.source, self.data['source'])
         # Update archive.
         with scoped_session() as session:
             archive = session.merge(archive)

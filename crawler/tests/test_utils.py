@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from crawler.utils.data_utils import del_key, trim_data_val
+from utils.data_utils import del_key, trim_data_val
 
 import unittest
 

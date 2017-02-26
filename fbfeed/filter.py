@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
-from fbfeed.utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
+from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 
 class FbFeedFilter:
 
@@ -13,7 +13,7 @@ class FbFeedFilter:
         self.num = int(num)
         self.graph = fb_init()
         self.tzinfo = "Asia/Taipei"
-        self.fields = ["id", "type", "description", "message", "created_time", "updated_time", "from", "permalink_url", "name"]
+        self.fields = ["id", "type", "message", "created_time", "updated_time", "from", "permalink_url"]
 
     def _download(self, encoding='utf-8'):
         items = []

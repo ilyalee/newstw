@@ -39,20 +39,29 @@ def data_inserter(val, key, items):
     return items
 
 
-def data_updater(key, sKey, fn, go, items):
+def data_updater(key, from_key, fn, go, items):
     if go:
-        targets = dict_filter([sKey], items)
+        targets = dict_filter([from_key], items)
         for i in range(len(targets)):
-            obj = fn(targets[i][sKey])
+            obj = fn(targets[i][from_key])
+            items[i][key] = obj
+    return items
+
+
+def data_kv_updater(key, from_key, fn, go, items):
+    if go:
+        targets = dict_filter([from_key], items)
+        for i in range(len(targets)):
+            obj = fn(targets[i][from_key])
             if key in obj:
                 items[i][key] = obj[key]
     return items
 
 
-def data_updater_all(key, sKey, fn, go, items):
+def data_kv_updater_all(key, from_key, fn, go, items):
     if go:
-        targets = dict_filter([sKey], items)
-        sources = [target[sKey] for target in targets if sKey in target]
+        targets = dict_filter([from_key], items)
+        sources = [target[from_key] for target in targets if from_key in target]
         objs = fn(sources)
         for i in range(len(objs)):
             items[i][key] = objs[i][key]

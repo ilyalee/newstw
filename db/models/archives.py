@@ -14,6 +14,7 @@ class Archive(Base):
     title = Column(String, nullable=False)
     summary = Column(Text, nullable=False)
     link = Column(String, nullable=False)
+    source = Column(String, nullable=False)
 
 
     def __repr__(self):

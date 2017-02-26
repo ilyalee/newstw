@@ -3,7 +3,7 @@
 
 from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
-from crawler.utils.data_utils import normalize_news, del_key, trim_data_val, fix_datetime
+from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime
 
 
 class NewsDataProcessor:
@@ -39,8 +39,8 @@ class NewsDataProcessor:
         return {"select": self._soup_select, "find_all": self._soup_find_all, "attrs": self._soup_attrs}.get(name)(path)
 
     def _soup_attrs(self, path):
-        for k, v in path.items():
-            return self.soup.find(k).attrs[v]
+        for key, value in path.items():
+            return self.soup.find(key).attrs[value]
 
     def _soup_select(self, path):
         if isinstance(path, list):
@@ -74,7 +74,7 @@ class NewsDataProcessor:
         for c in (c for c in self.context if '_rawtime' in self.data):
             c['tzinfo'] = c.get("tzinfo", "")
             c['format'] = c.get("format", [])
-            self.data['published'] = fix_datetime(
+            self.data['published'] = localize_datetime(
                 self.data['_rawtime'], c['format'], c['tzinfo'], self.data)
             if self.data['published'] == '':
                 self.data['pass'] = False

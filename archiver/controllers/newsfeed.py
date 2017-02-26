@@ -7,6 +7,7 @@ from sqlalchemy import exc
 
 from newsfeed.utils.newsfeed_helper import fetch_feed
 
+
 class NewsfeedController(HTTPMethodView):
 
     async def post(self, request):
@@ -16,13 +17,13 @@ class NewsfeedController(HTTPMethodView):
          Returns:
              json: containing key `status` with success/failure message
         """
-
         url = request.json.get('url')
         items = fetch_feed(url, full_text=False)
         hashs = [item['hash'] for item in items]
         save_nums = len(items)
         dup_nums = save_nums
-        #checking duplicate items by hash
+
+        # checking duplicate items by hash
         with query_session() as session:
             result_set = session.query(Archive).filter(Archive.hash.in_(hashs)).all()
             dups = [dup.__dict__['hash'] for dup in result_set]
@@ -30,11 +31,11 @@ class NewsfeedController(HTTPMethodView):
             archives = [Archive(**item) for item in items]
             save_nums = len(archives)
 
-        #checking duplicate items by IntegrityError
+        # checking duplicate items by IntegrityError
         with scoped_session() as session:
             for archive in archives:
                 try:
-                   with session.begin_nested():
+                    with session.begin_nested():
                         session.add(archive)
                 except exc.IntegrityError:
                     save_nums = save_nums - 1

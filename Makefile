@@ -3,6 +3,9 @@ init:
 	source "./venv/bin/activate"
 	pip3 install -r requirements.txt
 
+pyclean:
+	find . | grep -E "\(__pycache__|.pyc|.pyo$\)" | xargs rm -rf
+
 run_crawler:
 	python3 -O run_crawler.py
 

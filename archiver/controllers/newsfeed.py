@@ -1,7 +1,7 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
 from newsfeed.utils.newsfeed_helper import fetch_feed
-from db.providers.archive_provider import ArchiveProvider as AP
+from db.providers.archive_provider import ArchiveProvider
 
 class NewsfeedController(HTTPMethodView):
 
@@ -10,15 +10,16 @@ class NewsfeedController(HTTPMethodView):
          Args:
              request (str): contains a str of feed url.
         """
+        ap = ArchiveProvider()
         url = request.json.get('url')
         items = fetch_feed(url, full_text=False)
         hashs = [item['hash'] for item in items]
         total = len(items)
 
         # checking duplicate items by hash
-        items = AP.find_distinct_items_by_hashs(hashs, items)
+        items = ap.find_distinct_items_by("hash", hashs, items)
         # checking duplicate items by IntegrityError
-        acceptances = AP.save_all(items)
+        acceptances = ap.save_all(items)
         rejects = total - acceptances
 
         data = {

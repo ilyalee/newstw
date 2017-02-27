@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#from archiver.utils.archiver_utils import
+# from archiver.utils.archiver_utils import
 #from archiver.utils.archiver_helper import fetch_news
 from archiver.utils.pprint_helper import pprint_color
 from db.database import scoped_session, Session
 from db.models.archives import Archive
+from db.providers.archive_provider import ArchiveProvider
 
 import unittest
 
@@ -21,6 +22,11 @@ class TestNewsArchive(unittest.TestCase):
             'hash': "hash test",
             'source': "abc"
         }
+
+    def test_archive_provider(self):
+        ap = ArchiveProvider()
+        (obj,) = ap.load([{'title': 'title test'}])
+        self.assertIsInstance(obj, Archive)
 
     def test_crud(self):
 

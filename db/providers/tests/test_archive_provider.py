@@ -31,7 +31,7 @@ class TestArchiveProvider(unittest.TestCase):
     def test_find_distinct_items_by(self):
         ap = ArchiveProvider()
         items = ap.find_distinct_items_by("hash", ["test"], self.items)
-        print(items)
+        self.assertEqual(self.items, items)
 
     def test_save_all(self):
         pass

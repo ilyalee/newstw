@@ -3,7 +3,7 @@
 
 from fbfeed.utils.fbfeed_helper import fetch_feed
 from utils.data_utils import data_filter
-from fbfeed.utils.pprint_helper import pprint_color
+from utils.pprint_helper import pprint_color
 
 import unittest
 

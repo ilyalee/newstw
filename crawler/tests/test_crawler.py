@@ -3,7 +3,7 @@
 
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
 from crawler.utils.crawler_helper import fetch_news
-from crawler.utils.pprint_helper import pprint_color
+from utils.pprint_helper import pprint_color
 
 import unittest
 

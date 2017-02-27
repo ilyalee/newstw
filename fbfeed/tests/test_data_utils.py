@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from utils.data_utils import data_filter, githash
-from fbfeed.utils.pprint_helper import pprint_color
+from utils.pprint_helper import pprint_color
 
 import unittest
 

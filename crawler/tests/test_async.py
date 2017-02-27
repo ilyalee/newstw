@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from crawler.utils.crawler_helper import fetch_news_all
-from crawler.utils.pprint_helper import pprint_color
+from utils.pprint_helper import pprint_color
 
 import unittest
 

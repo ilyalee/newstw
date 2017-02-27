@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from newsfeed.utils.newsfeed_helper import fetch_feed
-from newsfeed.utils.pprint_helper import pprint_color
+from utils.pprint_helper import pprint_color
 import unittest
 
 

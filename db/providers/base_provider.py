@@ -13,8 +13,9 @@ class BaseProvider():
     def load(self, items):
         return load_as_objs(self.cls, items)
 
-    def find_distinct_items_by(self, name, existed, items):
+    def find_distinct_items_by(self, name, items):
         with query_session() as session:
+            existed = [item[name] for item in items]
             result_set = session.query(self.cls).filter(getattr(self.cls, name).in_(existed)).all()
             dups = [dup.__dict__[name] for dup in result_set]
             items = [item for item in items if item[name] not in dups]

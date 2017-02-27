@@ -28,9 +28,10 @@ class TestArchiveProvider(unittest.TestCase):
         (obj,) = ap.load(self.items)
         self.assertIsInstance(obj, Archive)
 
+    #TODO: get hash list by items self.
     def test_find_distinct_items_by(self):
         ap = ArchiveProvider()
-        items = ap.find_distinct_items_by("hash", ["test"], self.items)
+        items = ap.find_distinct_items_by("hash", self.items)
         self.assertEqual(self.items, items)
 
     def test_save_all(self):

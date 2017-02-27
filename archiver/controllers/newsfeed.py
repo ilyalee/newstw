@@ -13,11 +13,10 @@ class NewsfeedController(HTTPMethodView):
         ap = ArchiveProvider()
         url = request.json.get('url')
         items = fetch_feed(url, full_text=False)
-        hashs = [item['hash'] for item in items]
         total = len(items)
 
         # checking duplicate items by hash
-        items = ap.find_distinct_items_by("hash", hashs, items)
+        items = ap.find_distinct_items_by("hash", items)
         # checking duplicate items by IntegrityError
         acceptances = ap.save_all(items)
         rejects = total - acceptances

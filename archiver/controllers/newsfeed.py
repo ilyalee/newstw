@@ -12,7 +12,7 @@ class NewsfeedController(HTTPMethodView):
         """
         ap = ArchiveProvider()
         url = request.json.get('url')
-        items = fetch_feed(url, full_text=False)
+        items = fetch_feed(url, full_text=True)
         total = len(items)
 
         # checking duplicate items by hash

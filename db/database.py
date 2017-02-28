@@ -4,10 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # ref: https://github.com/seanpar203/sanic-starter
-db_url = settings.DATABASE_TESTING_URL
+db_url = settings.DATABASE_URL
+
 if settings.TESTING:
     db_url = settings.DATABASE_TESTING_URL
-    
+
 engine = create_engine(db_url)
 
 if settings.TESTING:

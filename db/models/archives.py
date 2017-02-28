@@ -10,7 +10,7 @@ class Archive(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     hash = Column(String, nullable=False, unique=True)
-    published = Column(DateTime, nullable=False)
+    published = Column(DateTime(timezone=True), nullable=False)
     title = Column(String, nullable=False)
     summary = Column(Text, nullable=False)
     link = Column(String, nullable=False)

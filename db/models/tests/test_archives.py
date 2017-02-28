@@ -4,7 +4,7 @@
 from utils.pprint_helper import pprint_color
 from db.database import scoped_session, Session
 from db.models.archives import Archive
-
+import arrow
 import unittest
 
 
@@ -12,7 +12,7 @@ class TestArchive(unittest.TestCase):
 
     def setUp(self):
         self.data = {
-            'published': "2017-01-23 12:34:56+08:00",
+            'published': arrow.get("2017-01-23 12:34:56+08:00").datetime,
             'title': "title test",
             'summary': "summary test",
             'link': "https://foo.bar.baz",

@@ -26,7 +26,7 @@ update_deps:
 	pip3 install --upgrade -r requirements.txt
 
 test:
-	python3 -m unittest discover
+	TESTING=1 python3 -m unittest discover
 
 revision:
 	alembic -c dev.ini revision --autogenerate

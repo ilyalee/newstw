@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from utils.pprint_helper import pprint_color
+from db import models
 from db.database import scoped_session, Session
 from db.models.archives import Archive
 from db.providers.archive_provider import ArchiveProvider
-
+from sqlalchemy import create_engine
 import unittest
+import settings
+from unittest import mock
 
 
 class TestArchiveProvider(unittest.TestCase):
@@ -24,11 +27,9 @@ class TestArchiveProvider(unittest.TestCase):
 
     def test_load(self):
         ap = ArchiveProvider()
-
         (obj,) = ap.load(self.items)
         self.assertIsInstance(obj, Archive)
 
-    #TODO: get hash list by items self.
     def test_find_distinct_items_by(self):
         ap = ArchiveProvider()
         items = ap.find_distinct_items_by("hash", self.items)

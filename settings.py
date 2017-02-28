@@ -1,12 +1,16 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+import sys
 
-dotenv_path = join(dirname(__file__), '.env')
+filename = ".env"
+dotenv_path = join(dirname(__file__), filename)
+
 load_dotenv(dotenv_path)
-
+TESTING = os.environ.get("TESTING")
 # Local database url
 DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_TESTING_URL = os.environ.get("DATABASE_TESTING_URL")
 
 # Facebook Graph API
 FACEBOOK_ACCESS_TOKEN = os.environ.get("FACEBOOK_ACCESS_TOKEN")

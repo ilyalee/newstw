@@ -3,11 +3,10 @@
 
 from sanic import Sanic
 from sanic.response import json
+from archiver.blueprints import bp_v1
 
 app = Sanic(__name__)
-
-from archiver.controllers.newsfeed import NewsfeedController
-app.add_route(NewsfeedController().as_view(), 'api/v1/news/archive')
+app.blueprint(bp_v1)
 
 @app.route("/")
 async def index(request, methods=['GET']):

@@ -11,11 +11,19 @@ if settings.TESTING:
 
 engine = create_engine(db_url)
 
+Session = sessionmaker(bind=engine)
+
+try:
+    connection = engine.connect()
+    connection.close()
+except:
+    import sys
+    sys.exit("[Connection Error: make sure the database is running.]")
+
 if settings.TESTING:
     from db.models import Base
     Base.metadata.create_all(engine)
 
-Session = sessionmaker(bind=engine)
 
 @contextmanager
 def scoped_session():

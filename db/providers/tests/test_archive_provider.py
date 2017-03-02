@@ -25,9 +25,9 @@ class TestArchiveProvider(unittest.TestCase):
         }
         self.items = [{'title': 'title test', 'hash': 'test'}]
 
-    def test_load(self):
+    def test_reload(self):
         ap = ArchiveProvider()
-        (obj,) = ap.load(self.items)
+        (obj,) = ap.reload(self.items)
         self.assertIsInstance(obj, Archive)
 
     def test_find_distinct_items_by(self):

@@ -24,15 +24,13 @@ def fetch_news_all(urls, encoding='utf-8', timeout=30):
         return fetch_news_all_fast(urls, encoding, timeout)
 
 def fetch_news_all_fast(urls, encoding, timeout):
-    def _cb(sess, resp, encoding):
-        resp.encoding = encoding
-
     collect = []
     resopones = []
-    session = FuturesSession(executor=ThreadPoolExecutor(max_workers=os.cpu_count()))
-    future_resps = [session.get(url, background_callback=lambda sess, resp: _cb(sess, resp, encoding), timeout=timeout) for url in urls]
+    session = FuturesSession(session=requests.Session(), executor=ThreadPoolExecutor(max_workers=os.cpu_count()))
+    future_resps = [session.get(url, timeout=timeout) for url in urls]
     resopones = [future.result() for future in future_resps]
     for resp in resopones:
+        resp.encoding = encoding
         html = clean_html(resp.text)
         news = NewsDataProcessor(resp.url, html)
         output = news.output()

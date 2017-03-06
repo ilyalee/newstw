@@ -19,7 +19,7 @@ def fetch_news(url, encoding='utf-8'):
 
     return output
 
-def fetch_news_all(urls, encoding='utf-8', timeout=10):
+def fetch_news_all(urls, encoding='utf-8', timeout=30):
     if isinstance(urls, list):
         return fetch_news_all_fast(urls, encoding, timeout)
 

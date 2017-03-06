@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import requests
-import grequests
+import os
 from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawler_utils import clean_html
+from concurrent.futures import ThreadPoolExecutor
+from requests_futures.sessions import FuturesSession
 
 def fetch_news(url, encoding='utf-8'):
     output = {}
@@ -17,27 +19,49 @@ def fetch_news(url, encoding='utf-8'):
 
     return output
 
-def fetch_news_all(urls, encoding='utf-8'):
+def fetch_news_all(urls, encoding='utf-8', timeout=10):
+    if isinstance(urls, list):
+        return fetch_news_all_fast(urls, encoding, timeout)
+
+def fetch_news_all_fast(urls, encoding, timeout):
+    def _cb(sess, resp, encoding):
+        resp.encoding = encoding
+
     collect = []
     resopones = []
-    if isinstance(urls, list):
-        session=requests.session()
-        rs = (grequests.get(url, session=session, hooks={'response': _hook(encoding)}) for url in urls)
-        resopones = grequests.map(rs, size=20, exception_handler=exception_handler)
-        for r in resopones:
-            html = clean_html(r.text)
-            news = NewsDataProcessor(r.url, html)
-            output = news.output()
-            collect.append(output)
-        session.close()
+    session = FuturesSession(executor=ThreadPoolExecutor(max_workers=os.cpu_count()))
+    future_resps = [session.get(url, background_callback=lambda sess, resp: _cb(sess, resp, encoding), timeout=timeout) for url in urls]
+    resopones = [future.result() for future in future_resps]
+    for resp in resopones:
+        html = clean_html(resp.text)
+        news = NewsDataProcessor(resp.url, html)
+        output = news.output()
+        collect.append(output)
+    session.close()
 
     return collect
 
-def _hook(*encoding):
-    def hook(r, **kwargs):
-        r.encoding = encoding
-        return r
-    return hook
+def fetch_news_all_slow(urls, encoding, timeout):
+    def _hook(*encoding):
+        def hook(resp, **kwargs):
+            resp.encoding = encoding
+            return resp
+        return hook
+
+    import grequests
+    collect = []
+    resopones = []
+    session = requests.session()
+    rs = (grequests.get(url, session=session, timeout=timeout, hooks={'response': _hook(encoding)}) for url in urls)
+    resopones = grequests.map(rs, size=len(urls), exception_handler=exception_handler)
+    for resp in resopones:
+        html = clean_html(resp.text)
+        news = NewsDataProcessor(resp.url, html)
+        output = news.output()
+        collect.append(output)
+    session.close()
+
+    return collect
 
 def exception_handler(request, exception):
     if __debug__:

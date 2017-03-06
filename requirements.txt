@@ -2,10 +2,12 @@ aiofiles==0.3.0
 alembic==0.8.10
 appdirs==1.4.0
 arrow==0.10.0
+async-timeout==1.1.0
 attrs==16.3.0
 Automat==0.5.0
 beautifulsoup4==4.5.3
 cffi==1.9.1
+chardet==2.3.0
 click==6.7
 constantly==15.1.0
 cryptography==1.7.2
@@ -27,6 +29,7 @@ Jinja2==2.9.5
 lxml==3.7.2
 Mako==1.0.6
 MarkupSafe==0.23
+multidict==2.1.4
 newspaper3k==0.1.9
 nltk==3.2.2
 olefile==0.44
@@ -48,6 +51,7 @@ PyYAML==3.12
 queuelib==1.4.2
 requests==2.13.0
 requests-file==1.4.1
+requests-futures==0.9.7
 sanic==0.4.0
 service-identity==16.0.0
 six==1.10.0
@@ -57,4 +61,5 @@ Twisted==17.1.0
 ujson==1.35
 uvloop==0.8.0
 w3lib==1.17.0
+yarl==0.9.8
 zope.interface==4.3.3

@@ -3,6 +3,8 @@
 
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
+import settings
+
 
 class FbFeedFilter:
 
@@ -12,8 +14,9 @@ class FbFeedFilter:
         self.search = search
         self.num = int(num)
         self.graph = fb_init()
-        self.tzinfo = "Asia/Taipei"
-        self.fields = ["id", "type", "message", "created_time", "updated_time", "from", "permalink_url"]
+        self.tzinfo = settings.TIMEZONE
+        self.fields = ["id", "type", "message", "created_time",
+                       "updated_time", "from", "permalink_url"]
 
     def _download(self, encoding='utf-8'):
         items = []

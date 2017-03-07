@@ -30,12 +30,12 @@ def fetch_news_all_fast(urls, encoding, timeout):
     future_resps = [session.get(url, timeout=timeout) for url in urls]
     resopones = [future.result() for future in future_resps]
     for resp in resopones:
+        resp.connection.close()
         resp.encoding = encoding
         html = clean_html(resp.text)
         news = NewsDataProcessor(resp.url, html)
         output = news.output()
         collect.append(output)
-    session.close()
 
     return collect
 

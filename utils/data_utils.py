@@ -11,8 +11,21 @@ from urllib.parse import urlparse, parse_qs
 from dateutil import parser
 
 def dict_filter(keys, items):
+    if not isinstance(keys, list):
+        keys = [keys]
+    if not isinstance(items, list):
+        items = [items]
     return [{key: value for key, value in item.items() if key in keys} for item in items]
 
+def dict_blocker(keys, items):
+    if not isinstance(keys, list):
+        keys = [keys]
+    if not isinstance(items, list):
+        items = [items]
+    for key in keys:
+        for item in items:
+            del_key(key, True, item)
+    return items
 
 def data_filter(text, keys, items):
     if not text:
@@ -105,7 +118,7 @@ def del_key(key, ok, data):
 
 
 def localize_datetime(source, formats, tzinfo, data):
-    if isinstance(formats, str):
+    if not isinstance(formats, list):
         formats = [formats]
     for i in range(len(formats)):
         try:
@@ -121,10 +134,16 @@ def localize_datetime(source, formats, tzinfo, data):
 
 
 def time_corrector(key, items):
+    if not isinstance(items, list):
+        items = [items]
     # return [*map(partial(_update_time, key), items)]
     for item in items:
         if key in item:
-            item[key] = arrow.get(parser.parse(item[key])).format()
+            import datetime
+            if isinstance(item[key], datetime.date):
+                item[key] = arrow.get(item[key]).format()
+            elif isinstance(item[key], str):
+                item[key] = arrow.get(parser.parse(item[key])).format()
     return items
 
 

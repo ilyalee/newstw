@@ -15,3 +15,9 @@ DATABASE_TESTING_URL = os.environ.get("DATABASE_TESTING_URL")
 # Facebook Graph API
 FACEBOOK_ACCESS_TOKEN = os.environ.get("FACEBOOK_ACCESS_TOKEN")
 FACEBOOK_API_VERSION = os.environ.get("FACEBOOK_API_VERSION")
+
+# salt for Hashids
+SALT = os.environ.get("SALT")
+
+# time zone
+TIMEZONE = os.environ.get("TIMEZONE")

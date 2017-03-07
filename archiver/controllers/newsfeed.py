@@ -5,20 +5,31 @@ from db.providers.archive_provider import ArchiveProvider
 
 class NewsfeedController(HTTPMethodView):
 
+    ap = ArchiveProvider()
+
+    async def get(self, request, hashid):
+        """ show archive by hashid
+         Args:
+             request (str): contains a str of hashed id.
+        """
+        blockers = ['id', 'hash']
+        item = self.ap.load(hashid, blockers)
+
+        return json(item)
+
     async def post(self, request):
         """ create new archives for newsfeed from a feed url.
          Args:
              request (str): contains a str of feed url.
         """
-        ap = ArchiveProvider()
         url = request.json.get('url')
         items = fetch_feed(url, full_text=True)
         total = len(items)
 
         # checking duplicate items by hash
-        items = ap.find_distinct_items_by("hash", items)
+        items = self.ap.find_distinct_items_by("hash", items)
         # checking duplicate items by IntegrityError
-        acceptances = ap.save_all(items)
+        acceptances = self.ap.save_all(items)
         rejects = total - acceptances
 
         data = {

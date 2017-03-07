@@ -16,11 +16,10 @@ app = Sanic(__name__)
 app.blueprint(bp_v1)
 
 template = env.get_template('index.html')
+ap = ArchiveProvider()
 
 @app.route("/")
 async def index(request, methods=['GET']):
-    ap = ArchiveProvider()
-
     data = {}
     data['items'] = ap.load_report_all()
     return html(template.render(data=data))

@@ -149,18 +149,18 @@ def time_corrector(key, items):
                 item[key] = arrow.get(parser.parse(item[key])).format()
     return items
 
-def link_corrector(link, items=None):
-    if not items:
-        o = urlparse(link)
-        q = parse_qs(o.query)
-        if 'url' in q:
-            link = q['url']
-        link = link.replace('//', '/')
-        return link
-    else:
-        for item in items:
-            item[key] = link_corrector(item[key])
-        return items
+def normalize_link(link):
+    o = urlparse(link)
+    q = parse_qs(o.query)
+    if 'url' in q:
+        link = q['url']
+    link = link.replace('//', '/')
+    return link
+
+def link_corrector(key, items):
+    for item in items:
+        item[key] = normalize_link(item[key])
+    return items
 
 def clean_text(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')

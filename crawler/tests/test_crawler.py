@@ -17,7 +17,7 @@ class TestCrawler(unittest.TestCase):
         url['ltn'][0] = "http://news.ltn.com.tw/news/life/breakingnews/1979996"
 
         url['appledaily'] = [None] * 1
-        url['appledaily'][0] = "http://www.appledaily.com.tw/realtimenews/article/new/20170219/1059540/"
+        url['appledaily'][0] = "http://www.appledaily.com.tw/appledaily/article/headline/20170308/37575364//"
 
         url['chinatimes'] = [None] * 1
         url['chinatimes'][0] = "http://www.chinatimes.com/realtimenews/20170219000888-260408"

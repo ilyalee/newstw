@@ -34,4 +34,6 @@ class ArchiveProvider(BaseProvider):
     def load_report_today(self):
         start = arrow.now(self.tzinfo).floor('day').datetime
         end = arrow.now(self.tzinfo).ceil('day').datetime
-        return self.find_items_by_datetime_between("published", start, end)
+        items = self.find_items_by_datetime_between("published", start, end)
+        items = time_corrector("published", items)
+        return items

@@ -123,8 +123,7 @@ def del_key(key, ok, data):
 
 
 def datetime_encapsulator(datetime_str):
-    tzinfo = settings.TIMEZONE
-    return arrow.get(datetime_str).replace(tzinfo=tzinfo).datetime
+    return arrow.get(datetime_str).datetime
 
 
 def localize_datetime(source, formats, tzinfo, data):

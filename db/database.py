@@ -3,13 +3,28 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+creator = None
 # ref: https://github.com/seanpar203/sanic-starter
-db_url = settings.DATABASE_URL
 
 if settings.TESTING:
     db_url = settings.DATABASE_TESTING_URL
+else:
+    db_url = settings.DATABASE_URL
 
-engine = create_engine(db_url)
+sqlite_mode = db_url.startswith('sqlite://')
+
+if sqlite_mode:
+    import sqlite3
+    creator = lambda: sqlite3.connect('file::memory:?cache=shared')
+
+if creator:
+    engine = create_engine('sqlite://', creator=creator)
+else:
+    engine = create_engine(db_url)
+
+if sqlite_mode:
+    from db.models import Base
+    Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 
@@ -19,10 +34,6 @@ try:
 except:
     import sys
     sys.exit("[Connection Error: make sure the database is running.]")
-
-if db_url.startswith('sqlite://'):
-    from db.models import Base
-    Base.metadata.create_all(engine)
 
 
 @contextmanager

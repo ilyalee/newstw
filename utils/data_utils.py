@@ -6,9 +6,11 @@ import unicodedata
 import re
 import arrow
 import html
+import settings
 from hashlib import sha3_224
 from urllib.parse import urlparse, parse_qs
 from dateutil import parser
+
 
 def dict_filter(keys, items):
     if not isinstance(keys, list):
@@ -16,6 +18,7 @@ def dict_filter(keys, items):
     if not isinstance(items, list):
         items = [items]
     return [{key: value for key, value in item.items() if key in keys} for item in items]
+
 
 def dict_blocker(keys, items):
     if not isinstance(keys, list):
@@ -26,6 +29,7 @@ def dict_blocker(keys, items):
         for item in items:
             del_key(key, True, item)
     return items
+
 
 def data_filter(text, keys, items):
     if not text:
@@ -117,8 +121,10 @@ def del_key(key, ok, data):
     if ok:
         data.pop(key, None)
 
+
 def datetime_encapsulator(datetime_str):
     return arrow.get(datetime_str).datetime
+
 
 def localize_datetime(source, formats, tzinfo, data):
     if not isinstance(formats, list):
@@ -140,14 +146,16 @@ def time_corrector(key, items):
     if not isinstance(items, list):
         items = [items]
     # return [*map(partial(_update_time, key), items)]
+    tzinfo = settings.TIMEZONE
     for item in items:
         if key in item:
             import datetime
             if isinstance(item[key], datetime.date):
-                item[key] = arrow.get(item[key]).format()
+                item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
             elif isinstance(item[key], str):
-                item[key] = arrow.get(parser.parse(item[key])).format()
+                item[key] = arrow.get(parser.parse(item[key])).replace(tzinfo=tzinfo).format()
     return items
+
 
 def normalize_link(link):
     o = urlparse(link)
@@ -157,10 +165,12 @@ def normalize_link(link):
     link = link.replace('//', '/')
     return link
 
+
 def link_corrector(key, items):
     for item in items:
         item[key] = normalize_link(item[key])
     return items
+
 
 def clean_text(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')
@@ -181,6 +191,7 @@ def githash(data, hexdigest=False):
         return s.hexdigest()
     else:
         return s.digest()
+
 
 def fb_time_to_local(key, tzinfo, items):
     for item in (item for item in items if key in item):

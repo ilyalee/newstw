@@ -40,9 +40,9 @@ context['ltn'] = [
 ]
 context['appledaily'] = [
     {'save': "title", 'path': "header > hgroup > h1", 'ind': 0},
-    {'save': "summary", 'path': "#summary", 'ind': 0},
+    {'save': "summary", 'path': ["#summary", "div.articulum.trans"], 'ind': 0},
     {'save': "_rawtime", 'path': "time", 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': "YYYY年MM月DD日HH:mm"}
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY年MM月DD日HH:mm", "YYYY年MM月DD日"]}
 ]
 context['udn'] = [
     {'save': "title", 'path': "#story_body_content > h1", 'ind': 0},
@@ -108,3 +108,4 @@ trimtext['any'] = []
 trimtext['ltn'] = ['相關影音']
 trimtext['ctitv'] = ['※中天快點TV非讀不可:']
 trimtext['udn'] = ['分享facebook']
+trimtext['appledaily'] = ['有話要說 投稿「即時論壇」']

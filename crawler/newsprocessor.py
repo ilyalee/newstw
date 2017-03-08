@@ -3,7 +3,7 @@
 
 from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
-from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime
+from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime, link_corrector
 
 
 class NewsDataProcessor:
@@ -23,7 +23,7 @@ class NewsDataProcessor:
         return self.data
 
     def _process(self, html):
-        self.data['link'] = self.url
+        self.data['link'] = link_corrector(self.url)
         self.data['from'] = self.source
         if self.source == 'any':
             self.data['pass'] = False

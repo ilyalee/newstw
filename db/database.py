@@ -24,6 +24,8 @@ else:
 
 if sqlite_mode:
     from db.models import Base
+    if settings.RESTART:
+        Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)

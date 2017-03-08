@@ -107,8 +107,8 @@ def data_hasher(key, keys, items):
 
 
 def normalize_news(text):
-    return unicodedata.normalize("NFKD", text)
-
+    #return unicodedata.normalize("NFD", text)
+    return text
 
 def trim_data_val(key, trimtext, data):
     if isinstance(trimtext, str) and key in data:

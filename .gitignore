@@ -96,4 +96,4 @@ ENV/
 # alembic
 prod.ini
 dev.ini
-/alembic/versions/
+/alembic/versions/*.py

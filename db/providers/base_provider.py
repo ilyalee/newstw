@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.utils.db_utils import load_as_objs, decode_hashid
+from db.utils.db_utils import load_as_objs, decode_hashid, encode_hashid_list
 from sqlalchemy import exc, desc
 
 
@@ -16,10 +16,12 @@ class BaseProvider():
 
     @decode_hashid
     def load(self, id):
+        item = ""
         if not id or not isinstance(id, int):
-            return ""
+            return item
         with query_session() as session:
             result = session.query(self.cls).get(id)
+        if result:
             item = result.to_dict()
         return item
 
@@ -54,12 +56,14 @@ class BaseProvider():
 
     def save_all(self, items):
         objs = self.reload(items)
-        acceptances = len(objs)
+        ids = []
         with scoped_session() as session:
             for obj in objs:
                 try:
                     with session.begin_nested():
                         session.add(obj)
+                        session.flush()
+                        ids.append(obj.id)
                 except exc.IntegrityError:
-                    acceptances = acceptances - 1
-        return acceptances
+                    pass
+        return encode_hashid_list(ids)

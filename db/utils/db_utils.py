@@ -24,3 +24,7 @@ def encode_hashid(func):
         result = func(*args, **kargs)
         return result
     return wrapper
+
+def encode_hashid_list(ids):
+    hashids = Hashids(salt=settings.SALT, min_length=5)
+    return [hashids.encode(id) for id in ids]

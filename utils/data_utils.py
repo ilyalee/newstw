@@ -113,6 +113,8 @@ def trim_data_val(key, trimtext, data):
 
 
 def del_key(key, ok, data):
+    if not isinstance(data, dict):
+        return
     if ok:
         data.pop(key, None)
 

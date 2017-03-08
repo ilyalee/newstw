@@ -29,13 +29,14 @@ class NewsfeedController(HTTPMethodView):
         # checking duplicate items by hash
         items = self.ap.find_distinct_items_by("hash", items)
         # checking duplicate items by IntegrityError
-        acceptances = self.ap.save_all(items)
+        ids = self.ap.save_all(items)
+        acceptances = len(ids)
         rejects = total - acceptances
 
         data = {
             'acceptances': acceptances,
             'rejects': rejects,
-            'items': items,
+            'items': ids,
             'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
         }
 

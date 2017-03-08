@@ -20,7 +20,7 @@ except:
     import sys
     sys.exit("[Connection Error: make sure the database is running.]")
 
-if settings.TESTING:
+if db_url.startswith('sqlite://'):
     from db.models import Base
     Base.metadata.create_all(engine)
 

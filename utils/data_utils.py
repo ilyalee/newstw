@@ -66,8 +66,7 @@ def data_kv_updater(key, from_key, fn, go, items):
         targets = dict_filter([from_key], items)
         for i in range(len(targets)):
             obj = fn(targets[i][from_key])
-            if key in obj:
-                items[i][key] = obj[key]
+            items[i][key] = obj[key]
     return items
 
 
@@ -118,6 +117,8 @@ def del_key(key, ok, data):
     if ok:
         data.pop(key, None)
 
+def datetime_encapsulator(datetime_str):
+    return arrow.get(datetime_str).datetime
 
 def localize_datetime(source, formats, tzinfo, data):
     if not isinstance(formats, list):
@@ -132,7 +133,7 @@ def localize_datetime(source, formats, tzinfo, data):
                     data['debug'] = err
                 return ''
             else:
-                continue
+                pass
 
 
 def time_corrector(key, items):

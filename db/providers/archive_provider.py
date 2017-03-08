@@ -8,6 +8,7 @@ from db.providers.base_provider import BaseProvider
 import arrow
 import settings
 from utils.data_utils import dict_blocker, time_corrector
+from db.utils.db_utils import sqlite_datetime_compatibility
 
 class ArchiveProvider(BaseProvider):
 
@@ -21,6 +22,10 @@ class ArchiveProvider(BaseProvider):
         item = time_corrector("published", item)
         item = time_corrector("updated", item)
         return item[0]
+
+    @sqlite_datetime_compatibility(['published'])
+    def save_all(self, items):
+        return super().save_all(items)
 
     def load_report_all(self):
         return self.find_all(orderby="published")

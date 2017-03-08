@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.utils.db_utils import load_as_objs, decode_hashid, encode_hashid_list
+from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list
 from sqlalchemy import exc, desc
-
+import settings
 
 class BaseProvider():
 
@@ -14,7 +14,7 @@ class BaseProvider():
     def reload(self, items):
         return load_as_objs(self.cls, items)
 
-    @decode_hashid
+    @decoded_hashid
     def load(self, id):
         item = ""
         if not id or not isinstance(id, int):
@@ -64,6 +64,7 @@ class BaseProvider():
                         session.add(obj)
                         session.flush()
                         ids.append(obj.id)
-                except exc.IntegrityError:
-                    pass
+                except exc.IntegrityError as err:
+                    if __debug__ and not settings.TESTING: print(err)
+
         return encode_hashid_list(ids)

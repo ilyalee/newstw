@@ -25,12 +25,12 @@ class BaseProvider():
             item = result.to_dict()
         return item
 
-    def find_all(self, orderby):
+    def find_all(self, orderby, limit=None):
         items = []
         if not orderby:
             return items
         with query_session() as session:
-            result_set = session.query(self.cls).order_by(desc(getattr(self.cls, orderby))).all()
+            result_set = session.query(self.cls).order_by(desc(getattr(self.cls, orderby))).limit(limit).all()
             items = [item.to_dict() for item in result_set]
         return items
 

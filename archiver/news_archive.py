@@ -24,5 +24,5 @@ ap = ArchiveProvider()
 @app.route("/")
 async def index(request, methods=['GET']):
     data = {}
-    data['items'] = ap.load_report_all()
+    data['items'] = ap.load_report_all(limit=50)
     return html(template.render(data=data))

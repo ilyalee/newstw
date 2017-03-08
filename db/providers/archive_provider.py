@@ -26,8 +26,8 @@ class ArchiveProvider(BaseProvider):
     def save_all(self, items):
         return super().save_all(items)
 
-    def load_report_all(self):
-        items = self.find_all(orderby="published")
+    def load_report_all(self, limit=None):
+        items = self.find_all(orderby="published", limit=limit)
         items = time_corrector("published", items)
         return items
 

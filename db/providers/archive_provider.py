@@ -19,16 +19,17 @@ class ArchiveProvider(BaseProvider):
     def load(self, id, blockers=[]):
         item = super().load(id)
         item = dict_blocker(blockers, item)
-        item = time_corrector("published", item)
-        item = time_corrector("updated", item)
-        return item[0]
+        (item,) = time_corrector("published", item)
+        return item
 
     @sqlite_datetime_compatibility(['published'])
     def save_all(self, items):
         return super().save_all(items)
 
     def load_report_all(self):
-        return self.find_all(orderby="published")
+        items = self.find_all(orderby="published")
+        items = time_corrector("published", items)
+        return items
 
     def load_report_today(self):
         start = arrow.now(self.tzinfo).floor('day').datetime

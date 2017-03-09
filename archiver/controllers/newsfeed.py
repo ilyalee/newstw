@@ -4,7 +4,7 @@ from newsfeed.utils.newsfeed_helper import fetch_feed
 from db.providers.archive_provider import ArchiveProvider
 
 class NewsfeedController(HTTPMethodView):
-
+    
     ap = ArchiveProvider()
 
     async def get(self, request, hashid):

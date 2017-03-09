@@ -162,7 +162,8 @@ def normalize_link(link):
     q = parse_qs(o.query)
     if 'url' in q:
         link = q['url']
-    link = link.replace('//', '/')
+    while link.endswith('//'):
+        link = re.sub('//$', '/', link)
     return link
 
 

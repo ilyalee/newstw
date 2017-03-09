@@ -39,6 +39,7 @@ def data_filter(text, keys, items):
     if isinstance(keys, str):
         keys = [keys]
     pat = re.compile(text, re.UNICODE)
+    
     seen = set()
     for i in range(len(items)):
         for key in keys:
@@ -180,6 +181,7 @@ def clean_text(text):
     # remove all newlines
     text = re.sub(r"\n", "", text)
     text = text.strip(' ')
+    text = text.replace("\u3000", " ")
     return text
 
 

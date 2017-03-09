@@ -4,7 +4,7 @@
 from sanic import Sanic
 from sanic.response import json
 from newsfeed.utils.newsfeed_helper import flag
-from newsfeed.utils.newsfeed_helper import fetch_feed
+from newsfeed.filter import NewsFeedFilter
 
 app = Sanic(__name__)
 
@@ -17,6 +17,5 @@ async def index(request, methods=['GET']):
 
     include_text = request.args.get('include')
     full_text = flag(request.args.get('fulltext', False))
-    feed = fetch_feed(url, include_text, full_text=full_text)
-
+    feed = NewsFeedFilter(url, include_text, full_text).output()
     return json(feed, ensure_ascii=False)

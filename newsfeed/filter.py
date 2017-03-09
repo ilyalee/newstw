@@ -39,7 +39,7 @@ class NewsFeedFilter:
         items = {}
         rawdata = feedparser.parse(resp.text)
         items = rawdata['entries']
-        items = self.postprocess(items)
+        items = await self.as_postprocess(items)
         return items
 
     def _data_prepare(self, items):
@@ -66,6 +66,13 @@ class NewsFeedFilter:
         items = self._data_prepare(items)
         items = self._data_filter(items)
         return self._data_produce(items)
+
+    async def as_postprocess(self, items):
+        loop = asyncio.get_event_loop()
+        items = await loop.run_in_executor(None, functools.partial(self._data_prepare, items))
+        items = await loop.run_in_executor(None, functools.partial(self._data_filter, items))
+        items = await loop.run_in_executor(None, functools.partial(self._data_produce, items))
+        return items
 
     def output(self):
         return self._download()

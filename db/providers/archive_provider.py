@@ -12,6 +12,7 @@ from utils.data_utils import dict_blocker, time_corrector
 from db.utils.db_utils import sqlite_datetime_compatibility
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
+from utils.data_utils import dict_blocker
 
 class ArchiveProvider(BaseProvider):
 
@@ -32,6 +33,7 @@ class ArchiveProvider(BaseProvider):
 
     @sqlite_datetime_compatibility(['published'])
     def save_all(self, items):
+        items = dict_blocker(["keyword"], items)
         return super().save_all(items)
 
     async def as_save_all(self, items):

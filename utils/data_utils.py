@@ -179,12 +179,12 @@ def clean_text(text):
     pat = re.compile(r'(<!--.*?-->|<[^>]*>)')
     text = pat.sub('', text)
     text = html.escape(text)
+    pat = re.compile('<.*?>')
+    text = pat.sub('', text)
     # remove all newlines
     text = re.sub(r"\n", "", text)
     text = text.strip(' ')
     text = text.replace("\u3000", " ")
-    text = text.replace("<b>", "")
-    text = text.replace("</b>", "")
     return text
 
 

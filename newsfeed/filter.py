@@ -52,6 +52,7 @@ class NewsFeedFilter:
         items = time_corrector("published", items)
         items = time_corrector("updated", items)
         items = link_corrector("link", items)
+        items = data_cleaner("title", items)
         items = data_cleaner("summary", items)
         items = data_filter(self.include_text, ["summary", "title"], items)
         return items

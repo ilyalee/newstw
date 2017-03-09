@@ -15,7 +15,7 @@ sqlite_mode = db_url.startswith('sqlite://')
 
 if sqlite_mode:
     import sqlite3
-    creator = lambda: sqlite3.connect('file::memory:?cache=shared', uri=True)
+    creator = lambda: sqlite3.connect('file::memory:?cache=shared', uri=True, check_same_thread=False)
 
 if creator:
     engine = create_engine('sqlite://', creator=creator)

@@ -183,6 +183,8 @@ def clean_text(text):
     text = re.sub(r"\n", "", text)
     text = text.strip(' ')
     text = text.replace("\u3000", " ")
+    text = text.replace("<b>", "")
+    text = text.replace("</b>", "")
     return text
 
 

@@ -4,6 +4,8 @@
 import os
 from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawler_utils import clean_html
+import asyncio
+import functools
 
 def fetch_news(url, encoding='utf-8', timeout=60):
     import requests
@@ -13,10 +15,20 @@ def fetch_news(url, encoding='utf-8', timeout=60):
     r.encoding = encoding
     session.close()
     html = clean_html(r.text)
-    news = NewsDataProcessor(r.url, html)
-    output = news.output()
+    return NewsDataProcessor(r.url, html).output()
 
-    return output
+async def as_fetch_news(url, encoding='utf-8', timeout=60):
+    import requests
+    from concurrent.futures import ProcessPoolExecutor
+
+    executor = ProcessPoolExecutor(os.cpu_count())
+    loop = asyncio.get_event_loop()
+    session = requests.Session()
+    resp = await loop.run_in_executor(executor, functools.partial(session.get, url, timeout=timeout))
+    resp.encoding = encoding
+    session.close()
+    html = clean_html(resp.text)
+    return await NewsDataProcessor(resp.url, html).as_output()
 
 def fetch_news_all(urls, encoding='utf-8', timeout=60):
     if isinstance(urls, list):

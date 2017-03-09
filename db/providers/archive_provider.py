@@ -8,10 +8,11 @@ from db.providers.base_provider import BaseProvider
 import arrow
 import settings
 import functools
+import os
 from utils.data_utils import dict_blocker, time_corrector
 from db.utils.db_utils import sqlite_datetime_compatibility
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from utils.data_utils import dict_blocker
 
 class ArchiveProvider(BaseProvider):
@@ -28,7 +29,8 @@ class ArchiveProvider(BaseProvider):
 
     async def as_load(self, id, blockers=[]):
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, functools.partial(self.load, id, blockers))
+        executor = ThreadPoolExecutor(os.cpu_count())
+        future = loop.run_in_executor(executor, functools.partial(self.load, id, blockers))
         return await asyncio.ensure_future(future)
 
     @sqlite_datetime_compatibility(['published'])
@@ -38,7 +40,8 @@ class ArchiveProvider(BaseProvider):
 
     async def as_save_all(self, items):
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, functools.partial(self.save_all, items))
+        executor = ThreadPoolExecutor(os.cpu_count())
+        future = loop.run_in_executor(executor, functools.partial(self.save_all, items))
         return await asyncio.ensure_future(future)
 
     def load_report_all(self, limit=None):
@@ -48,7 +51,8 @@ class ArchiveProvider(BaseProvider):
 
     async def as_load_report_all(self, limit=None):
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, functools.partial(self.load_report_all, limit))
+        executor = ThreadPoolExecutor(os.cpu_count())
+        future = loop.run_in_executor(executor, functools.partial(self.load_report_all, limit))
         return await asyncio.ensure_future(future)
 
     def load_report_today(self):
@@ -60,5 +64,6 @@ class ArchiveProvider(BaseProvider):
 
     async def as_load_report_today(self):
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, self.load_report_today)
+        executor = ThreadPoolExecutor(os.cpu_count())
+        future = loop.run_in_executor(executor, self.load_report_today)
         return await asyncio.ensure_future(future)

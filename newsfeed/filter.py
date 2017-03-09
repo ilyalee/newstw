@@ -10,7 +10,7 @@ from utils.data_utils import dict_filter, time_corrector, link_corrector, data_c
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
 from newsfeed.utils.newsfeed_helper import load_remote_news_date
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 class NewsFeedFilter:
 
@@ -73,9 +73,10 @@ class NewsFeedFilter:
 
     async def as_postprocess(self, items):
         loop = asyncio.get_event_loop()
-        items = await loop.run_in_executor(None, functools.partial(self._data_prepare, items))
-        items = await loop.run_in_executor(None, functools.partial(self._data_filter, items))
-        items = await loop.run_in_executor(None, functools.partial(self._data_produce, items))
+        executor = ProcessPoolExecutor(os.cpu_count())
+        items = await loop.run_in_executor(executor, functools.partial(self._data_prepare, items))
+        items = await loop.run_in_executor(executor, functools.partial(self._data_filter, items))
+        items = await loop.run_in_executor(executor, functools.partial(self._data_produce, items))
         return items
 
     def output(self):

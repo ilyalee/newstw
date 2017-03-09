@@ -4,6 +4,10 @@
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 import settings
+import os
+import asyncio
+import functools
+from concurrent.futures import ProcessPoolExecutor
 
 
 class FbFeedFilter:
@@ -25,16 +29,16 @@ class FbFeedFilter:
         if group:
             items = load_pages(self.graph, self.fbid, "feed", self.num,
                                search=self.search, date_format="U", fields=fields)
-        return self._data_prepare(items)
+        return items
 
     def _data_prepare(self, items):
         items = fb_time_to_local("created_time", self.tzinfo, items)
         items = fb_time_to_local("updated_time", self.tzinfo, items)
-        return self._data_filter(items)
+        return items
 
     def _data_filter(self, items):
         items = data_filter(self.include_text, ["message", "story"], items)
-        return self._data_produce(items)
+        return items
 
     def _data_produce(self, items):
         items = data_cleaner("message", items)
@@ -44,4 +48,18 @@ class FbFeedFilter:
         return items
 
     def output(self):
-        return self._download()
+        items = self._download()
+        items = self._data_prepare(items)
+        items = self._data_filter(items)
+        items = self._data_produce(items)
+        return items
+
+    async def as_output(self):
+        items = []
+        loop = asyncio.get_event_loop()
+        executor = ProcessPoolExecutor(os.cpu_count())
+        items = await loop.run_in_executor(executor, self._download)
+        items = await loop.run_in_executor(executor, functools.partial(self._data_prepare, items))
+        items = await loop.run_in_executor(executor, functools.partial(self._data_filter, items))
+        items = await loop.run_in_executor(executor, functools.partial(self._data_produce, items))
+        return items

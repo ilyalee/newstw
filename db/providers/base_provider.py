@@ -7,7 +7,8 @@ from sqlalchemy import exc, desc
 import settings
 import asyncio
 import functools
-
+import os
+from concurrent.futures import ProcessPoolExecutor
 
 class BaseProvider():
 
@@ -59,7 +60,8 @@ class BaseProvider():
 
     async def as_find_distinct_items_by(self, name, items):
         loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, functools.partial(self.find_distinct_items_by, name, items))
+        executor = ProcessPoolExecutor(os.cpu_count())
+        future = loop.run_in_executor(executor, functools.partial(self.find_distinct_items_by, name, items))
         return await asyncio.ensure_future(future)
 
     def save_all(self, items):

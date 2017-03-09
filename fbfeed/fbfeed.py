@@ -3,7 +3,7 @@
 
 from sanic import Sanic
 from sanic.response import json
-from fbfeed.utils.fbfeed_helper import flag, fetch_feed
+from fbfeed.utils.fbfeed_helper import flag, as_fetch_feed
 
 app = Sanic(__name__)
 
@@ -16,6 +16,6 @@ async def index(request, methods=['GET']):
     num = request.args.get("num", 1)
     include_text = request.args.get("include")
     search = flag(request.args.get("search", False))
-    feed = fetch_feed(fbid, num, include_text, search)
+    feed = await as_fetch_feed(fbid, num, include_text, search)
 
     return json(feed, ensure_ascii=False)

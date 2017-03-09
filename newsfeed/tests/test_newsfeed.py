@@ -4,12 +4,12 @@
 from newsfeed.filter import NewsFeedFilter
 from utils.pprint_helper import pprint_color
 import unittest
-
+import warnings
 
 class TestNewsFeed(unittest.TestCase):
 
     def setUp(self):
-        pass
+        warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
     def test_fetch_feed(self):
         url = "http://www.chinatimes.com/rss/realtimenews.xml"
@@ -36,7 +36,7 @@ class TestNewsFeed(unittest.TestCase):
             self.assertNotEqual(item['source'], "any")
 
     def tearDown(self):
-        pass
+        warnings.filterwarnings(action="default", message="unclosed", category=ResourceWarning)
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

@@ -23,7 +23,7 @@ class NewsfeedController(HTTPMethodView):
         """
         url = request.json.get('url')
         include_text = request.json.get('include')
-        feed = NewsFeedFilter(url, include_text, full_text=False)
+        feed = NewsFeedFilter(url, include_text, full_text=True)
         items = await feed.as_output()
         total = len(items)
 

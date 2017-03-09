@@ -79,15 +79,28 @@ def data_kv_updater(key, from_key, fn, go, items):
     return items
 
 
-def data_kv_updater_all(key, from_key, fn, go, items):
+def data_kv_updater_all_load(from_key, fn, go, items):
+    remote_items = []
     if go:
         targets = dict_filter([from_key], items)
         sources = [target[from_key] for target in targets if from_key in target]
-        objs = fn(sources)
-        for i in range(len(objs)):
-            new_val = objs[i][key]
+        remote_items = fn(sources)
+    return remote_items
+
+
+def data_kv_updater_all_by_remote_items(remote_items, key, from_key, fn, go, items):
+    if go:
+        for i in range(len(remote_items)):
+            new_val = remote_items[i][key]
             if new_val:
                 items[i][key] = new_val
+    return items
+
+
+def data_kv_updater_all(key, from_key, fn, go, items):
+    if go:
+        remote_items = data_kv_updater_all_load(from_key, fn, go, items)
+        items = data_kv_updater_all_by_remote_items(remote_items, key, from_key, fn, go, items)
     return items
 
 

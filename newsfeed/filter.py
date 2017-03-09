@@ -6,9 +6,10 @@ import requests
 import os
 import asyncio
 import functools
-from utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater, data_kv_updater_all, data_hasher, data_remover
+from utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater, data_kv_updater_all_load, data_kv_updater_all_by_remote_items, data_hasher, data_remover
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
+from newsfeed.utils.newsfeed_helper import load_remote_news_date
 from concurrent.futures import ThreadPoolExecutor
 
 class NewsFeedFilter:
@@ -42,12 +43,16 @@ class NewsFeedFilter:
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']
         items = dict_filter(keys, items)
         items = data_updater("summary", "content", lambda content: content[0]['value'],  all("content" in item for item in items), items)
+
         items = time_corrector("published", items)
         items = time_corrector("updated", items)
         items = link_corrector("link", items)
         items = data_cleaner("title", items)
         items = data_cleaner("summary", items)
-        items = data_kv_updater_all("summary", "link", fetch_news_all, self.full_text, items)
+
+        remote_items = data_kv_updater_all_load("link", fetch_news_all, self.full_text, items)
+        items = data_kv_updater_all_by_remote_items(remote_items, "summary", "link", fetch_news_all, self.full_text, items)
+        items = data_kv_updater_all_by_remote_items(remote_items, "published", "published", load_remote_news_date, self.full_text, items)
         return items
 
     def _data_filter(self, items):

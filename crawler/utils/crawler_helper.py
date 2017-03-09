@@ -24,21 +24,21 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60):
 
 def fetch_news_all_v2(urls, encoding, timeout):
     import requests
-    from concurrent.futures import ThreadPoolExecutor
+    from concurrent.futures import ProcessPoolExecutor
     from requests_futures.sessions import FuturesSession
 
     collect = []
     resopones = []
-    session = FuturesSession(session=requests.Session(), executor=ThreadPoolExecutor(max_workers=os.cpu_count()))
+    session = FuturesSession(session=requests.Session(), executor=ProcessPoolExecutor(max_workers=os.cpu_count()))
     future_resps = [session.get(url, timeout=timeout) for url in urls]
     resopones = [future.result() for future in future_resps]
     for resp in resopones:
-        resp.connection.close()
         resp.encoding = encoding
         html = clean_html(resp.text)
         news = NewsDataProcessor(resp.url, html)
         output = news.output()
         collect.append(output)
+    session.close()
 
     return collect
 

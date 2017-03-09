@@ -57,6 +57,10 @@ def data_inserter(val, key, items):
     return items
 
 
+def data_remover(val, key, items):
+    return [item for item in items if key in item and item[key] != val]
+
+
 def data_updater(key, from_key, fn, go, items):
     if go:
         targets = dict_filter([from_key], items)

@@ -6,7 +6,7 @@ import requests
 import os
 import asyncio
 import functools
-from utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater, data_kv_updater_all, data_hasher
+from utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater, data_kv_updater_all, data_hasher, data_remover
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
 from concurrent.futures import ThreadPoolExecutor
@@ -57,6 +57,7 @@ class NewsFeedFilter:
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
         items = data_updater("source", "link", detect_news_source, True, items)
+        items = data_remover("any", "source", items)
         items = data_hasher("hash", ["title", "published", "source"], items)
         return items
 

@@ -11,7 +11,7 @@ class NewsDataProcessor:
     def __init__(self, url, html):
         self.data = {}
         self.soup = BeautifulSoup(html, "html.parser")
-        self.url = url
+        self.url = normalize_link(url)
         self.html = html
         self.source = detect_news_source(self.url)
         self.context = load_context(self.source)
@@ -23,7 +23,7 @@ class NewsDataProcessor:
         return self.data
 
     def _process(self, html):
-        self.data['link'] = normalize_link(self.url)
+        self.data['link'] = self.url
         self.data['from'] = self.source
         if self.source == 'any':
             self.data['pass'] = False

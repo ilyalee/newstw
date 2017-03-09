@@ -23,10 +23,8 @@ class NewsFeedFilter:
         resp = session.get(self.url, timeout=timeout)
         resp.connection.close()
         resp.encoding = encoding
-        items = {}
         rawdata = feedparser.parse(resp.text)
-        items = rawdata['entries']
-        items = self.postprocess(items)
+        items = self.postprocess(rawdata['entries'])
         return items
 
     async def _as_download(self, encoding='utf-8', timeout=30):
@@ -36,24 +34,23 @@ class NewsFeedFilter:
         resp = await loop.run_in_executor(executor, functools.partial(session.get, self.url, timeout=timeout))
         resp.connection.close()
         resp.encoding = encoding
-        items = {}
         rawdata = feedparser.parse(resp.text)
-        items = rawdata['entries']
-        items = await self.as_postprocess(items)
+        items = await self.as_postprocess(rawdata['entries'])
         return items
 
     def _data_prepare(self, items):
-        items = data_kv_updater_all("summary", "link", fetch_news_all, self.full_text, items)
-        return items
-
-    def _data_filter(self, items):
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']
         items = dict_filter(keys, items)
+        items = data_updater("summary", "content", lambda content: content[0]['value'],  all("content" in item for item in items), items)
         items = time_corrector("published", items)
         items = time_corrector("updated", items)
         items = link_corrector("link", items)
         items = data_cleaner("title", items)
         items = data_cleaner("summary", items)
+        items = data_kv_updater_all("summary", "link", fetch_news_all, self.full_text, items)
+        return items
+
+    def _data_filter(self, items):
         items = data_filter(self.include_text, ["summary", "title"], items)
         return items
 

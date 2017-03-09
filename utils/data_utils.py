@@ -81,7 +81,9 @@ def data_kv_updater_all(key, from_key, fn, go, items):
         sources = [target[from_key] for target in targets if from_key in target]
         objs = fn(sources)
         for i in range(len(objs)):
-            items[i][key] = objs[i][key]
+            new_val = objs[i][key]
+            if new_val:
+                items[i][key] = new_val
     return items
 
 
@@ -185,8 +187,8 @@ def clean_text(text):
     text = re.sub(r"\n", "", text)
     text = text.strip(' ')
     text = text.replace("\u3000", " ")
+    text = text.replace("&amp;nbsp;", "")
     return text
-
 
 # ref: http://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git
 def githash(data, hexdigest=False):

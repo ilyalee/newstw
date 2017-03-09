@@ -5,19 +5,20 @@ import os
 from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawler_utils import clean_html
 
-def fetch_news(url, encoding='utf-8'):
+def fetch_news(url, encoding='utf-8', timeout=60):
     import requests
+    session = requests.session()
     output = {}
-    r = requests.get(url)
+    r = session.get(url=url, timeout=timeout)
     r.encoding = encoding
-    r.close()
+    session.close()
     html = clean_html(r.text)
     news = NewsDataProcessor(r.url, html)
     output = news.output()
 
     return output
 
-def fetch_news_all(urls, encoding='utf-8', timeout=30):
+def fetch_news_all(urls, encoding='utf-8', timeout=60):
     if isinstance(urls, list):
         return fetch_news_all_v2(urls, encoding, timeout)
 

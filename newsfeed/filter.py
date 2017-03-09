@@ -22,7 +22,7 @@ class NewsFeedFilter:
     def _download(self, encoding='utf-8', timeout=30):
         session = requests.Session()
         resp = session.get(self.url, timeout=timeout)
-        resp.connection.close()
+        session.close()
         resp.encoding = encoding
         rawdata = feedparser.parse(resp.text)
         items = self.postprocess(rawdata['entries'])
@@ -33,7 +33,7 @@ class NewsFeedFilter:
         loop = asyncio.get_event_loop()
         session = requests.Session()
         resp = await loop.run_in_executor(executor, functools.partial(session.get, self.url, timeout=timeout))
-        resp.connection.close()
+        session.close()
         resp.encoding = encoding
         rawdata = feedparser.parse(resp.text)
         items = await self.as_postprocess(rawdata['entries'])

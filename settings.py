@@ -8,7 +8,7 @@ dotenv_path = join(dirname(__file__), filename)
 
 load_dotenv(dotenv_path)
 TESTING = os.environ.get("TESTING")
-RESTART = os.environ.get("RESTART")
+
 # Local database url
 DATABASE_URL = os.environ.get("DATABASE_URL")
 DATABASE_TESTING_URL = os.environ.get("DATABASE_TESTING_URL")

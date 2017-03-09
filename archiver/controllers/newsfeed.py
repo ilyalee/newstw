@@ -37,6 +37,7 @@ class NewsfeedController(HTTPMethodView):
 
         data = {
             'url': url,
+            'include': include_text,
             'acceptances': acceptances,
             'rejects': rejects,
             'items': ids,

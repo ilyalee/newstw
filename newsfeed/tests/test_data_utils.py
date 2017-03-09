@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from newsfeed.utils.newsfeed_helper import fetch_feed
 from utils.data_utils import data_filter, data_cleaner, data_hasher, githash
 from utils.pprint_helper import pprint_color
 

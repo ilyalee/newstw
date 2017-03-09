@@ -1,7 +1,7 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
-from newsfeed.utils.newsfeed_helper import fetch_feed
 from db.providers.archive_provider import ArchiveProvider
+from newsfeed.filter import NewsFeedFilter
 
 class NewsfeedController(HTTPMethodView):
 
@@ -12,8 +12,7 @@ class NewsfeedController(HTTPMethodView):
          Args:
              request (str): contains a str of hashed id.
         """
-        blockers = ['id', 'hash']
-        item = self.ap.load(hashid, blockers)
+        item = await self.ap.as_load(hashid, ['id', 'hash'])
 
         return json(item)
 
@@ -23,18 +22,20 @@ class NewsfeedController(HTTPMethodView):
              request (str): contains a str of feed url.
         """
         url = request.json.get('url')
-        items = fetch_feed(url, full_text=False)
+        feed = NewsFeedFilter(url, full_text=False)
+        items = await feed.as_output()
         total = len(items)
 
         # checking duplicate items by hash
-        items = self.ap.find_distinct_items_by("hash", items)
-        fetch_feed.full_text = True
-        items = fetch_feed.postprocess(items)
-        ids = self.ap.save_all(items)
+        items = await self.ap.as_find_distinct_items_by("hash", items)
+        feed.full_text = True
+        items = feed.postprocess(items)
+        ids = await self.ap.as_save_all(items)
         acceptances = len(ids)
         rejects = total - acceptances
 
         data = {
+            'url': url,
             'acceptances': acceptances,
             'rejects': rejects,
             'items': ids,

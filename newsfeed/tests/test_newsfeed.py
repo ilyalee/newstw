@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from newsfeed.utils.newsfeed_helper import fetch_feed
+from newsfeed.filter import NewsFeedFilter
 from utils.pprint_helper import pprint_color
 import unittest
 
@@ -13,7 +13,7 @@ class TestNewsFeed(unittest.TestCase):
 
     def test_fetch_feed(self):
         url = "http://www.chinatimes.com/rss/realtimenews.xml"
-        feed = fetch_feed(url)
+        feed = NewsFeedFilter(url).output()
         self.assertIn("title", feed[0])
         self.assertIn("summary", feed[0])
         self.assertIn("published", feed[0])
@@ -21,10 +21,10 @@ class TestNewsFeed(unittest.TestCase):
         self.assertIn("hash", feed[0])
         self.assertIn("source", feed[0])
         self.assertNotIn("keyword", feed[0])
-        feed = fetch_feed(url, '', True)
+        feed = NewsFeedFilter(url, full_text=True).output()
         self.assertIn("summary", feed[0])
         #pprint_color(feed[0])
-        feed = fetch_feed(url, "台灣")
+        feed = NewsFeedFilter(url, "台灣").output()
         for item in feed:
             self.assertIn("title", item)
             self.assertIn("summary", item)

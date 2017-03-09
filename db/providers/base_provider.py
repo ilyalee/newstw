@@ -5,6 +5,9 @@ from db.database import scoped_session, query_session, Session
 from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list
 from sqlalchemy import exc, desc
 import settings
+import asyncio
+import functools
+
 
 class BaseProvider():
 
@@ -53,6 +56,11 @@ class BaseProvider():
             dups = [dup.to_dict() for dup in result_set]
             items = [item for item in items if item[name] not in dups]
         return items
+
+    async def as_find_distinct_items_by(self, name, items):
+        loop = asyncio.get_event_loop()
+        future = loop.run_in_executor(None, functools.partial(self.find_distinct_items_by, name, items))
+        return await asyncio.ensure_future(future)
 
     def save_all(self, items):
         objs = self.reload(items)

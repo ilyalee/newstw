@@ -8,6 +8,7 @@ from sanic.response import html
 from db.providers.archive_provider import ArchiveProvider
 from jinja2 import Environment, PackageLoader, select_autoescape
 from sanic.config import Config
+import asyncio
 
 Config.REQUEST_TIMEOUT = 300
 env = Environment(
@@ -24,5 +25,5 @@ ap = ArchiveProvider()
 @app.route("/")
 async def index(request, methods=['GET']):
     data = {}
-    data['items'] = ap.load_report_all(limit=50)
+    data['items'] = await ap.as_load_report_all(limit=50)
     return html(template.render(data=data))

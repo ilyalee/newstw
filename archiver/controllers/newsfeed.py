@@ -19,17 +19,18 @@ class NewsfeedController(HTTPMethodView):
     async def post(self, request):
         """ create new archives for newsfeed from a feed url.
          Args:
-             request (str): contains a str of feed url.
+             request (str): [url, include_text]
         """
         url = request.json.get('url')
-        feed = NewsFeedFilter(url, full_text=False)
+        include_text = request.json.get('include')
+        feed = NewsFeedFilter(url, include_text=include_text, full_text=False)
         items = await feed.as_output()
         total = len(items)
 
         # checking duplicate items by hash
         items = await self.ap.as_find_distinct_items_by("hash", items)
-        feed.full_text = True
-        items = feed.postprocess(items)
+        #feed.full_text = True
+        #items = feed.postprocess(items)
         ids = await self.ap.as_save_all(items)
         acceptances = len(ids)
         rejects = total - acceptances

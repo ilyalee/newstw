@@ -17,5 +17,5 @@ async def index(request, methods=['GET']):
 
     include_text = request.args.get('include')
     full_text = flag(request.args.get('fulltext', False))
-    feed = NewsFeedFilter(url, include_text, full_text).output()
+    feed = await NewsFeedFilter(url, include_text, full_text).as_output()
     return json(feed, ensure_ascii=False)

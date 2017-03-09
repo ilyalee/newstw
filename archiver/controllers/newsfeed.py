@@ -14,7 +14,7 @@ class NewsfeedController(HTTPMethodView):
         """
         item = await self.ap.as_load(hashid, ['id', 'hash'])
 
-        return json(item)
+        return json(item, ensure_ascii=False)
 
     async def post(self, request):
         """ create new archives for newsfeed from a feed url.
@@ -43,4 +43,4 @@ class NewsfeedController(HTTPMethodView):
             'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
         }
 
-        return json(data)
+        return json(data, ensure_ascii=False)

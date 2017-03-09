@@ -39,7 +39,7 @@ def data_filter(text, keys, items):
     if isinstance(keys, str):
         keys = [keys]
     pat = re.compile(text, re.UNICODE)
-    
+
     seen = set()
     for i in range(len(items)):
         for key in keys:
@@ -162,7 +162,8 @@ def normalize_link(link):
     o = urlparse(link)
     q = parse_qs(o.query)
     if 'url' in q:
-        link = q['url']
+        link = q['url'][0]
+
     while link.endswith('//'):
         link = re.sub('//$', '/', link)
     return link

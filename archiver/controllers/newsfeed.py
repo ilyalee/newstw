@@ -4,7 +4,7 @@ from newsfeed.utils.newsfeed_helper import fetch_feed
 from db.providers.archive_provider import ArchiveProvider
 
 class NewsfeedController(HTTPMethodView):
-    
+
     ap = ArchiveProvider()
 
     async def get(self, request, hashid):
@@ -23,11 +23,13 @@ class NewsfeedController(HTTPMethodView):
              request (str): contains a str of feed url.
         """
         url = request.json.get('url')
-        items = fetch_feed(url, full_text=True)
+        items = fetch_feed(url, full_text=False)
         total = len(items)
 
         # checking duplicate items by hash
         items = self.ap.find_distinct_items_by("hash", items)
+        fetch_feed.full_text = True
+        items = fetch_feed.postprocess(items)
         ids = self.ap.save_all(items)
         acceptances = len(ids)
         rejects = total - acceptances

@@ -22,12 +22,12 @@ class NewsFeedFilter:
         items = {}
         rawdata = feedparser.parse(resp.text)
         items = rawdata['entries']
-        items = self._data_prepare(items)
+        items = self.postprocess(items)
         return items
 
     def _data_prepare(self, items):
         items = data_kv_updater_all("summary", "link", fetch_news_all, self.full_text, items)
-        return self._data_filter(items)
+        return items
 
     def _data_filter(self, items):
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']
@@ -37,13 +37,18 @@ class NewsFeedFilter:
         items = link_corrector("link", items)
         items = data_cleaner("summary", items)
         items = data_filter(self.include_text, ["summary", "title"], items)
-        return self._data_produce(items)
+        return items
 
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
         items = data_updater("source", "link", detect_news_source, True, items)
         items = data_hasher("hash", ["title", "published", "source"], items)
         return items
+
+    def postprocess(self, items):
+        items = self._data_prepare(items)
+        items = self._data_filter(items)
+        return self._data_produce(items)
 
     def output(self):
         return self._download()

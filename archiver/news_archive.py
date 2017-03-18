@@ -8,6 +8,7 @@ from sanic.response import html
 from db.providers.archive_provider import ArchiveProvider
 from jinja2 import Environment, PackageLoader, select_autoescape
 from sanic.config import Config
+from utils.type_utils import sint
 
 Config.REQUEST_TIMEOUT = 300
 env = Environment(
@@ -24,8 +25,11 @@ ap = ArchiveProvider()
 @app.route("/")
 async def index(request, methods=['GET']):
     data = {}
-    page = request.args.get('page', 1)
-    limit = request.args.get('limit', 5)
+    page = 1
+    limit = 5
+    page = sint(request.args.get('page', page), page)
+    limit = sint(request.args.get('limit', limit), limit)
+
     #TODO: check numeric type and check numbers are positive
-    data['items'] = await ap.as_load_report_by_page(int(page), int(limit))
+    data['items'] = await ap.as_load_report_by_page(page, limit)
     return html(template.render(data=data))

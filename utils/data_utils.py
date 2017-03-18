@@ -41,12 +41,12 @@ def data_filter(text, keys, items):
     pat = re.compile(text, re.UNICODE)
 
     seen = set()
-    for i in range(len(items)):
+    for i, item in enumerate(items):
         for key in keys:
-            if key in items[i]:
-                found = re.search(pat, items[i][key])
+            if key in item:
+                found = re.search(pat, item[key])
                 if found and (i not in seen and not seen.add(i)):
-                    collect.append(items[i])
+                    collect.append(item)
     return collect
 
 
@@ -149,9 +149,9 @@ def datetime_encapsulator(datetime_str):
 def localize_datetime(source, formats, tzinfo, data):
     if not isinstance(formats, list):
         formats = [formats]
-    for i in range(len(formats)):
+    for i, format in enumerate(formats):
         try:
-            timetext = arrow.get(source, formats[i]).replace(tzinfo=tzinfo).format()
+            timetext = arrow.get(source, format).replace(tzinfo=tzinfo).format()
             return timetext
         except arrow.parser.ParserError as err:
             if i >= (len(formats) - 1):

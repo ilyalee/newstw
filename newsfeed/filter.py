@@ -10,7 +10,7 @@ from utils.data_utils import dict_filter, time_corrector, link_corrector, data_c
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
 from newsfeed.utils.newsfeed_helper import load_remote_news_date
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from db.utils.db_utils import as_run, as_run_pro
 
 class NewsFeedFilter:
 
@@ -29,10 +29,8 @@ class NewsFeedFilter:
         return items
 
     async def _as_download(self, encoding='utf-8', timeout=30):
-        executor = ThreadPoolExecutor(os.cpu_count())
-        loop = asyncio.get_event_loop()
         session = requests.Session()
-        resp = await loop.run_in_executor(executor, functools.partial(session.get, self.url, timeout=timeout))
+        resp = await as_run(session.get, self.url, timeout=timeout)
         session.close()
         resp.encoding = encoding
         rawdata = feedparser.parse(resp.text)
@@ -72,11 +70,9 @@ class NewsFeedFilter:
         return self._data_produce(items)
 
     async def as_postprocess(self, items):
-        loop = asyncio.get_event_loop()
-        executor = ProcessPoolExecutor(os.cpu_count())
-        items = await loop.run_in_executor(executor, functools.partial(self._data_prepare, items))
-        items = await loop.run_in_executor(executor, functools.partial(self._data_filter, items))
-        items = await loop.run_in_executor(executor, functools.partial(self._data_produce, items))
+        items = await as_run_pro(self._data_prepare, items)
+        items = await as_run_pro(self._data_filter, items)
+        items = await as_run_pro(self._data_produce, items)
         return items
 
     def output(self):

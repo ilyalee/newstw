@@ -7,13 +7,10 @@ from sqlalchemy import exc
 from db.providers.base_provider import BaseProvider
 import arrow
 import settings
-import functools
-import os
 from utils.data_utils import dict_blocker, time_corrector
-from db.utils.db_utils import sqlite_datetime_compatibility
-import asyncio
+from db.utils.db_utils import sqlite_datetime_compatibility, as_run
 from concurrent.futures import ThreadPoolExecutor
-from utils.data_utils import dict_blocker
+
 
 class ArchiveProvider(BaseProvider):
 
@@ -28,10 +25,7 @@ class ArchiveProvider(BaseProvider):
         return item
 
     async def as_load(self, id, blockers=[]):
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.load, id, blockers))
-        return await asyncio.ensure_future(future)
+        return await as_run(self.load, id, blockers)
 
     @sqlite_datetime_compatibility(['published'])
     def save_all(self, items):
@@ -39,10 +33,7 @@ class ArchiveProvider(BaseProvider):
         return super().save_all(items)
 
     async def as_save_all(self, items):
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.save_all, items))
-        return await asyncio.ensure_future(future)
+        return await as_run(self.save_all, items)
 
     def load_report_all(self, limit=None, offset=None):
         items = self.find_all("published", limit, offset)
@@ -50,10 +41,7 @@ class ArchiveProvider(BaseProvider):
         return items
 
     async def as_load_report_all(self, limit=None, offset=None):
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.load_report_all, limit, offset))
-        return await asyncio.ensure_future(future)
+        return await as_run(self.load_report_all, limit, offset)
 
     def load_report_today(self, limit=None, offset=None):
         start = arrow.now(self.tzinfo).floor('day').datetime
@@ -63,7 +51,11 @@ class ArchiveProvider(BaseProvider):
         return items
 
     async def as_load_report_today(self, limit=None, offset=None):
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.load_report_today, limit, offset))
-        return await asyncio.ensure_future(future)
+        return await as_run(self.load_report_today, limit, offset)
+
+    def load_report_by_page(self, page=1, limit=10):
+        offset = (page - 1) * limit
+        return self.load_report_today(limit=limit, offset=offset)
+
+    async def as_load_report_by_page(self, page=1, limit=10):
+        return await as_run(self.load_report_by_page, page, limit)

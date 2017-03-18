@@ -8,7 +8,7 @@ import settings
 import asyncio
 import functools
 import os
-from concurrent.futures import ProcessPoolExecutor
+from db.utils.db_utils import as_run_pro
 
 class BaseProvider():
 
@@ -59,10 +59,7 @@ class BaseProvider():
         return items
 
     async def as_find_distinct_items_by(self, name, items):
-        loop = asyncio.get_event_loop()
-        executor = ProcessPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.find_distinct_items_by, name, items))
-        return await asyncio.ensure_future(future)
+        return await as_run_pro(self.find_distinct_items_by, name, items)
 
     def save_all(self, items):
         objs = self.reload(items)

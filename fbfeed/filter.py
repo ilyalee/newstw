@@ -4,10 +4,7 @@
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 import settings
-import os
-import asyncio
-import functools
-from concurrent.futures import ProcessPoolExecutor
+from db.utils.db_utils import as_run_pro
 
 
 class FbFeedFilter:
@@ -56,10 +53,8 @@ class FbFeedFilter:
 
     async def as_output(self):
         items = []
-        loop = asyncio.get_event_loop()
-        executor = ProcessPoolExecutor(os.cpu_count())
-        items = await loop.run_in_executor(executor, self._download)
-        items = await loop.run_in_executor(executor, functools.partial(self._data_prepare, items))
-        items = await loop.run_in_executor(executor, functools.partial(self._data_filter, items))
-        items = await loop.run_in_executor(executor, functools.partial(self._data_produce, items))
+        items = await as_run_pro(self._download)
+        items = await as_run_pro(self._data_prepare, items)
+        items = await as_run_pro(self._data_filter, items)
+        items = await as_run_pro(self._data_produce, items)
         return items

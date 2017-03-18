@@ -4,10 +4,7 @@
 from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
 from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime, normalize_link
-import asyncio
-import functools
-import os
-from concurrent.futures import ThreadPoolExecutor
+from db.utils.db_utils import as_run
 
 
 class NewsDataProcessor:
@@ -27,9 +24,7 @@ class NewsDataProcessor:
         return self.data
 
     async def as_output(self):
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(os.cpu_count())
-        await loop.run_in_executor(executor, functools.partial(self._process, self.html))
+        await as_run(self._process, self.html)
         self.data['pass'] = self.data.get("pass", True)
         return self.data
 

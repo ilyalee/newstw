@@ -15,7 +15,6 @@ def load_as_objs(cls, items):
 
 def decoded_hashid(func):
     hashids = Hashids(salt=settings.SALT, min_length=5)
-
     def wrapper(*args, **kargs):
         args = list(args)
         (args[1],) = hashids.decode(args[1])

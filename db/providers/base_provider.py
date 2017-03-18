@@ -29,22 +29,22 @@ class BaseProvider():
             item = result.to_dict()
         return item
 
-    def find_all(self, orderby, limit=None):
+    def find_all(self, orderby, limit=None, offset=None):
         items = []
         if not orderby:
             return items
         with query_session() as session:
-            result_set = session.query(self.cls).order_by(desc(getattr(self.cls, orderby))).limit(limit).all()
+            result_set = session.query(self.cls).order_by(desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
             items = [item.to_dict() for item in result_set]
         return items
 
-    def find_items_by_datetime_between(self, name, start, end):
+    def find_items_by_datetime_between(self, name, start, end, limit=None, offset=None):
         items = []
         if not name:
             return items
         with query_session() as session:
             result_set = session.query(self.cls).filter(getattr(self.cls, name).between(
-                start, end)).order_by(desc(getattr(self.cls, name))).all()
+                start, end)).order_by(desc(getattr(self.cls, name))).limit(limit).offset(offset).all()
             items = [item.to_dict() for item in result_set]
         return items
 

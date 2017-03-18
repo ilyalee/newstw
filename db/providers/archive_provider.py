@@ -44,26 +44,26 @@ class ArchiveProvider(BaseProvider):
         future = loop.run_in_executor(executor, functools.partial(self.save_all, items))
         return await asyncio.ensure_future(future)
 
-    def load_report_all(self, limit=None):
-        items = self.find_all(orderby="published", limit=limit)
+    def load_report_all(self, limit=None, offset=None):
+        items = self.find_all("published", limit, offset)
         items = time_corrector("published", items)
         return items
 
-    async def as_load_report_all(self, limit=None):
+    async def as_load_report_all(self, limit=None, offset=None):
         loop = asyncio.get_event_loop()
         executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, functools.partial(self.load_report_all, limit))
+        future = loop.run_in_executor(executor, functools.partial(self.load_report_all, limit, offset))
         return await asyncio.ensure_future(future)
 
-    def load_report_today(self):
+    def load_report_today(self, limit=None, offset=None):
         start = arrow.now(self.tzinfo).floor('day').datetime
         end = arrow.now(self.tzinfo).ceil('day').datetime
-        items = self.find_items_by_datetime_between("published", start, end)
+        items = self.find_items_by_datetime_between("published", start, end, limit, offset)
         items = time_corrector("published", items)
         return items
 
-    async def as_load_report_today(self):
+    async def as_load_report_today(self, limit=None, offset=None):
         loop = asyncio.get_event_loop()
         executor = ThreadPoolExecutor(os.cpu_count())
-        future = loop.run_in_executor(executor, self.load_report_today)
+        future = loop.run_in_executor(executor, functools.partial(self.load_report_today, limit, offset))
         return await asyncio.ensure_future(future)

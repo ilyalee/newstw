@@ -26,5 +26,6 @@ async def index(request, methods=['GET']):
     data = {}
     page = request.args.get('page', 1)
     limit = request.args.get('limit', 5)
-    data['items'] = await ap.as_load_report_by_page(page, limit)
+    #TODO: check numeric type and check numbers are positive
+    data['items'] = await ap.as_load_report_by_page(int(page), int(limit))
     return html(template.render(data=data))

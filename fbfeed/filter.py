@@ -4,7 +4,7 @@
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 import settings
-from db.utils.db_utils import as_run_pro
+from db.utils.db_utils import as_run
 
 
 class FbFeedFilter:
@@ -53,8 +53,8 @@ class FbFeedFilter:
 
     async def as_output(self):
         items = []
-        items = await as_run_pro(self._download)
-        items = await as_run_pro(self._data_prepare, items)
-        items = await as_run_pro(self._data_filter, items)
-        items = await as_run_pro(self._data_produce, items)
+        items = await as_run(self._download)
+        items = await as_run(self._data_prepare, items)
+        items = await as_run(self._data_filter, items)
+        items = await as_run(self._data_produce, items)
         return items

@@ -33,6 +33,10 @@ class NewsDataProcessor:
         self.data['from'] = self.source
         if self.source == 'any':
             self.data['pass'] = False
+            if __debug__:
+                self.data['debug'] = {
+                    'msg': "failed to detect news source"
+                }
 
         self._news_processor(html)
         self._time_corrector()
@@ -75,6 +79,11 @@ class NewsDataProcessor:
             self.data[c['save']] = text
             if not text:
                 self.data['pass'] = False
+                if __debug__:
+                    self.data['debug'] = {
+                        'msg': "failed to get news content",
+                        'context': c
+                    }
 
     def _time_corrector(self):
         for c in (c for c in self.context if '_rawtime' in self.data):
@@ -84,6 +93,11 @@ class NewsDataProcessor:
                 self.data['_rawtime'], c['format'], c['tzinfo'], self.data)
             if self.data['published'] == '':
                 self.data['pass'] = False
+                if __debug__:
+                    self.data['debug'] = {
+                        'msg': "failed to parse rawtime",
+                        'context': c
+                    }
 
     def _context_to_text(self, context):
         text = ''
@@ -98,7 +112,10 @@ class NewsDataProcessor:
             except IndexError as err:
                 self.data['pass'] = False
                 if __debug__:
-                    self.data['debug'] = err
+                    self.data['debug'] = {
+                        'msg': err.args[0],
+                        'context': context
+                    }
         else:
             tags = self._soup_func(context['soup'], context['path'])
             text = ''.join([tag.text for tag in tags])

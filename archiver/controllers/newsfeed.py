@@ -10,7 +10,7 @@ class NewsfeedController(HTTPMethodView):
     async def get(self, request, hashid):
         """ show archive by hashid
          Args:
-             request (str): contains a str of hashed id.
+             hashed: contains a str of hashed id.
         """
         item = await self.ap.as_load(hashid, ['id', 'hash'])
 
@@ -19,7 +19,7 @@ class NewsfeedController(HTTPMethodView):
     async def post(self, request):
         """ create new archives for newsfeed from a feed url.
          Args:
-             request (str): [url, include_text]
+             request (str, str) : [url, include_text]
         """
         url = request.json.get('url')
         include_text = request.json.get('include')

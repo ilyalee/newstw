@@ -71,8 +71,8 @@ class NewsFeedFilter:
 
     async def as_postprocess(self, items):
         items = await as_run(self._data_prepare, items)
-        items = await as_run_pro(self._data_filter, items)
-        items = await as_run_pro(self._data_produce, items)
+        items = await as_run(self._data_filter, items)
+        items = await as_run(self._data_produce, items)
         return items
 
     def output(self):

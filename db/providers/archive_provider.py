@@ -34,27 +34,27 @@ class ArchiveProvider(BaseProvider):
     async def as_save_all(self, items):
         return await as_run(self.save_all, items)
 
-    def load_report_all(self, limit=None, offset=None):
-        items = self.find_all("published", limit, offset)
+    def load_report_all(self, limit=None, offset=None, keyword=None):
+        items = self.find_all("published", limit, offset, keyword)
         items = time_corrector("published", items)
         return items
 
-    async def as_load_report_all(self, limit=None, offset=None):
-        return await as_run(self.load_report_all, limit, offset)
+    async def as_load_report_all(self, limit=None, offset=None, keyword=None):
+        return await as_run(self.load_report_all, limit, offset, keyword)
 
-    def load_report_today(self, limit=None, offset=None):
+    def load_report_today(self, limit=None, offset=None, keyword=None):
         start = arrow.now(self.tzinfo).floor('day').datetime
         end = arrow.now(self.tzinfo).ceil('day').datetime
-        items = self.find_items_by_datetime_between("published", start, end, limit, offset)
+        items = self.find_items_by_datetime_between("published", start, end, limit, offset, keyword)
         items = time_corrector("published", items)
         return items
 
-    async def as_load_report_today(self, limit=None, offset=None):
-        return await as_run(self.load_report_today, limit, offset)
+    async def as_load_report_today(self, limit=None, offset=None, keyword=None):
+        return await as_run(self.load_report_today, limit, offset, keyword)
 
-    def load_report_by_page(self, page=1, limit=10):
+    def load_report_by_page(self, page=1, limit=10, keyword=None):
         offset = (page - 1) * limit
-        return self.load_report_today(limit=limit, offset=offset)
+        return self.load_report_today(limit, offset, keyword)
 
-    async def as_load_report_by_page(self, page=1, limit=10):
-        return await as_run(self.load_report_by_page, page, limit)
+    async def as_load_report_by_page(self, page=1, limit=10, keyword=None):
+        return await as_run(self.load_report_by_page, page, limit, keyword)

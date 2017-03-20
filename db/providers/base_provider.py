@@ -3,17 +3,19 @@
 
 from db.database import scoped_session, query_session, Session
 from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list
-from sqlalchemy import exc, desc
+from sqlalchemy import exc, desc, or_
 import settings
 import asyncio
 import functools
 import os
 from db.utils.db_utils import as_run_pro
 
+
 class BaseProvider():
 
     def __init__(self, cls):
         self.cls = cls
+        self.search_columns = ["title", "summary"]
 
     def reload(self, items):
         return load_as_objs(self.cls, items)
@@ -29,24 +31,42 @@ class BaseProvider():
             item = result.to_dict()
         return item
 
-    def find_all(self, orderby, limit=None, offset=None):
-        items = []
-        if not orderby:
-            return items
-        with query_session() as session:
-            result_set = session.query(self.cls).order_by(desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
-            items = [item.to_dict() for item in result_set]
-        return items
+    def find_all(self, orderby, limit=None, offset=None, columns=None, keyword=None):
+        collect = []
 
-    def find_items_by_datetime_between(self, name, start, end, limit=None, offset=None):
-        items = []
-        if not name:
-            return items
+        if not orderby:
+            return collect
+
         with query_session() as session:
-            result_set = session.query(self.cls).filter(getattr(self.cls, name).between(
-                start, end)).order_by(desc(getattr(self.cls, name))).limit(limit).offset(offset).all()
+            if keyword:
+                targets = [getattr(self.cls, column).contains(keyword) for column in self.search_columns]
+                result_set = session.query(self.cls).filter(
+                    or_(*targets)).order_by(desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
+            else:
+                result_set = session.query(self.cls).order_by(
+                    desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
+
             items = [item.to_dict() for item in result_set]
-        return items
+            collect = items
+        return collect
+
+    def find_items_by_datetime_between(self, datetime_column, start, end, limit=None, offset=None, keyword=None):
+        collect = []
+        if not datetime_column:
+            return collect
+
+        with query_session() as session:
+            if keyword:
+                targets = [getattr(self.cls, column).contains(keyword) for column in self.search_columns]
+                result_set = session.query(self.cls).filter(or_(*targets)).filter(getattr(self.cls, datetime_column).between(
+                    start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
+            else:
+                result_set = session.query(self.cls).filter(getattr(self.cls, datetime_column).between(
+                    start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
+
+            items = [item.to_dict() for item in result_set]
+            collect = items
+        return collect
 
     def find_distinct_items_by(self, name, items):
         if not name or not items:
@@ -72,6 +92,7 @@ class BaseProvider():
                         session.flush()
                         ids.append(obj.id)
                 except exc.IntegrityError as err:
-                    if __debug__ and not settings.TESTING: print(err)
+                    if __debug__ and not settings.TESTING:
+                        print(err)
 
         return encode_hashid_list(ids)

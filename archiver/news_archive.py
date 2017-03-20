@@ -28,5 +28,6 @@ async def index(request, methods=['GET']):
     limit = 5
     page = sint(request.args.get('page', page), page)
     limit = sint(request.args.get('limit', limit), limit)
-    data['items'] = await as_fetch_report(page, limit)
+    keyword = request.args.get('keyword', None)
+    data['items'] = await as_fetch_report(page, limit, keyword)
     return html(template.render(data=data))

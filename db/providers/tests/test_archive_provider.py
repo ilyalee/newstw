@@ -46,6 +46,8 @@ class TestArchiveProvider(unittest.TestCase):
         self.assertEqual(len(items), 0)
         items = self.ap.find_all("published")
         self.assertEqual(len(items), len(self.items))
+        total = self.ap.count_all()
+        self.assertEqual(total, len(items))
 
     def test_sqlite_datetime_compatibility(self):
         items = data_updater("published", "published", datetime_encapsulator, True, self.items)

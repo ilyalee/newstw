@@ -3,7 +3,7 @@
 
 from db.database import scoped_session, query_session, Session
 from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list
-from sqlalchemy import exc, desc, or_
+from sqlalchemy import exc, desc, or_, func
 import settings
 import asyncio
 import functools
@@ -30,6 +30,13 @@ class BaseProvider():
         if result:
             item = result.to_dict()
         return item
+
+    def count_all(self):
+        num = None
+        with query_session() as session:
+            do = session.query(self.cls)
+            num = do.with_entities(func.count(self.cls.id)).scalar()
+        return num
 
     def find_all(self, orderby, limit=None, offset=None, columns=None, keyword=None):
         collect = []

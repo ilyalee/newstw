@@ -10,7 +10,7 @@ from utils.data_utils import dict_filter, time_corrector, link_corrector, data_c
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
 from newsfeed.utils.newsfeed_helper import load_remote_news_date
-from db.utils.db_utils import as_run, as_run_pro
+from utils.async_utils import as_run, as_run_pro
 
 class NewsFeedFilter:
 

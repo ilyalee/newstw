@@ -4,7 +4,7 @@
 from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 import settings
-from db.utils.db_utils import as_run
+from utils.async_utils import as_run
 
 
 class FbFeedFilter:

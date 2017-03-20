@@ -4,7 +4,7 @@
 import os
 from crawler.newsprocessor import NewsDataProcessor
 from crawler.utils.crawler_utils import clean_html
-from db.utils.db_utils import as_run
+from utils.async_utils import as_run
 import requests
 
 

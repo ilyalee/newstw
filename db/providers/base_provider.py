@@ -8,7 +8,7 @@ import settings
 import asyncio
 import functools
 import os
-from db.utils.db_utils import as_run_pro
+from utils.async_utils import as_run_pro
 
 
 class BaseProvider():

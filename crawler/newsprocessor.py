@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
 from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime, normalize_link
-from db.utils.db_utils import as_run
+from utils.async_utils import as_run
 
 
 class NewsDataProcessor:

@@ -8,7 +8,8 @@ from db.providers.base_provider import BaseProvider
 import arrow
 import settings
 from utils.data_utils import dict_blocker, time_corrector
-from db.utils.db_utils import sqlite_datetime_compatibility, as_run
+from db.utils.db_utils import sqlite_datetime_compatibility
+from utils.async_utils import as_run
 
 
 class ArchiveProvider(BaseProvider):

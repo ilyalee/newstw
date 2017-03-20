@@ -15,7 +15,7 @@ class BaseProvider():
 
     def __init__(self, cls):
         self.cls = cls
-        self.search_columns = ["title", "summary"]
+        self.search_columns = []
 
     def reload(self, items):
         return load_as_objs(self.cls, items)
@@ -31,10 +31,15 @@ class BaseProvider():
             item = result.to_dict()
         return item
 
-    def count_all(self):
+    def count_all(self, columns=None, keyword=None):
         num = None
         with query_session() as session:
             do = session.query(self.cls)
+            if keyword:
+                targets = [getattr(self.cls, column).contains(keyword)
+                           for column in self.search_columns]
+                do = do.filter(or_(*targets))
+
             num = do.with_entities(func.count(self.cls.id)).scalar()
         return num
 

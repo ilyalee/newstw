@@ -17,6 +17,7 @@ class ArchiveProvider(BaseProvider):
     def __init__(self):
         super().__init__(Archive)
         self.tzinfo = settings.TIMEZONE
+        self.search_columns = ["title", "summary"]
 
     def load(self, id, blockers=[]):
         item = super().load(id)

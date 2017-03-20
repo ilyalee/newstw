@@ -106,7 +106,7 @@ def data_kv_updater_all(key, from_key, fn, go, items):
 
 def data_hasher(key, keys, items):
     for item in items:
-        text = "".join([item[key] for key in keys if key in item])
+        text = "".join([item[key] for key in keys if key in item]).replace(' ', '')
         item[key] = githash(text, hexdigest=True)
     return items
 

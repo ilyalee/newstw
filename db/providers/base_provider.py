@@ -38,14 +38,14 @@ class BaseProvider():
             return collect
 
         with query_session() as session:
+            do = session.query(self.cls)
             if keyword:
-                targets = [getattr(self.cls, column).contains(keyword) for column in self.search_columns]
-                result_set = session.query(self.cls).filter(
-                    or_(*targets)).order_by(desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
-            else:
-                result_set = session.query(self.cls).order_by(
-                    desc(getattr(self.cls, orderby))).limit(limit).offset(offset).all()
+                targets = [getattr(self.cls, column).contains(keyword)
+                           for column in self.search_columns]
+                do = do.filter(or_(*targets))
 
+            result_set = do.order_by(desc(getattr(self.cls, orderby))
+                                     ).limit(limit).offset(offset).all()
             items = [item.to_dict() for item in result_set]
             collect = items
         return collect
@@ -56,13 +56,14 @@ class BaseProvider():
             return collect
 
         with query_session() as session:
+            do = session.query(self.cls)
             if keyword:
-                targets = [getattr(self.cls, column).contains(keyword) for column in self.search_columns]
-                result_set = session.query(self.cls).filter(or_(*targets)).filter(getattr(self.cls, datetime_column).between(
-                    start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
-            else:
-                result_set = session.query(self.cls).filter(getattr(self.cls, datetime_column).between(
-                    start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
+                targets = [getattr(self.cls, column).contains(keyword)
+                           for column in self.search_columns]
+                do = do.filter(or_(*targets))
+
+            result_set = do.filter(getattr(self.cls, datetime_column).between(
+                start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
 
             items = [item.to_dict() for item in result_set]
             collect = items

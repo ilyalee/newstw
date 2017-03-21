@@ -15,6 +15,7 @@ source['pts'] = ["news.pts.org.tw"]
 source['ftv'] = ["news.ftv.com.tw"]
 source['setn'] = ["www.setn.com"]
 source['eranews'] = ["eranews.eracom.com.tw"]
+source['youtube_eranews'] = ["UCHBv5vSp3pETSLq8oWTsmqA"]
 source['tvbs'] = ["news.tvbs.com.tw"]
 source['ctitv'] = ["gotv.ctitv.com.tw"]
 source['ettoday'] = ["www.ettoday.net"]
@@ -99,6 +100,7 @@ context['ebc'] = [
     {'save': "_rawtime", 'path': ".ml15.mt10", 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
 ]
+
 
 skip['any'] = []
 skip['chinatimes'] = ['figure']

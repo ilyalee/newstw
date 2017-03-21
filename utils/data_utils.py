@@ -61,11 +61,13 @@ def data_remover(val, key, items):
     return [item for item in items if key in item and item[key] != val]
 
 
-def data_updater(key, from_key, fn, go, items):
-    if go:
+def data_updater(key, from_key, fn, condition, items):
+    if condition:
         targets = dict_filter([from_key], items)
+        if isinstance(condition, bool):
+            condition = targets[i][from_key]
         for i in range(len(targets)):
-            obj = fn(targets[i][from_key])
+            obj = fn(condition)
             items[i][key] = obj
     return items
 

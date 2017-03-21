@@ -59,7 +59,7 @@ class NewsFeedFilter:
 
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
-        items = data_updater("source", "link", detect_news_source, True, items)
+        items = data_updater("source", "link", detect_news_source, self.url, items)
         items = data_remover("any", "source", items)
         items = data_hasher("hash", ["title", "published", "source"], items)
         return items

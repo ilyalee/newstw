@@ -7,7 +7,6 @@ sys.path.append(os.getcwd())
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from archiver.controllers.newsfeed import archive_feed_by_filter
 from utils.data_utils import keyword_builder
-from multiprocessing import Pool
 import asyncio
 import configparser
 config = configparser.ConfigParser()

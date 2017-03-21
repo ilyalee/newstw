@@ -53,13 +53,12 @@ class NewsDataProcessor:
             return self.soup.find(key).attrs[value]
 
     def _soup_select(self, path):
-        if isinstance(path, list):
-            for p in path:
-                target = self.soup.select(p)
-                if len(target) > 0:
-                    break
-        else:
-            target = self.soup.select(path)
+        if isinstance(path, str):
+            path = [path]
+        for p in path:
+            target = self.soup.select(p)
+            if len(target) > 0:
+                break
         return target
 
     def _soup_find_all(self, path):

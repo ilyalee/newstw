@@ -117,7 +117,7 @@ context['tvbs'] = [
 ]
 context['ctitv'] = [
     {'save': "title", 'path': "header > h1.entry-title", 'ind': 0},
-    {'save': "summary", 'path': ".td-post-content > p", 'ind': -1},
+    {'save': "summary", 'path': "p", 'ind': -1},
     {'save': "_rawtime", 'soup': "attrs", 'path': {'time': "datetime"}, 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD"}
 ]

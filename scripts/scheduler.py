@@ -18,16 +18,23 @@ keywords = config.get("Feed filter", "keywords")
 
 async def news_observer():
     include_text = keyword_builder(keywords)
+
     for name, url in sources_pm:
-        print("Get feed from [{}] ...".format(name))
+        print("Observing [{}] ...".format(name))
         data = await archive_feed_by_filter(url, include_text)
-        print("Job [{}] is done. {}".format(name, data["info"]))
+        print("Job#[{}] finished. {}".format(name, data["info"]))
+
+    for name, url in sources_em:
+        print("Observing [{}] ...".format(name))
+        data = await archive_feed_by_filter(url, include_text)
+        print("Job#[{}] finished. {}".format(name, data["info"]))
+
     print("All done.")
 
 if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
     # every hours
-    scheduler.add_job(news_observer, 'cron', minute=38)
+    scheduler.add_job(news_observer, 'cron', minute=40)
 
     scheduler.start()
     print("News Observer started.")

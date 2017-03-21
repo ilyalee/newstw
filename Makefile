@@ -18,11 +18,15 @@ run_fbfeed:
 run_news_archiver:
 	python3 -O run_news_archiver.py
 
+run_scheduler:
+	python3 -O scripts/scheduler.py
+
 run_all:
 	make run_crawler >/dev/null 2>&1 &
 	make run_newsfeed>/dev/null 2>&1 &
 	make run_fbfeed >/dev/null 2>&1 &
 	make run_news_archiver >/dev/null 2>&1 &
+	make run_scheduler >/dev/null 2>&1 &
 
 deps:
 	pip3 freeze > ./requirements.txt

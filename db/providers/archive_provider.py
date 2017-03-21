@@ -30,7 +30,7 @@ class ArchiveProvider(BaseProvider):
 
     @sqlite_datetime_compatibility(['published'])
     def save_all(self, items):
-        items = dict_blocker(["keyword", "updated"], items)
+        items = dict_blocker(["keyword", "updated", "founds"], items)
         return super().save_all(items)
 
     async def as_save_all(self, items):

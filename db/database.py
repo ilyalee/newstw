@@ -12,6 +12,7 @@ else:
     db_url = settings.DATABASE_URL
 
 sqlite_memory_mode = db_url.startswith('sqlite:///:memory:')
+sqlite_mode = db_url.startswith('sqlite://')
 
 if sqlite_memory_mode:
     import sqlite3

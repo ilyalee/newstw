@@ -7,8 +7,8 @@ from sqlalchemy import exc
 from db.providers.base_provider import BaseProvider
 import arrow
 import settings
-from utils.data_utils import dict_blocker, time_corrector
-from db.utils.db_utils import sqlite_datetime_compatibility
+from utils.data_utils import dict_blocker, time_corrector, data_updater
+from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list
 from utils.async_utils import as_run
 
 
@@ -29,8 +29,9 @@ class ArchiveProvider(BaseProvider):
         return await as_run(self.load, id, blockers)
 
     @sqlite_datetime_compatibility(['published'])
+    @list_as_str(['founds'])
     def save_all(self, items):
-        items = dict_blocker(["keyword", "updated", "founds"], items)
+        items = dict_blocker(["keyword", "updated"], items)
         return super().save_all(items)
 
     async def as_save_all(self, items):
@@ -39,6 +40,7 @@ class ArchiveProvider(BaseProvider):
     def load_report_all(self, limit=None, offset=None, keyword=None):
         items = self.find_all("published", limit, offset, keyword)
         items = time_corrector("published", items)
+        items = data_updater("founds", "founds", str2list, True, items)
         return items
 
     async def as_load_report_all(self, limit=None, offset=None, keyword=None):
@@ -49,6 +51,7 @@ class ArchiveProvider(BaseProvider):
         end = arrow.now(self.tzinfo).ceil('day').datetime
         items = self.find_items_by_datetime_between("published", start, end, limit, offset, keyword)
         items = time_corrector("published", items)
+        items = data_updater("founds", "founds", str2list, True, items)
         return items
 
     async def as_load_report_today(self, limit=None, offset=None, keyword=None):

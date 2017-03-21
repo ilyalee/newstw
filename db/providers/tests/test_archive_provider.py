@@ -21,7 +21,7 @@ class TestArchiveProvider(unittest.TestCase):
             'summary': "summary test",
             'link': "https://foo.bar.baz",
             'hash': "hash test",
-            'source': "abc"
+            'source': "abc",
         }
         self.items = [
             {'title': "title test1", 'hash': "test1", 'published': "2017-01-01 01:02:03+08:00",

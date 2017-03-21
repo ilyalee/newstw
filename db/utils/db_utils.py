@@ -12,6 +12,7 @@ def load_as_objs(cls, items):
 
 def decoded_hashid(func):
     hashids = Hashids(salt=settings.SALT, min_length=5)
+
     def wrapper(*args, **kargs):
         args = list(args)
         (args[1],) = hashids.decode(args[1])
@@ -22,6 +23,7 @@ def decoded_hashid(func):
 
 def encoded_hashid(func):
     hashids = Hashids(salt=settings.SALT, min_length=5)
+
     def wrapper(*args, **kargs):
         args = list(args)
         args[1] = hashids.encode(args[1])
@@ -52,3 +54,29 @@ def sqlite_datetime_compatibility(keys):
             return result
         return wrapper
     return _
+
+
+def list_as_str(keys):
+    def _(func):
+        def wrapper(*args, **kargs):
+            def list2str(lst):
+                return ','.join(lst)
+            nonlocal keys
+            args = list(args)
+            items = args[1]
+            if not isinstance(items, list):
+                items = [items]
+            if not isinstance(keys, list):
+                keys = [keys]
+            for key in keys:
+                if all(key in item for item in items):
+                    items = data_updater(key, key, list2str, True, items)
+            args[1] = items
+            result = func(*args, **kargs)
+            return result
+        return wrapper
+    return _
+
+
+def str2list(str):
+    return str.split(",")

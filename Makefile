@@ -6,6 +6,9 @@ init:
 pyclean:
 	find . | grep -E "\(__pycache__|.pyc|.pyo$\)" | xargs rm -rf
 
+dbclean:
+	rm sqlitedb/*.db
+
 run_crawler:
 	python3 -O run_crawler.py
 

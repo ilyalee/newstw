@@ -46,7 +46,7 @@ def sqlite_datetime_compatibility(keys):
             if not isinstance(keys, list):
                 keys = [keys]
             for key in keys:
-                items = data_updater("published", "published", datetime_encapsulator, True, items)
+                items = data_updater(key, key, datetime_encapsulator, True, items)
             args[1] = items
             result = func(*args, **kargs)
             return result

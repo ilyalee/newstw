@@ -24,7 +24,7 @@ class TestDataUtils(unittest.TestCase):
 
     def test_data_filter(self):
         items = [{'bar': "1", 'foo': "2"}, {'bar': "3", 'foo': "4"}]
-        predict = [{'bar': "3", 'foo': "4"}]
+        predict = [{'bar': '3', 'foo': '4', 'founds': {'4'}}]
         key = ["foo"]
         text = "4"
         self.assertEqual(data_filter(text, key, items), predict)

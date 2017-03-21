@@ -38,14 +38,16 @@ def data_filter(text, keys, items):
     collect = []
     if isinstance(keys, str):
         keys = [keys]
+
     pat = re.compile(text, re.UNICODE)
 
     seen = set()
     for i, item in enumerate(items):
         for key in keys:
             if key in item:
-                found = re.search(pat, item[key])
-                if found and (i not in seen and not seen.add(i)):
+                founds = re.findall(pat, item[key])
+                if len(founds) > 0 and (i not in seen and not seen.add(i)):
+                    item["founds"] = set(founds)
                     collect.append(item)
     return collect
 

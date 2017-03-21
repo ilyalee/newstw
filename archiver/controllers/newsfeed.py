@@ -1,5 +1,6 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
+from utils.data_utils import dict_cleaner
 
 
 class NewsfeedController(HTTPMethodView):
@@ -43,13 +44,13 @@ async def archive_feed_by_filter(url, include_text, ap=None):
     acceptances = len(ids)
     rejects = total - acceptances
 
-    data = {
+    data = dict_cleaner(None, {
         'url': url,
         'include': include_text,
         'acceptances': acceptances,
         'rejects': rejects,
         'items': ids,
         'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
-    }
+    })
 
     return data

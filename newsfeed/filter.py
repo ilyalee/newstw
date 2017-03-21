@@ -65,7 +65,7 @@ class NewsFeedFilter:
         items = data_inserter(self.include_text, "keyword", items)
         items = data_updater("source", "link", detect_news_source, self.url, items)
         items = data_remover("any", "source", items)
-        if (__debug__) and 0 == len(items):
+        if (__debug__) and 0 == len(items) and detect_news_source(self.url) == 'any':
             print("please debug this source: {} | {}".format(
                 self.url, detect_news_source(self.url)))
         items = data_hasher("hash", ["title", "published", "source"], items)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# from functools import partial
+import itertools
 import unicodedata
 import re
 import arrow
@@ -29,6 +29,10 @@ def dict_blocker(keys, items):
         for item in items:
             del_key(key, True, item)
     return items
+
+
+def dict_cleaner(value, items):
+    return {key: value for key, value in items.items() if value}
 
 
 def data_filter(text, keys, items):
@@ -120,7 +124,7 @@ def data_hasher(key, keys, items):
 
 
 def data_cleaner(key, items):
-    # return [*map(partial(partial(_update_text, clean_text), key), items)]
+    # return [*map(itertools.partial(itertools.partial(_update_text, clean_text), key), items)]
     for item in items:
         if key in item:
             item[key] = clean_text(item[key])
@@ -167,7 +171,7 @@ def localize_datetime(source, formats, tzinfo, data):
 def time_corrector(key, items):
     if not isinstance(items, list):
         items = [items]
-    # return [*map(partial(_update_time, key), items)]
+    # return [*map(itertools.partial(_update_time, key), items)]
     tzinfo = settings.TIMEZONE
     for item in items:
         if key in item:
@@ -227,6 +231,21 @@ def fb_time_to_local(key, tzinfo, items):
         item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
     return items
 
+
+def keyword_builder(keywords):
+    keyword_list = []
+    if isinstance(keywords, str):
+        keywords = keywords.split(",")
+
+    for keyword in keywords:
+        if " " in keyword:
+            sub = keyword.split(" ")
+            subp = [".*".join(map(str, comb)) for comb in itertools.permutations(sub)]
+            keyword_list.append('|'.join(subp))
+        else:
+            keyword_list.append(keyword)
+
+    return '|'.join(keyword_list)
 
 '''
 def _filter_keys(keys, item):

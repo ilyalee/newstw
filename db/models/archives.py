@@ -3,7 +3,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.schema import Index
 from db.models import Base
-from arrow import Arrow
 
 
 class Archive(Base):

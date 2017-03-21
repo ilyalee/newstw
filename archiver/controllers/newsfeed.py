@@ -1,10 +1,10 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
-from db.providers.archive_provider import ArchiveProvider
-from newsfeed.filter import NewsFeedFilter
+
 
 class NewsfeedController(HTTPMethodView):
 
+    from db.providers.archive_provider import ArchiveProvider
     ap = ArchiveProvider()
 
     async def get(self, request, hashid):
@@ -23,23 +23,33 @@ class NewsfeedController(HTTPMethodView):
         """
         url = request.json.get('url')
         include_text = request.json.get('include')
-        feed = NewsFeedFilter(url, include_text, full_text=True)
-        items = await feed.as_output()
-        total = len(items)
-
-        # checking duplicate items by hash
-        items = await self.ap.as_find_distinct_items_by("hash", items)
-        ids = await self.ap.as_save_all(items)
-        acceptances = len(ids)
-        rejects = total - acceptances
-
-        data = {
-            'url': url,
-            'include': include_text,
-            'acceptances': acceptances,
-            'rejects': rejects,
-            'items': ids,
-            'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
-        }
+        data = await archive_feed_by_filter(url, include_text, self.ap)
 
         return json(data, ensure_ascii=False)
+
+async def archive_feed_by_filter(url, include_text, ap=None):
+    from newsfeed.filter import NewsFeedFilter
+    if not ap:
+        from db.providers.archive_provider import ArchiveProvider
+        ap = ArchiveProvider()
+
+    feed = NewsFeedFilter(url, include_text, full_text=True)
+    items = await feed.as_output()
+    total = len(items)
+
+    # checking duplicate items by hash
+    items = await ap.as_find_distinct_items_by("hash", items)
+    ids = await ap.as_save_all(items)
+    acceptances = len(ids)
+    rejects = total - acceptances
+
+    data = {
+        'url': url,
+        'include': include_text,
+        'acceptances': acceptances,
+        'rejects': rejects,
+        'items': ids,
+        'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
+    }
+
+    return data

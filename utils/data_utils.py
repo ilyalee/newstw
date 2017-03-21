@@ -234,6 +234,9 @@ def fb_time_to_local(key, tzinfo, items):
 
 def keyword_builder(keywords):
     keyword_list = []
+    if not keywords:
+        return keyword_list
+
     if isinstance(keywords, str):
         keywords = keywords.split(",")
 
@@ -245,7 +248,20 @@ def keyword_builder(keywords):
         else:
             keyword_list.append(keyword)
 
-    return '|'.join(keyword_list)
+    keyword_list = '|'.join(keyword_list)
+
+    return keyword_list
+
+
+def hightlight_keywords(value, keywords):
+    if not keywords:
+        return value
+    if isinstance(keywords, str):
+        keywords = [keywords]
+    for keyword in keywords:
+        value = value.replace(keyword, '<strong style="color: #E57373;">' + keyword + '</strong>')
+    return value
+
 
 '''
 def _filter_keys(keys, item):

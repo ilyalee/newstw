@@ -64,10 +64,12 @@ def data_remover(val, key, items):
 def data_updater(key, from_key, fn, condition, items):
     if condition:
         targets = dict_filter([from_key], items)
-        if isinstance(condition, bool):
-            condition = targets[i][from_key]
+        select = isinstance(condition, bool)
         for i in range(len(targets)):
-            obj = fn(condition)
+            if select:
+                condition = targets[i][from_key]
+            else:
+                obj = fn(condition)
             items[i][key] = obj
     return items
 

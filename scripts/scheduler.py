@@ -34,7 +34,7 @@ async def news_observer():
 if __name__ == '__main__':
     scheduler = AsyncIOScheduler()
     # every hours
-    scheduler.add_job(news_observer, 'cron', minute=40)
+    scheduler.add_job(news_observer, 'cron', minute=50, timezone="Asia/Taipei")
 
     scheduler.start()
     print("News Observer started.")

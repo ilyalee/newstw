@@ -67,7 +67,7 @@ def data_updater(key, from_key, fn, condition, items):
         select = isinstance(condition, bool)
         for i in range(len(targets)):
             if select:
-                condition = targets[i][from_key]
+                obj = targets[i][from_key]
             else:
                 obj = fn(condition)
             items[i][key] = obj

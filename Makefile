@@ -58,3 +58,6 @@ upgrade_prod:
 
 downgrade_prod:
 	alembic -c prod.ini downgrade head
+
+sqlitedb:
+	mkdir sqlitedb

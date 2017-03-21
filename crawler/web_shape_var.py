@@ -8,18 +8,51 @@ trimtext = {}
 
 source_default = 'any'
 source['chinatimes'] = ["www.chinatimes.com"]
-source['ltn'] = ["www.ltn.com.tw/news", "news.ltn.com.tw"]
+source['ltn'] = [
+    "www.ltn.com.tw/news",
+    "news.ltn.com.tw"
+]
 source['appledaily'] = ["www.appledaily.com.tw"]
-source['udn'] = ["udn.com/news"]
-source['pts'] = ["news.pts.org.tw"]
-source['ftv'] = ["news.ftv.com.tw"]
-source['setn'] = ["www.setn.com"]
-source['eranews'] = ["eranews.eracom.com.tw"]
-source['youtube_eranews'] = ["UCHBv5vSp3pETSLq8oWTsmqA"]
-source['tvbs'] = ["news.tvbs.com.tw"]
-source['ctitv'] = ["gotv.ctitv.com.tw"]
-source['ettoday'] = ["www.ettoday.net"]
-source['ebc'] = ["news.ebc.net.tw"]
+source['udn'] = ["udn.com"]
+source['pts'] = [
+    "news.pts.org.tw",
+    "about.pts.org.tw/rss/XML/newsfeed.xml",
+    "UCexpzYDEnfmAvPSfG4xbcjA"
+]
+source['ftv'] = [
+    "news.ftv.com.tw",
+    "04784784225885481651/2830296333612041371",
+    "UC2VmWn8dAqkzlQqvy02E1PA"
+]
+source['setn'] = [
+    "www.setn.com",
+    "04784784225885481651/2327852074443664022",
+    "UCIU8ha-NHmLjtUwU7dFiXUA"
+]
+source['eranews'] = [
+    "eranews.eracom.com.tw",
+    "UCHBv5vSp3pETSLq8oWTsmqA"
+]
+source['tvbs'] = [
+    "news.tvbs.com.tw",
+    "04784784225885481651/3528912055494430107",
+    "UC5nwNW4KdC0SzrhF9BXEYOQ"
+]
+source['ctitv'] = [
+    "gotv.ctitv.com.tw",
+    "04784784225885481651/5391259535330418203",
+    "UCpu3bemTQwAU8PqM4kJdoEQ"
+]
+source['ettoday'] = [
+    "www.ettoday.net",
+    "04784784225885481651/10236880490079678464",
+    "feeds.feedburner.com/ettoday/realtime"
+]
+source['ebc'] = [
+    "news.ebc.net.tw",
+    "04784784225885481651/6967504200194224812"
+    "UCR3asjvr_WAaxwJYEDV_Bfw"
+]
 
 context['any'] = [
     {'save': "title", 'path': "h1", 'ind': 0},

@@ -11,11 +11,12 @@ if settings.TESTING:
 else:
     db_url = settings.DATABASE_URL
 
-sqlite_mode = db_url.startswith('sqlite://')
+sqlite_memory_mode = db_url.startswith('sqlite:///:memory:')
 
-if sqlite_mode:
+if sqlite_memory_mode:
     import sqlite3
-    creator = lambda: sqlite3.connect('file::memory:?cache=shared', uri=True, check_same_thread=False)
+    creator = lambda: sqlite3.connect('file::memory:?cache=shared',
+                                      uri=True, check_same_thread=False)
 
 if creator:
     engine = create_engine('sqlite://', creator=creator)
@@ -47,6 +48,7 @@ def scoped_session():
         raise
     finally:
         session.close()
+
 
 @contextmanager
 def query_session():

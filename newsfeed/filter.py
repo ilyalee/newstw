@@ -12,6 +12,7 @@ from crawler.utils.crawler_utils import detect_news_source
 from newsfeed.utils.newsfeed_helper import load_remote_news_date
 from utils.async_utils import as_run, as_run_pro
 
+
 class NewsFeedFilter:
 
     def __init__(self, url, include_text='', full_text=False):
@@ -40,7 +41,8 @@ class NewsFeedFilter:
     def _data_prepare(self, items):
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']
         items = dict_filter(keys, items)
-        items = data_updater("summary", "content", lambda content: content[0]['value'],  all("content" in item for item in items), items)
+        items = data_updater("summary", "content", lambda content: content[0][
+                             'value'],  all("content" in item for item in items), items)
 
         items = time_corrector("published", items)
         items = time_corrector("updated", items)
@@ -49,8 +51,10 @@ class NewsFeedFilter:
         items = data_cleaner("summary", items)
 
         remote_items = data_kv_updater_all_load("link", fetch_news_all, self.full_text, items)
-        items = data_kv_updater_all_by_remote_items(remote_items, "summary", "link", fetch_news_all, self.full_text, items)
-        items = data_kv_updater_all_by_remote_items(remote_items, "published", "published", load_remote_news_date, self.full_text, items)
+        items = data_kv_updater_all_by_remote_items(
+            remote_items, "summary", "link", fetch_news_all, self.full_text, items)
+        items = data_kv_updater_all_by_remote_items(
+            remote_items, "published", "published", load_remote_news_date, self.full_text, items)
         return items
 
     def _data_filter(self, items):
@@ -61,6 +65,9 @@ class NewsFeedFilter:
         items = data_inserter(self.include_text, "keyword", items)
         items = data_updater("source", "link", detect_news_source, self.url, items)
         items = data_remover("any", "source", items)
+        if (__debug__) and 0 == len(items):
+            print("please debug this source: {} | {}".format(
+                self.url, detect_news_source(self.url)))
         items = data_hasher("hash", ["title", "published", "source"], items)
         return items
 

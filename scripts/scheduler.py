@@ -17,9 +17,10 @@ sources_em = config.items("Electronic media")
 keywords = config.get("Feed filter", "keywords")
 
 async def news_observer():
+    print("[Link Start]")
     include_text = keyword_builder(keywords)
     await asyncio.gather([[await archive_feed_by_filter(url, include_text) for name, url in sources_pm], [await archive_feed_by_filter(url, include_text) for name, url in sources_em]])
-    print("All Done.")
+    print("[All Done]")
 
 if __name__ == '__main__':
     scheduler = AsyncIOScheduler()

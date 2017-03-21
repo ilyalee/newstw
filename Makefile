@@ -24,6 +24,9 @@ run_news_archiver:
 run_scheduler:
 	python3 -O scripts/scheduler.py
 
+run_observer:
+	python3 -O scripts/observer.py
+
 run_all:
 	make run_crawler >/dev/null 2>&1 &
 	make run_newsfeed>/dev/null 2>&1 &

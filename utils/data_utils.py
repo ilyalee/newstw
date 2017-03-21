@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#from functools import partial
+# from functools import partial
 import unicodedata
 import re
 import arrow
@@ -126,8 +126,9 @@ def data_cleaner(key, items):
 
 
 def normalize_news(text):
-    #return unicodedata.normalize("NFD", text)
+    # return unicodedata.normalize("NFD", text)
     return text
+
 
 def trim_data_val(key, trimtext, data):
     if isinstance(trimtext, str) and key in data:
@@ -170,9 +171,9 @@ def time_corrector(key, items):
         if key in item:
             import datetime
             if isinstance(item[key], datetime.date):
-                item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
+                item[key] = arrow.get(item[key]).to(tzinfo).format()
             elif isinstance(item[key], str):
-                item[key] = arrow.get(parser.parse(item[key])).replace(tzinfo=tzinfo).format()
+                item[key] = arrow.get(parser.parse(item[key])).to(tzinfo).format()
     return items
 
 
@@ -207,6 +208,8 @@ def clean_text(text):
     return text
 
 # ref: http://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git
+
+
 def githash(data, hexdigest=False):
     s = sha3_224()
     s.update("blob %u\0".encode('utf-8') % len(data))
@@ -225,7 +228,7 @@ def fb_time_to_local(key, tzinfo, items):
 
 '''
 def _filter_keys(keys, item):
-    #return dict(filter(lambda _obj: _obj[0] in keys, obj.items()))
+    # return dict(filter(lambda _obj: _obj[0] in keys, obj.items()))
     return {key: value for key, value in item.items() if key in keys}
 '''
 '''

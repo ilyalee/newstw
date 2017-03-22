@@ -209,8 +209,9 @@ def normalize_link(link):
 
 
 def link_corrector(key, items):
-    for item in items:
-        item[key] = normalize_link(item[key])
+    if all(key in item for item in items):
+        for item in items:
+            item[key] = normalize_link(item[key])
     return items
 
 

@@ -22,7 +22,12 @@ if sqlite_memory_mode:
 if creator:
     engine = create_engine('sqlite://', creator=creator)
 else:
-    engine = create_engine(db_url)
+    if sqlite_mode:
+        from sqlalchemy.pool import QueuePool
+        engine = create_engine(db_url, poolclass=QueuePool)
+    else:
+        from sqlalchemy.pool import NullPool
+        engine = create_engine(db_url, poolclass=NullPool)
 
 if sqlite_mode:
     from db.models import Base

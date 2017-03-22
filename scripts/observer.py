@@ -9,7 +9,7 @@ import asyncio
 from archiver.controllers.newsfeed import archive_feed_by_filter
 from utils.data_utils import keyword_builder
 from itertools import chain, repeat
-import asyncio
+import requests
 import configparser
 
 config = configparser.ConfigParser()
@@ -30,7 +30,12 @@ async def news_observer(loop=None):
         loop = asyncio.get_event_loop()
     async def sem_run(sem, name, url, include_text):
         with await sem:
-            return await archive_feed_by_filter(url, include_text)
+            try:
+                print("Crawling: [{}] ({})".format(name, url))
+                data = await archive_feed_by_filter(url, include_text)
+                return data
+            except requests.exceptions.ConnectionError as err:
+                print("NETWORK ERROR: [{}] ({})".format(name, url))
 
     include_text = keyword_builder(keywords)
     sem = asyncio.Semaphore(max_sem)
@@ -43,6 +48,7 @@ if __name__ == '__main__':
     result = loop.run_until_complete(news_observer(loop))
     for done in result:
         data = done.result()
-        print("{}: {}".format(data['source'], data['info']))
+        if data:
+            print("[{}] {}".format(data['source'], data['info']))
     loop.close()
     sys.exit(0)

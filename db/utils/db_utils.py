@@ -59,8 +59,6 @@ def sqlite_datetime_compatibility(keys):
 def list_as_str(keys):
     def _(func):
         def wrapper(*args, **kargs):
-            def list2str(lst):
-                return ','.join(lst)
             nonlocal keys
             args = list(args)
             items = args[1]
@@ -81,10 +79,10 @@ def list_as_str(keys):
 def str2list(str):
     if not str:
         return []
-    return str.split(",")
+    return str.split(",").sort()
 
 
 def list2str(lst):
     if not lst:
         return None
-    return ",".join(lst)
+    return ",".join(lst.sort())

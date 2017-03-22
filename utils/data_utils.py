@@ -168,10 +168,23 @@ def localize_datetime(source, formats, tzinfo, data):
                 pass
 
 
+def time_localizer(key, items):
+    if not isinstance(items, list):
+        items = [items]
+    tzinfo = settings.TIMEZONE
+    for item in items:
+        if key in item:
+            import datetime
+            if isinstance(item[key], datetime.date):
+                item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
+            elif isinstance(item[key], str):
+                item[key] = arrow.get(parser.parse(item[key])).replace(tzinfo=tzinfo).format()
+    return items
+
+
 def time_corrector(key, items):
     if not isinstance(items, list):
         items = [items]
-    # return [*map(itertools.partial(_update_time, key), items)]
     tzinfo = settings.TIMEZONE
     for item in items:
         if key in item:

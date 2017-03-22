@@ -82,3 +82,9 @@ def str2list(str):
     if not str:
         return []
     return str.split(",")
+
+
+def list2str(lst):
+    if not lst:
+        return None
+    return ",".join(lst)

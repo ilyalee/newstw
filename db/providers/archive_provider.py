@@ -18,6 +18,7 @@ class ArchiveProvider(BaseProvider):
         super().__init__(Archive)
         self.tzinfo = settings.TIMEZONE
         self.search_columns = ["title", "summary"]
+        self.order_by_columns = ["published"]
 
     def load(self, id, blockers=[]):
         item = super().load(id)
@@ -47,7 +48,7 @@ class ArchiveProvider(BaseProvider):
         return await as_run(self.load_report_by_sources, sources, limit, offset)
 
     def load_report_all(self, limit=None, offset=None, keyword=None):
-        items = self.find_all("published", limit, offset, keyword)
+        items = self.find_all(limit, offset, keyword)
         items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         return items

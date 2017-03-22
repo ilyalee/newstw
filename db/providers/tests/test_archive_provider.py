@@ -44,7 +44,7 @@ class TestArchiveProvider(unittest.TestCase):
         self.assertEqual(len(items), 2)
         items = self.ap.save_all(self.items)
         self.assertEqual(len(items), 0)
-        items = self.ap.find_all("published")
+        items = self.ap.find_all()
         self.assertEqual(len(items), len(self.items))
         total = self.ap.count_all()
         self.assertEqual(total, len(items))

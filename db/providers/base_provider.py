@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list
+from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str
 from sqlalchemy import exc, desc, or_, func
 import settings
 import asyncio
@@ -16,6 +16,7 @@ class BaseProvider():
     def __init__(self, cls):
         self.cls = cls
         self.search_columns = []
+        self.order_by_columns = []
 
     def reload(self, items):
         return load_as_objs(self.cls, items)
@@ -51,12 +52,9 @@ class BaseProvider():
             num = do.with_entities(func.count(self.cls.id)).scalar()
         return num
 
-    def find_all(self, orderby, limit=None, offset=None, keywords=None):
+    def find_all(self, limit=None, offset=None, keywords=None):
 
         collect = []
-
-        if not orderby:
-            return collect
 
         if keywords:
             keywords = keywords.split("|")
@@ -72,8 +70,8 @@ class BaseProvider():
             if targets:
                 do = do.filter(or_(*targets))
 
-            result_set = do.order_by(desc(getattr(self.cls, orderby))
-                                     ).limit(limit).offset(offset).all()
+            orders = list2str(self.order_by_columns)
+            result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
 
             items = [item.to_dict() for item in result_set]
             collect = items

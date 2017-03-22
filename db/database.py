@@ -12,13 +12,13 @@ else:
     db_url = settings.DATABASE_URL
 
 sqlite_memory_mode = db_url.startswith('sqlite:///:memory:')
-sqlite_mode = db_url.startswith('sqlite://')
+sqlite_mode = db_url.startswith('sqlite:')
 
 if sqlite_mode:
     if sqlite_memory_mode:
         uri = 'file::memory:?cache=shared'
     else:
-        uri = db_url.replace('sqlite://', 'file:')
+        uri = db_url.replace('sqlite:///', 'file:')
 
     import sqlite3
     if __debug__:

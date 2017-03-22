@@ -11,7 +11,7 @@ from utils.data_utils import keyword_builder
 import asyncio
 import configparser
 config = configparser.ConfigParser()
-config.read('scripts/feeds.cfg')
+config.read('config/feeds.cfg')
 sources_pm = config.items("Print media")
 sources_em = config.items("Electronic media")
 keywords = config.get("Feed filter", "keywords")

@@ -12,8 +12,7 @@ else:
     db_url = settings.DATABASE_URL
 
 sqlite_memory_mode = db_url.startswith('sqlite:///:memory:')
-sqlite_mode = db_url.startswith('sqlite:')
-
+sqlite_mode = db_url.startswith('sqlite://')
 
 if sqlite_memory_mode:
     import sqlite3
@@ -25,7 +24,7 @@ if creator:
 else:
     engine = create_engine(db_url)
 
-if sqlite_memory_mode:
+if sqlite_mode:
     from db.models import Base
     Base.metadata.create_all(engine)
 

@@ -71,4 +71,4 @@ class ArchiveProvider(BaseProvider):
         return self.load_report_all(limit, offset, keyword)
 
     async def as_load_report_by_page(self, page=1, limit=10, keyword=None):
-        return await as_run(self.load_report_all, page, limit, keyword)
+        return await as_run(self.as_load_report_all, page, limit, keyword)

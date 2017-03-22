@@ -5,7 +5,7 @@ from sanic import Sanic
 from sanic.response import json
 from archiver.blueprints import bp_v1
 from sanic.response import html
-from archiver.utils.archiver_helper import as_fetch_report, as_fetch_category_report
+from archiver.utils.archiver_helper import as_fetch_report
 from jinja2 import Environment, PackageLoader, select_autoescape, Markup, escape
 from sanic.config import Config
 from utils.type_utils import sint
@@ -35,10 +35,7 @@ async def index(request, methods=['GET']):
     limit = sint(request.args.get('limit', limit), limit)
     keyword = request.args.get('keyword', None)
     category = request.args.get('cat', None)
-    if category:
-        data['items'] = await as_fetch_category_report(page, limit, category)
-    else:
-        data['items'] = await as_fetch_report(page, limit, keyword)
 
+    data['items'] = await as_fetch_report(page, limit, keyword, category)
     data['keywords'] = keyword_builder(keyword)
     return html(template.render(data=data))

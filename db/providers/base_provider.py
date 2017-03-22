@@ -3,7 +3,7 @@
 
 from db.database import scoped_session, query_session, Session
 from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str
-from sqlalchemy import exc, desc, or_, func
+from sqlalchemy import exc, desc, or_, and_, func
 import settings
 import asyncio
 import functools
@@ -104,7 +104,7 @@ class BaseProvider():
             collect = items
         return collect
 
-    def find_items_by_values(self, values, column, limit=None, offset=None):
+    def find_items_by_values(self, values, column, limit=None, offset=None, keywords=None):
         collect = []
 
         if not values:
@@ -118,6 +118,13 @@ class BaseProvider():
             targets = [getattr(self.cls, column) == value
                        for value in values]
             do = do.filter(or_(*targets))
+
+            targets = []
+            for keyword in keywords:
+                targets = targets + [getattr(self.cls, column).contains(keyword)
+                                     for column in self.search_columns]
+            if targets:
+                do = do.filter(and_(*targets))
 
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()

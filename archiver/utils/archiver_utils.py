@@ -13,4 +13,6 @@ def load_sources_by_category(category):
         sources = sources_pm
     elif category == 'emedia':
         sources = sources_em
+    elif category in sources_pm or category in sources_em:
+        sources = [category]
     return sources

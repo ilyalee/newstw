@@ -79,10 +79,10 @@ def list_as_str(keys):
 def str2list(str):
     if not str:
         return []
-    return str.split(",")
+    return sorted(str.split(","))
 
 
 def list2str(lst):
     if not lst:
         return None
-    return ",".join(lst)
+    return ",".join(sorted(lst))

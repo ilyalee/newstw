@@ -8,7 +8,7 @@ from utils.async_utils import as_run
 import requests
 
 
-def fetch_news(url, encoding='utf-8', timeout=60):
+def fetch_news(url, encoding='utf-8', timeout=120):
     session = requests.session()
     output = {}
     r = session.get(url=url, timeout=timeout)
@@ -17,7 +17,7 @@ def fetch_news(url, encoding='utf-8', timeout=60):
     html = clean_html(r.text)
     return NewsDataProcessor(r.url, html).output()
 
-async def as_fetch_news(url, encoding='utf-8', timeout=60):
+async def as_fetch_news(url, encoding='utf-8', timeout=120):
     session = requests.session()
     resp = await as_run(session.get, url, timeout=timeout)
     resp.encoding = encoding
@@ -26,7 +26,7 @@ async def as_fetch_news(url, encoding='utf-8', timeout=60):
     return await NewsDataProcessor(resp.url, html).as_output()
 
 
-def fetch_news_all(urls, encoding='utf-8', timeout=60):
+def fetch_news_all(urls, encoding='utf-8', timeout=120):
     if isinstance(urls, list):
         return fetch_news_all_v2(urls, encoding, timeout)
 

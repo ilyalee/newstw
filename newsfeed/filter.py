@@ -20,7 +20,7 @@ class NewsFeedFilter:
         self.full_text = full_text
         self.include_text = include_text
 
-    def _download(self, encoding='utf-8', timeout=30):
+    def _download(self, encoding='utf-8', timeout=120):
         session = requests.Session()
         resp = session.get(self.url, timeout=timeout)
         session.close()
@@ -29,7 +29,7 @@ class NewsFeedFilter:
         items = self.postprocess(rawdata['entries'])
         return items
 
-    async def _as_download(self, encoding='utf-8', timeout=30):
+    async def _as_download(self, encoding='utf-8', timeout=120):
         session = requests.Session()
         resp = await as_run(session.get, self.url, timeout=timeout)
         session.close()

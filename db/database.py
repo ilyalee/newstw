@@ -14,16 +14,10 @@ else:
 sqlite_memory_mode = db_url.startswith('sqlite:///:memory:')
 sqlite_mode = db_url.startswith('sqlite:')
 
-if sqlite_mode:
-    if sqlite_memory_mode:
-        uri = 'file::memory:?cache=shared'
-    else:
-        uri = db_url.replace('sqlite:///', 'file:')
 
+if sqlite_memory_mode:
     import sqlite3
-    if __debug__:
-        print(uri)
-    creator = lambda: sqlite3.connect(uri,
+    creator = lambda: sqlite3.connect('file::memory:?cache=shared',
                                       uri=True, check_same_thread=False)
 
 if creator:

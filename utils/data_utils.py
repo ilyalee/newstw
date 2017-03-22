@@ -44,15 +44,19 @@ def data_filter(text, keys, items):
         keys = [keys]
 
     pat = re.compile(text, re.UNICODE)
-
     seen = set()
-    for i, item in enumerate(items):
+
+    for item in items:
+        founds = []
+        item["founds"] = []
         for key in keys:
             if key in item:
                 founds = re.findall(pat, item[key])
-                if len(founds) > 0 and (i not in seen and not seen.add(i)):
-                    item["founds"] = set(founds)
-                    collect.append(item)
+                if len(founds) > 0:
+                    item["founds"] += founds
+        if item["founds"]:
+            item["founds"] = set(item["founds"])
+            collect.append(item)
     return collect
 
 

@@ -81,6 +81,27 @@ class BaseProvider():
             collect = items
         return collect
 
+    def find_items_by_values(self, values, column, limit=None, offset=None):
+        collect = []
+
+        if not values:
+            return collect
+
+        if isinstance(values, str):
+            values = [values]
+
+        with query_session() as session:
+            do = session.query(self.cls)
+            targets = [getattr(self.cls, column) == value
+                       for value in values]
+            do = do.filter(or_(*targets))
+
+            result_set = do.limit(limit).offset(offset).all()
+
+            items = [item.to_dict() for item in result_set]
+            collect = items
+        return collect
+
     def find_distinct_items_by(self, name, items):
         if not name or not items:
             return items

@@ -37,6 +37,14 @@ class ArchiveProvider(BaseProvider):
     async def as_save_all(self, items):
         return await as_run(self.save_all, items)
 
+    def load_report_by_sources(self, sources, limit=None, offset=None):
+        items = self.find_items_by_values(sources, "source", limit, offset)
+        items = data_updater("founds", "founds", str2list, True, items)
+        return items
+
+    async def as_load_report_by_sources(self, sources, limit=None, offset=None):
+        return await as_run(self.load_report_by_sources, sources, limit, offset)
+
     def load_report_all(self, limit=None, offset=None, keyword=None):
         items = self.find_all("published", limit, offset, keyword)
         items = time_corrector("published", items)

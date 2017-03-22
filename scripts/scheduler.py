@@ -19,7 +19,7 @@ keywords = config.get("Feed filter", "keywords")
 async def news_observer():
     print("[Link Start]")
     include_text = keyword_builder(keywords)
-    all_tasks = asyncio.gather(*[asyncio.Task(archive_feed_by_filter(url, include_text)) for name, url in sources_pm], *[asyncio.Task(archive_feed_by_filter(url, include_text)) for name, url in sources_em])
+    all_tasks = asyncio.gather(*[archive_feed_by_filter(url, include_text) for name, url in sources_pm], *[archive_feed_by_filter(url, include_text) for name, url in sources_em], loop=asyncio.get_event_loop())
 
     await all_tasks
 

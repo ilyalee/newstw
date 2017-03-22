@@ -35,7 +35,7 @@ class BaseProvider():
     def count_all(self, columns=None, keywords=None):
         num = None
 
-        keywords = reload_keyword(keywords)
+        (keywords, op) = reload_keyword(keywords)
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -113,6 +113,8 @@ class BaseProvider():
         if isinstance(values, str):
             values = [values]
 
+        (keywords, op) = reload_keyword(keywords)
+
         with query_session() as session:
             do = session.query(self.cls)
             targets = [getattr(self.cls, column) == value
@@ -120,8 +122,6 @@ class BaseProvider():
             do = do.filter(or_(*targets))
 
             targets = []
-
-            (keywords, op) = reload_keyword(keywords)
 
             for keyword in keywords:
                 targets = targets + [getattr(self.cls, column).contains(keyword)

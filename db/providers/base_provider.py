@@ -31,10 +31,13 @@ class BaseProvider():
             item = result.to_dict()
         return item
 
-    def count_all(self, columns=None, keyword=None):
+    def count_all(self, columns=None, keywords=None):
         num = None
 
-        keywords = keyword.split("|")
+        if keywords:
+            keywords = keywords.split("|")
+        else:
+            keywords = []
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -54,7 +57,10 @@ class BaseProvider():
         if not orderby:
             return collect
 
-        keywords = keyword.split("|")
+        if keywords:
+            keywords = keywords.split("|")
+        else:
+            keywords = []
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -71,13 +77,16 @@ class BaseProvider():
             collect = items
         return collect
 
-    def find_items_by_datetime_between(self, datetime_column, start, end, limit=None, offset=None, keyword=None):
+    def find_items_by_datetime_between(self, datetime_column, start, end, limit=None, offset=None, keywords=None):
         collect = []
 
         if not datetime_column:
             return collect
 
-        keywords = keyword.split("|")
+        if keywords:
+            keywords = keywords.split("|")
+        else:
+            keywords = []
 
         with query_session() as session:
             do = session.query(self.cls)

@@ -25,7 +25,7 @@ if creator:
 else:
     engine = create_engine(db_url)
 
-if sqlite_mode:
+if sqlite_memory_mode:
     from db.models import Base
     Base.metadata.create_all(engine)
 

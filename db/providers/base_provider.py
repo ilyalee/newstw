@@ -33,11 +33,16 @@ class BaseProvider():
 
     def count_all(self, columns=None, keyword=None):
         num = None
+
+        keywords = keyword.split("|")
+
         with query_session() as session:
             do = session.query(self.cls)
-            if keyword:
-                targets = [getattr(self.cls, column).contains(keyword)
-                           for column in self.search_columns]
+            targets = []
+            for keyword in keywords:
+                targets = targets + [getattr(self.cls, column).contains(keyword)
+                                     for column in self.search_columns]
+            if targets:
                 do = do.filter(or_(*targets))
 
             num = do.with_entities(func.count(self.cls.id)).scalar()
@@ -49,11 +54,15 @@ class BaseProvider():
         if not orderby:
             return collect
 
+        keywords = keyword.split("|")
+
         with query_session() as session:
             do = session.query(self.cls)
-            if keyword:
-                targets = [getattr(self.cls, column).contains(keyword)
-                           for column in self.search_columns]
+            targets = []
+            for keyword in keywords:
+                targets = targets + [getattr(self.cls, column).contains(keyword)
+                                     for column in self.search_columns]
+            if targets:
                 do = do.filter(or_(*targets))
 
             result_set = do.order_by(desc(getattr(self.cls, orderby))
@@ -64,14 +73,19 @@ class BaseProvider():
 
     def find_items_by_datetime_between(self, datetime_column, start, end, limit=None, offset=None, keyword=None):
         collect = []
+
         if not datetime_column:
             return collect
 
+        keywords = keyword.split("|")
+
         with query_session() as session:
             do = session.query(self.cls)
-            if keyword:
-                targets = [getattr(self.cls, column).contains(keyword)
-                           for column in self.search_columns]
+            targets = []
+            for keyword in keywords:
+                targets = targets + [getattr(self.cls, column).contains(keyword)
+                                     for column in self.search_columns]
+            if targets:
                 do = do.filter(or_(*targets))
 
             result_set = do.filter(getattr(self.cls, datetime_column).between(

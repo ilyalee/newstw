@@ -31,7 +31,7 @@
           <span class="card-title">{{ item['title'] |   hightlight_keywords(data['keywords']) | safe }}</span>
           <span class="chip">{{ item['source'] }} / {{ item['published'] }}</span>
           {% for keyword in item['founds'] %}
-          <span class="chip">
+          <span class="chip red lighten-2 white-text">
             {{ keyword }}
           </span>
           {% endfor %}

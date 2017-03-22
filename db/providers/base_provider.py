@@ -51,7 +51,7 @@ class BaseProvider():
             num = do.with_entities(func.count(self.cls.id)).scalar()
         return num
 
-    def find_all(self, orderby, limit=None, offset=None, columns=None, keyword=None):
+    def find_all(self, orderby, limit=None, offset=None, columns=None, keywords=None):
         collect = []
 
         if not orderby:

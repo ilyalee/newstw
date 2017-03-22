@@ -134,11 +134,7 @@ context['ebc'] = [
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
 ]
 
-
 skip['any'] = []
-skip['chinatimes'] = ['figure']
-skip['udn'] = ['figure']
-skip['ctitv'] = ['strong']
 
 trimtext['any'] = []
 trimtext['ltn'] = ['相關影音']

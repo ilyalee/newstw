@@ -7,14 +7,23 @@ source = {}
 trimtext = {}
 
 source_default = 'any'
-source['chinatimes'] = ["www.chinatimes.com"]
+source['chinatimes'] = [
+    "www.chinatimes.com",
+    "04784784225885481651/11191251640937190187"
+]
 source['ltn'] = [
     "www.ltn.com.tw/news",
     "news.ltn.com.tw",
     "04784784225885481651/6747397391254853783"
 ]
-source['appledaily'] = ["www.appledaily.com.tw"]
-source['udn'] = ["udn.com"]
+source['appledaily'] = [
+    "www.appledaily.com.tw",
+    "04784784225885481651/11191251640937192952"
+]
+source['udn'] = [
+    "udn.com",
+    "04784784225885481651/11191251640937192594"
+]
 source['pts'] = [
     "news.pts.org.tw",
     "about.pts.org.tw/rss/XML/newsfeed.xml",
@@ -53,6 +62,14 @@ source['ebc'] = [
     "news.ebc.net.tw",
     "04784784225885481651/6967504200194224812"
     "UCR3asjvr_WAaxwJYEDV_Bfw"
+]
+source['supplements'] = [
+    "04784784225885481651/13939194059460916207",
+    "04784784225885481651/17213960256688867711",
+    "04784784225885481651/6443552349257533219",
+    "04784784225885481651/6443552349257535467",
+    "04784784225885481651/3004179234881120660",
+    "04784784225885481651/3004179234881119137"
 ]
 
 context['any'] = [

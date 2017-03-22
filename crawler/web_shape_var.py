@@ -10,7 +10,8 @@ source_default = 'any'
 source['chinatimes'] = ["www.chinatimes.com"]
 source['ltn'] = [
     "www.ltn.com.tw/news",
-    "news.ltn.com.tw"
+    "news.ltn.com.tw",
+    "04784784225885481651/6747397391254853783"
 ]
 source['appledaily'] = ["www.appledaily.com.tw"]
 source['udn'] = ["udn.com"]

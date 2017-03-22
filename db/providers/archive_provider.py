@@ -8,7 +8,7 @@ from db.providers.base_provider import BaseProvider
 import arrow
 import settings
 from utils.data_utils import dict_blocker, time_localizer, data_updater, local_humanize
-from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list
+from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list, id2hashid
 from utils.async_utils import as_run
 
 
@@ -42,6 +42,7 @@ class ArchiveProvider(BaseProvider):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
         items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
+        items = data_updater("id", "id", id2hashid, True, items)
         return items
 
     async def as_load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
@@ -51,6 +52,7 @@ class ArchiveProvider(BaseProvider):
         items = self.find_all(limit, offset, keyword)
         items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
+        items = data_updater("id", "id", id2hashid, True, items)
         return items
 
     async def as_load_report_all(self, limit=None, offset=None, keywords=None):
@@ -63,6 +65,7 @@ class ArchiveProvider(BaseProvider):
             "published", start, end, limit, offset, keywords)
         items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
+        items = data_updater("id", "id", id2hashid, True, items)
         return items
 
     async def as_load_report_today(self, limit=None, offset=None, keywords=None):

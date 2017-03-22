@@ -10,6 +10,12 @@ def load_as_objs(cls, items):
     return [cls(**item) for item in items]
 
 
+def id2hashid(id):
+    hashids = Hashids(salt=settings.SALT, min_length=5)
+    hashid = hashids.encode(id)
+    return hashid
+
+
 def decoded_hashid(func):
     hashids = Hashids(salt=settings.SALT, min_length=5)
 

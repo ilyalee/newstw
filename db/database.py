@@ -23,8 +23,8 @@ if creator:
     engine = create_engine('sqlite://', creator=creator)
 else:
     if sqlite_mode:
-        from sqlalchemy.pool import QueuePool
-        engine = create_engine(db_url, poolclass=QueuePool)
+        from sqlalchemy.pool import StaticPool
+        engine = create_engine(db_url, poolclass=StaticPool)
     else:
         from sqlalchemy.pool import NullPool
         engine = create_engine(db_url, poolclass=NullPool)

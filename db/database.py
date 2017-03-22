@@ -24,7 +24,8 @@ if creator:
 else:
     if sqlite_mode:
         from sqlalchemy.pool import SingletonThreadPool
-        engine = create_engine(db_url, poolclass=SingletonThreadPool)
+        engine = create_engine(db_url, connect_args={
+                               'check_same_thread': False}, poolclass=SingletonThreadPool)
     else:
         engine = create_engine(db_url)
 

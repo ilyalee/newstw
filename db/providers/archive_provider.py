@@ -72,4 +72,4 @@ class ArchiveProvider(BaseProvider):
 
     async def as_load_report_by_page(self, page=1, limit=10, keyword=None):
         offset = (page - 1) * limit
-        return await self.as_load_report_all(offset, limit, keyword)
+        return await self.as_load_report_all(limit, offset, keyword)

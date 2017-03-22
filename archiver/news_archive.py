@@ -39,5 +39,6 @@ async def index(request, methods=['GET']):
         data['items'] = await as_fetch_category_report(page, limit, category)
     else:
         data['items'] = await as_fetch_report(page, limit, keyword)
+
     data['keywords'] = keyword_builder(keyword)
     return html(template.render(data=data))

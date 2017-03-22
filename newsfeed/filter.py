@@ -63,7 +63,10 @@ class NewsFeedFilter:
 
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
-        items = data_updater("source", "link", detect_news_source, self.url, items)
+        if detect_news_source(self.url) == "supplements":
+            items = data_updater("source", "link", detect_news_source, True, items)
+        else:
+            items = data_updater("source", "link", detect_news_source, self.url, items)
         items = data_remover("any", "source", items)
         if (__debug__) and 0 == len(items) and detect_news_source(self.url) == 'any':
             print("please debug this source: {} | {}".format(

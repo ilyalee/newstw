@@ -8,7 +8,7 @@ import settings
 import asyncio
 import functools
 import os
-from utils.async_utils import as_run_pro
+from utils.async_utils import as_run
 
 
 class BaseProvider():
@@ -138,7 +138,7 @@ class BaseProvider():
         return items
 
     async def as_find_distinct_items_by(self, name, items):
-        return await as_run_pro(self.find_distinct_items_by, name, items)
+        return await as_run(self.find_distinct_items_by, name, items)
 
     def save_all(self, items):
         objs = self.reload(items)

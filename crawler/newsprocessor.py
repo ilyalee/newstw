@@ -50,7 +50,11 @@ class NewsDataProcessor:
 
     def _soup_attrs(self, path):
         for key, value in path.items():
-            return self.soup.find(key).attrs[value]
+            found = self.soup.find(key)
+            if found:
+                return found.attrs[value]
+        if __debug__:
+            print("_soup_attrs can not find any value of specific attrs")
 
     def _soup_select(self, path):
         if isinstance(path, str):

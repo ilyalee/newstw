@@ -23,13 +23,12 @@ if creator:
     engine = create_engine('sqlite://', creator=creator)
 else:
     if sqlite_mode:
-        from sqlalchemy.pool import StaticPool
-        engine = create_engine(db_url, poolclass=StaticPool)
+        from sqlalchemy.pool import SingletonThreadPool
+        engine = create_engine(db_url, poolclass=SingletonThreadPool)
     else:
-        from sqlalchemy.pool import NullPool
-        engine = create_engine(db_url, poolclass=NullPool)
+        engine = create_engine(db_url)
 
-if sqlite_mode:
+if sqlite_memory_mode:
     from db.models import Base
     Base.metadata.create_all(engine)
 

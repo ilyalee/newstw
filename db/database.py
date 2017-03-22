@@ -23,9 +23,9 @@ if creator:
     engine = create_engine('sqlite://', creator=creator)
 else:
     if sqlite_mode:
-        from sqlalchemy.pool import SingletonThreadPool
+        from sqlalchemy.pool import StaticPool
         engine = create_engine(db_url, connect_args={
-                               'check_same_thread': False}, poolclass=SingletonThreadPool)
+                               'check_same_thread': False}, poolclass=StaticPool)
     else:
         engine = create_engine(db_url)
 

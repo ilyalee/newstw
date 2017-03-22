@@ -120,6 +120,12 @@ class BaseProvider():
             do = do.filter(or_(*targets))
 
             targets = []
+
+            if keywords:
+                keywords = keywords.split("|")
+            else:
+                keywords = []
+
             for keyword in keywords:
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]

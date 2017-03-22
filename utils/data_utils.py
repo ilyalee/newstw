@@ -76,7 +76,8 @@ def data_updater(key, from_key, fn, condition, items):
             value = fn(condition)
         for i in range(len(targets)):
             if select_key:
-                obj = fn(targets[i][from_key])
+                if from_key in targets[i]:
+                    obj = fn(targets[i][from_key])
             else:
                 obj = value
             items[i][key] = obj

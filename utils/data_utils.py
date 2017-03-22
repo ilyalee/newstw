@@ -51,7 +51,7 @@ def data_filter(text, keys, items):
             if key in item:
                 founds = re.findall(pat, item[key])
                 if len(founds) > 0 and (i not in seen and not seen.add(i)):
-                    item["founds"] = set(founds)
+                    item["founds"] |= set(founds)
                     collect.append(item)
     return collect
 

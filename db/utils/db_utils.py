@@ -79,4 +79,6 @@ def list_as_str(keys):
 
 
 def str2list(str):
+    if not str:
+        return []
     return str.split(",")

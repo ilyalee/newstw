@@ -22,7 +22,6 @@ class ArchiveProvider(BaseProvider):
     def load(self, id, blockers=[]):
         item = super().load(id)
         item = dict_blocker(blockers, item)
-        (item,) = time_corrector("published", item)
         return item
 
     async def as_load(self, id, blockers=[]):
@@ -47,7 +46,6 @@ class ArchiveProvider(BaseProvider):
 
     def load_report_all(self, limit=None, offset=None, keyword=None):
         items = self.find_all("published", limit, offset, keyword)
-        items = time_corrector("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         return items
 
@@ -58,7 +56,6 @@ class ArchiveProvider(BaseProvider):
         start = arrow.now(self.tzinfo).floor('day').datetime
         end = arrow.now(self.tzinfo).ceil('day').datetime
         items = self.find_items_by_datetime_between("published", start, end, limit, offset, keyword)
-        items = time_corrector("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         return items
 

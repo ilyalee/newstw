@@ -47,6 +47,7 @@ def data_filter(text, keys, items):
 
     seen = set()
     for i, item in enumerate(items):
+        item["founds"] = set()
         for key in keys:
             if key in item:
                 founds = re.findall(pat, item[key])

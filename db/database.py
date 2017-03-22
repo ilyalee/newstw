@@ -21,6 +21,8 @@ if sqlite_mode:
         uri = db_url.replace('sqlite://', 'file:')
 
     import sqlite3
+    if __debug__:
+        print(uri)
     creator = lambda: sqlite3.connect(uri,
                                       uri=True, check_same_thread=False)
 

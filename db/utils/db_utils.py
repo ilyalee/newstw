@@ -97,15 +97,15 @@ def list2str(lst, delimiter=','):
 def reload_keyword(keyword):
     keywords = str2list(keyword, ',')
     if len(keywords) > 1:
-        return (keywords, ' ')
+        return (keywords, 'OR')
     keywords = str2list(keyword, ' ')
     if len(keywords) > 1:
-        return (keywords, ' ')
+        return (keywords, 'AND')
     keywords = str2list(keyword, '+')
     if len(keywords) > 1:
-        return (keywords, ' ')
+        return (keywords, 'AND')
     keywords = str2list(keyword, '|')
     if len(keywords) > 1:
-        return (keywords, '|')
+        return (keywords, 'OR')
     else:
-        return (keywords, '')
+        return (keywords, 'OR')

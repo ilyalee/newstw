@@ -3,7 +3,7 @@
 
 from db.database import scoped_session, query_session, Session
 from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str, reload_keyword
-from sqlalchemy import exc, desc, or_, and_, func
+from sqlalchemy import exc, desc, or_, func
 import settings
 import asyncio
 import functools
@@ -35,41 +35,43 @@ class BaseProvider():
     def count_all(self, columns=None, keywords=None):
         num = None
 
-        (keywords, op) = reload_keyword(keywords)
-
         with query_session() as session:
             do = session.query(self.cls)
-            targets = []
-            for keyword in keywords:
-                targets = targets + [getattr(self.cls, column).contains(keyword)
-                                     for column in self.search_columns]
-            if targets:
-                if op == ' ' or op == ',':
-                    do = do.filter(and_(*targets))
-                else:
-                    do = do.filter(or_(*targets))
-
+            do = self.do_keywords(keywords, do)
             num = do.with_entities(func.count(self.cls.id)).scalar()
         return num
 
-    def find_all(self, limit=None, offset=None, keywords=None):
-
-        collect = []
-
+    def do_keywords(self, keywords, do):
         (keywords, op) = reload_keyword(keywords)
 
-        with query_session() as session:
-            do = session.query(self.cls)
-            targets = []
+        targets = []
+
+        if op == 'AND':
+            for keyword in keywords:
+                targets = [(getattr(self.cls, column).contains(keyword))
+                           for column in self.search_columns]
+                if targets:
+                    do = do.filter(or_(*targets))
+        else:
             for keyword in keywords:
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]
             if targets:
-                if op == ' ':
-                    do = do.filter(and_(*targets))
-                else:
-                    do = do.filter(or_(*targets))
+                do = do.filter(or_(*targets))
+        return do
 
+    def do_values(self, values, column, do):
+        targets = [getattr(self.cls, column) == value
+                   for value in values]
+        do = do.filter(or_(*targets))
+        return do
+
+    def find_all(self, limit=None, offset=None, keywords=None):
+        collect = []
+
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = self.do_keywords(keywords, do)
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
 
@@ -83,20 +85,9 @@ class BaseProvider():
         if not datetime_column:
             return collect
 
-        (keywords, op) = reload_keyword(keywords)
-
         with query_session() as session:
             do = session.query(self.cls)
-            targets = []
-            for keyword in keywords:
-                targets = targets + [getattr(self.cls, column).contains(keyword)
-                                     for column in self.search_columns]
-            if targets:
-                if op == ' ' or op == ',':
-                    do = do.filter(and_(*targets))
-                else:
-                    do = do.filter(or_(*targets))
-
+            do = self.do_keywords(keywords, do)
             result_set = do.filter(getattr(self.cls, datetime_column).between(
                 start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
 
@@ -113,25 +104,10 @@ class BaseProvider():
         if isinstance(values, str):
             values = [values]
 
-        (keywords, op) = reload_keyword(keywords)
-
         with query_session() as session:
             do = session.query(self.cls)
-            targets = [getattr(self.cls, column) == value
-                       for value in values]
-            do = do.filter(or_(*targets))
-
-            targets = []
-
-            for keyword in keywords:
-                targets = targets + [getattr(self.cls, column).contains(keyword)
-                                     for column in self.search_columns]
-            if targets:
-                if op == ' ' or op == ',':
-                    do = do.filter(and_(*targets))
-                else:
-                    do = do.filter(or_(*targets))
-
+            do = self.do_values(values, column, do)
+            do = self.do_keywords(keywords, do)
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
 

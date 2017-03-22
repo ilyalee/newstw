@@ -276,6 +276,11 @@ def hightlight_keywords(value, keywords):
     return value
 
 
+def local_humanize(value):
+    tzinfo = settings.TIMEZONE
+    local = arrow.get(value).replace(tzinfo=tzinfo)
+    return local.humanize(locale='zh_tw')
+
 '''
 def _filter_keys(keys, item):
     # return dict(filter(lambda _obj: _obj[0] in keys, obj.items()))

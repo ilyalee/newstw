@@ -29,12 +29,12 @@
       <div class="card">
         <div class="card-content">
           <span class="card-title">{{ item['title'] |   hightlight_keywords(data['keywords']) | safe }}</span>
-          <span class="chip">{{ item['source'] }} / {{ item['published'] }}</span>
           {% for keyword in item['founds'] %}
-          <span class="chip red lighten-2 white-text">
+          <span class="chip red lighten-3 white-text">
             {{ keyword }}
           </span>
           {% endfor %}
+          <span class="chip grey-text">{{ item['source'] }} / {{ item['published_humanize'] }}</span>
           <blockquote>{{ item['summary'] |   hightlight_keywords(data['keywords']) | safe }}</blockquote>
         </div>
         <div class="card-action">

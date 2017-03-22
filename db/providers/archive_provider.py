@@ -7,7 +7,7 @@ from sqlalchemy import exc
 from db.providers.base_provider import BaseProvider
 import arrow
 import settings
-from utils.data_utils import dict_blocker, time_localizer, data_updater
+from utils.data_utils import dict_blocker, time_localizer, data_updater, local_humanize
 from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list
 from utils.async_utils import as_run
 
@@ -74,6 +74,8 @@ class ArchiveProvider(BaseProvider):
             items = self.load_report_by_sources(sources, limit, offset, keywords)
         else:
             items = self.load_report_all(limit, offset, keywords)
+
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
     async def as_load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
@@ -82,4 +84,6 @@ class ArchiveProvider(BaseProvider):
             items = await self.as_load_report_by_sources(sources, limit, offset, keywords)
         else:
             items = await self.as_load_report_all(limit, offset, keywords)
+
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items

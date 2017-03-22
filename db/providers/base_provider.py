@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str
+from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str, reload_keyword
 from sqlalchemy import exc, desc, or_, and_, func
 import settings
 import asyncio
@@ -35,10 +35,7 @@ class BaseProvider():
     def count_all(self, columns=None, keywords=None):
         num = None
 
-        if keywords:
-            keywords = keywords.split("|")
-        else:
-            keywords = []
+        keywords = reload_keyword(keywords)
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -47,7 +44,10 @@ class BaseProvider():
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]
             if targets:
-                do = do.filter(or_(*targets))
+                if op == ' ' or op == ',':
+                    do = do.filter(and_(*targets))
+                else:
+                    do = do.filter(or_(*targets))
 
             num = do.with_entities(func.count(self.cls.id)).scalar()
         return num
@@ -56,10 +56,7 @@ class BaseProvider():
 
         collect = []
 
-        if keywords:
-            keywords = keywords.split("|")
-        else:
-            keywords = []
+        (keywords, op) = reload_keyword(keywords)
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -68,7 +65,10 @@ class BaseProvider():
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]
             if targets:
-                do = do.filter(or_(*targets))
+                if op == ' ':
+                    do = do.filter(and_(*targets))
+                else:
+                    do = do.filter(or_(*targets))
 
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
@@ -83,10 +83,7 @@ class BaseProvider():
         if not datetime_column:
             return collect
 
-        if keywords:
-            keywords = keywords.split("|")
-        else:
-            keywords = []
+        (keywords, op) = reload_keyword(keywords)
 
         with query_session() as session:
             do = session.query(self.cls)
@@ -95,7 +92,10 @@ class BaseProvider():
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]
             if targets:
-                do = do.filter(or_(*targets))
+                if op == ' ' or op == ',':
+                    do = do.filter(and_(*targets))
+                else:
+                    do = do.filter(or_(*targets))
 
             result_set = do.filter(getattr(self.cls, datetime_column).between(
                 start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
@@ -121,16 +121,16 @@ class BaseProvider():
 
             targets = []
 
-            if keywords:
-                keywords = keywords.split("|")
-            else:
-                keywords = []
+            (keywords, op) = reload_keyword(keywords)
 
             for keyword in keywords:
                 targets = targets + [getattr(self.cls, column).contains(keyword)
                                      for column in self.search_columns]
             if targets:
-                do = do.filter(and_(*targets))
+                if op == ' ' or op == ',':
+                    do = do.filter(and_(*targets))
+                else:
+                    do = do.filter(or_(*targets))
 
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()

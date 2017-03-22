@@ -76,13 +76,30 @@ def list_as_str(keys):
     return _
 
 
-def str2list(str):
+def str2list(str, delimiter=','):
     if not str:
         return []
-    return sorted(str.split(","))
+    return sorted(filter(None, str.split(delimiter)))
 
 
-def list2str(lst):
+def list2str(lst, delimiter=','):
     if not lst:
         return None
-    return ",".join(sorted(lst))
+    return delimiter.join(sorted(lst))
+
+
+def reload_keyword(keyword):
+    keywords = str2list(keyword, ',')
+    if len(keywords) > 1:
+        return (keywords, ' ')
+    keywords = str2list(keyword, ' ')
+    if len(keywords) > 1:
+        return (keywords, ' ')
+    keywords = str2list(keyword, '+')
+    if len(keywords) > 1:
+        return (keywords, ' ')
+    keywords = str2list(keyword, '|')
+    if len(keywords) > 1:
+        return (keywords, '|')
+    else:
+        return (keywords, '')

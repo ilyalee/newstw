@@ -119,7 +119,8 @@ class BaseProvider():
                        for value in values]
             do = do.filter(or_(*targets))
 
-            result_set = do.limit(limit).offset(offset).all()
+            orders = list2str(self.order_by_columns)
+            result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
 
             items = [item.to_dict() for item in result_set]
             collect = items

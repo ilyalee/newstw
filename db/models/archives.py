@@ -11,7 +11,7 @@ class Archive(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     hash = Column(String, nullable=False, unique=True)
     published = Column(DateTime(timezone=True), nullable=False)
-    created = Column(DateTime(timezone=True), server_default=func.now())
+    created = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     title = Column(String, nullable=False)
     summary = Column(Text, nullable=False)
     link = Column(String, nullable=False)

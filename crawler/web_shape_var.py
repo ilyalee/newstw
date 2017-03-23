@@ -12,8 +12,7 @@ source['chinatimes'] = [
     "04784784225885481651/11191251640937190187"
 ]
 source['ltn'] = [
-    "www.ltn.com.tw/news",
-    "news.ltn.com.tw",
+    "ltn.com.tw",
     "04784784225885481651/6747397391254853783"
 ]
 source['appledaily'] = [
@@ -86,9 +85,9 @@ context['chinatimes'] = [
 ]
 context['ltn'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
-    {'save': "summary", 'path': "#newstext > p", 'ind': -1},
-    {'save': "_rawtime", 'path': "#newstext > span", 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm", "YYYY-MM-DD"]}
+    {'save': "summary", 'path': ["#newstext > p", ".news_content"], 'ind': -1},
+    {'save': "_rawtime", 'path': ["#newstext > span", ".news_content > .date"], 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm", "YYYY/MM/DD HH:mm", "YYYY-MM-DD"]}
 ]
 context['appledaily'] = [
     {'save': "title", 'path': "header > hgroup > h1", 'ind': 0},

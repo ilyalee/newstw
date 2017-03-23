@@ -139,7 +139,7 @@ class BaseProvider():
                         session.flush()
                         ids.append(obj.id)
                 except exc.IntegrityError as err:
-                    if __debug__ and not settings.TESTING:
+                    if __debug__ and settings.TESTING:
                         print(err)
 
         return encode_hashid_list(ids)

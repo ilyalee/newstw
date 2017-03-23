@@ -29,13 +29,13 @@ class NewsfeedController(HTTPMethodView):
 
         return json(data, ensure_ascii=False)
 
-async def archive_feed_by_filter(url, include_text, ap=None):
+async def archive_feed_by_filter(url, include_text, ap=None, name=None):
     from newsfeed.filter import NewsFeedFilter
     if not ap:
         from db.providers.archive_provider import ArchiveProvider
         ap = ArchiveProvider()
 
-    feed = NewsFeedFilter(url, include_text, full_text=True)
+    feed = NewsFeedFilter(url, include_text, full_text=True, name=name)
     items = await feed.as_output()
     total = len(items)
 

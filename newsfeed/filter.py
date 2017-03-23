@@ -15,12 +15,15 @@ from utils.async_utils import as_run
 
 class NewsFeedFilter:
 
-    def __init__(self, url, include_text='', full_text=False):
+    def __init__(self, url, include_text='', full_text=False, name=None):
+        if __debug__:
+            print("* {} * ({})".format(name, url))
+
         self.url = url
         self.full_text = full_text
         self.include_text = include_text
 
-    def _download(self, encoding='utf-8', timeout=120):
+    def _download(self, encoding='utf-8', timeout=30):
         session = requests.Session()
         resp = session.get(self.url, timeout=timeout)
         session.close()
@@ -29,13 +32,20 @@ class NewsFeedFilter:
         items = self.postprocess(rawdata['entries'])
         return items
 
-    async def _as_download(self, encoding='utf-8', timeout=120):
-        session = requests.Session()
-        resp = await as_run()(session.get)(self.url, timeout=timeout)
-        session.close()
-        resp.encoding = encoding
-        rawdata = feedparser.parse(resp.text)
-        items = await self.as_postprocess(rawdata['entries'])
+    async def _as_download(self, encoding='utf-8', timeout=30):
+        items = []
+        with requests.Session() as session:
+            text = None
+            try:
+                resp = await as_run()(session.get)(self.url, timeout=timeout)
+                resp.encoding = encoding
+                text = resp.text
+            except requests.exceptions.ConnectionError as err:
+                raise ConnectionError('url: {}'.format(self.url))
+                #raise err
+            if text:
+                rawdata = feedparser.parse(text)
+                items = await self.as_postprocess(rawdata['entries'])
         return items
 
     def _data_prepare(self, items):
@@ -80,9 +90,9 @@ class NewsFeedFilter:
         return self._data_produce(items)
 
     async def as_postprocess(self, items):
-        items = await as_run(mode='thread')(self._data_prepare)(items)
-        items = await as_run(mode='process')(self._data_filter)(items)
-        items = await as_run(mode='process')(self._data_produce)(items)
+        items = await as_run()(self._data_prepare)(items)
+        items = await as_run()(self._data_filter)(items)
+        items = await as_run()(self._data_produce)(items)
         return items
 
     def output(self):

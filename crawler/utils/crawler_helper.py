@@ -39,7 +39,8 @@ def fetch_news_all_v2(urls, encoding, timeout):
     resopones = []
     session = FuturesSession(session=requests.Session(),
                              executor=ThreadPoolExecutor(max_workers=os.cpu_count()))
-    future_resps = [session.get(url, timeout=timeout) for url in urls]
+    future_resps = [session.get(url, timeout=timeout, headers={
+                                'Connection': 'close'}) for url in urls]
     resopones = [future.result() for future in future_resps]
     for resp in resopones:
         resp.encoding = encoding
@@ -64,8 +65,8 @@ def fetch_news_all_v1(urls, encoding, timeout):
     collect = []
     resopones = []
     session = requests.session()
-    rs = (grequests.get(url, session=session, timeout=timeout,
-                        hooks={'response': _hook(encoding)}) for url in urls)
+    rs = (grequests.get(url, session=session, timeout=timeout, headers={
+          'Connection': 'close'}, hooks={'response': _hook(encoding)}) for url in urls)
     resopones = grequests.map(rs, size=len(urls), exception_handler=exception_handler)
     for resp in resopones:
         html = clean_html(resp.text)
@@ -81,7 +82,8 @@ def fetch_news_all_v0(urls, encoding, timeout):
     collect = []
     resopones = []
     session = requests.session()
-    resopones = [session.get(url=url, timeout=timeout) for url in urls]
+    resopones = [session.get(url=url, timeout=timeout, headers={
+                             'Connection': 'close'}) for url in urls]
     for resp in resopones:
         html = clean_html(resp.text)
         news = NewsDataProcessor(resp.url, html)

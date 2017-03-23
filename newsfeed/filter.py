@@ -31,7 +31,7 @@ class NewsFeedFilter:
 
     async def _as_download(self, encoding='utf-8', timeout=120):
         session = requests.Session()
-        resp = await as_run(session.get, self.url, timeout=timeout)
+        resp = await as_run()(session.get)(self.url, timeout=timeout)
         session.close()
         resp.encoding = encoding
         rawdata = feedparser.parse(resp.text)
@@ -80,9 +80,9 @@ class NewsFeedFilter:
         return self._data_produce(items)
 
     async def as_postprocess(self, items):
-        items = await as_run(self._data_prepare, items)
-        items = await as_run(self._data_filter, items)
-        items = await as_run(self._data_produce, items)
+        items = await as_run()(self._data_prepare)(items)
+        items = await as_run()(self._data_filter)(items)
+        items = await as_run()(self._data_produce)(items)
         return items
 
     def output(self):

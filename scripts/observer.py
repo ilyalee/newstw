@@ -7,6 +7,7 @@ sys.path.append(os.getcwd())
 
 import asyncio
 from archiver.controllers.newsfeed import archive_feed_by_filter
+from utils.async_utils import as_run
 from utils.data_utils import keyword_builder
 from itertools import chain, repeat
 import requests
@@ -25,6 +26,7 @@ keywords = config.get("Feed filter", "keywords")
 timeout = 600
 max_sem = 3
 
+
 async def news_observer(loop=None):
     if not loop:
         loop = asyncio.get_event_loop()
@@ -32,7 +34,7 @@ async def news_observer(loop=None):
         with await sem:
             try:
                 print("Crawling: [{}] ({})".format(name, url))
-                data = await archive_feed_by_filter(url, include_text)
+                data = await as_run(loop, mode="process")(archive_feed_by_filter)(url, include_text)
                 return data
             except requests.exceptions.ConnectionError as err:
                 print("NETWORK ERROR: [{}] ({})".format(name, url))

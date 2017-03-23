@@ -19,7 +19,7 @@ def fetch_news(url, encoding='utf-8', timeout=120):
 
 async def as_fetch_news(url, encoding='utf-8', timeout=120):
     session = requests.session()
-    resp = await as_run(session.get, url, timeout=timeout)
+    resp = await as_run()(session.get)(url, timeout=timeout)
     resp.encoding = encoding
     session.close()
     html = clean_html(resp.text)

@@ -126,7 +126,7 @@ class BaseProvider():
         return items
 
     async def as_find_distinct_items_by(self, name, items):
-        return await as_run(self.find_distinct_items_by, name, items)
+        return await as_run()(self.find_distinct_items_by)(name, items)
 
     def save_all(self, items):
         objs = self.reload(items)

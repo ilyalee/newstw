@@ -24,7 +24,7 @@ class NewsDataProcessor:
         return self.data
 
     async def as_output(self):
-        await as_run(self._process, self.html)
+        await as_run()(self._process)(self.html)
         self.data['pass'] = self.data.get("pass", True)
         return self.data
 

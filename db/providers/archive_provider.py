@@ -27,7 +27,7 @@ class ArchiveProvider(BaseProvider):
         return item
 
     async def as_load(self, id, blockers=[]):
-        return await as_run(self.load, id, blockers)
+        return await as_run()(self.load)(id, blockers)
 
     @sqlite_datetime_compatibility(['published'])
     @list_as_str(['founds'])
@@ -36,7 +36,7 @@ class ArchiveProvider(BaseProvider):
         return super().save_all(items)
 
     async def as_save_all(self, items):
-        return await as_run(self.save_all, items)
+        return await as_run()(self.save_all)(items)
 
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
@@ -46,7 +46,7 @@ class ArchiveProvider(BaseProvider):
         return items
 
     async def as_load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
-        return await as_run(self.load_report_by_sources, sources, limit, offset, keywords)
+        return await as_run()(self.load_report_by_sources)(sources, limit, offset, keywords)
 
     def load_report_all(self, limit=None, offset=None, keyword=None):
         items = self.find_all(limit, offset, keyword)
@@ -56,7 +56,9 @@ class ArchiveProvider(BaseProvider):
         return items
 
     async def as_load_report_all(self, limit=None, offset=None, keywords=None):
-        return await as_run(self.load_report_all, limit, offset, keywords)
+        run = as_run()
+        items = await run(self.load_report_all)(limit, offset, keywords)
+        return items
 
     def load_report_today(self, limit=None, offset=None, keywords=None):
         start = arrow.now(self.tzinfo).floor('day').datetime
@@ -69,7 +71,7 @@ class ArchiveProvider(BaseProvider):
         return items
 
     async def as_load_report_today(self, limit=None, offset=None, keywords=None):
-        return await as_run(self.load_report_today, limit, offset, keywords)
+        return await as_run()(self.load_report_today)(limit, offset, keywords)
 
     def load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
         offset = (page - 1) * limit
@@ -87,6 +89,5 @@ class ArchiveProvider(BaseProvider):
             items = await self.as_load_report_by_sources(sources, limit, offset, keywords)
         else:
             items = await self.as_load_report_all(limit, offset, keywords)
-
         items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items

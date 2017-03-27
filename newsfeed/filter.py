@@ -27,6 +27,7 @@ class NewsFeedFilter:
         self.include_text = include_text
 
     def _download(self, encoding='utf-8', timeout=30) -> Feeds:
+        items = []
         with requests.Session() as session:
             try:
                 resp = session.get(self.url, timeout=timeout)
@@ -38,9 +39,10 @@ class NewsFeedFilter:
             else:
                 rawdata = feedparser.parse(resp.text)
                 items = self.postprocess(rawdata['entries'])
-                return items
+        return items
 
     async def _as_download(self, encoding='utf-8', timeout=30) -> Feeds:
+        items = []
         url = self.url
         with requests.Session() as session:
             try:
@@ -53,7 +55,7 @@ class NewsFeedFilter:
             else:
                 rawdata = feedparser.parse(text)
                 items = await self.as_postprocess(rawdata['entries'])
-                return items
+        return items
 
     def _data_prepare(self, items):
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']

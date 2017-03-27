@@ -36,8 +36,6 @@ async def archive_feed_by_filter(url, include_text, ap=None, name=None):
         ap = ArchiveProvider()
 
     items = await NewsFeedFilter(url, include_text, full_text=True, name=name).as_output()
-    if not items:
-        return
 
     total = len(items)
     # checking duplicate items by hash

@@ -40,8 +40,8 @@ def data_filter(text, keys, items):
         return items
 
     collect = []
-    if isinstance(keys, str):
-        keys = [keys]
+    if not isiterable(keys):
+        keys = clist(keys)
 
     pat = re.compile(text, re.UNICODE)
     seen = set()
@@ -278,10 +278,11 @@ def keyword_builder(keywords):
 def hightlight_keywords(value, keywords):
     if not keywords:
         return value
-    if isinstance(keywords, str):
-        keywords = [keywords]
+    if not isiterable(keywords):
+        keywords = clist(keywords)
+
     for keyword in keywords:
-        value = value.replace(keyword, '<strong style="color: #E57373;">' + keyword + '</strong>')
+        value = re.sub(f'({keyword})', f'<strong style="color: #E57373;">\g<1></strong>', value, flags=re.I)
     return value
 
 

@@ -8,6 +8,7 @@ import settings
 import asyncio
 import functools
 import os
+import itertools
 from utils.async_utils import as_run
 from utils.data_utils import isiterable, clist
 
@@ -39,8 +40,8 @@ class BaseProvider():
     def do_keywords(self, keywords, do):
         def _and(do, keywords):
             for keyword in keywords:
-                targets = [(getattr(self.cls, column).contains(keyword))
-                           for column in self.search_columns]
+                targets = [getattr(self.cls, column).ilike(
+                    f'%{keyword}%') for column in self.search_columns]
                 if targets:
                     do = do.filter(or_(*targets))
             return do
@@ -48,8 +49,9 @@ class BaseProvider():
         def _or(do, keywords):
             targets = []
             for keyword in keywords:
-                targets = targets + [getattr(self.cls, column).contains(keyword)
-                                     for column in self.search_columns]
+                targets = targets + \
+                    [getattr(self.cls, column).ilike(f'%{keyword}%')
+                     for column in self.search_columns]
             if targets:
                 do = do.filter(or_(*targets))
             return do

@@ -16,8 +16,8 @@ from utils.async_utils import as_run
 class NewsFeedFilter:
 
     def __init__(self, url, include_text='', full_text=False, name=None):
-        if __debug__:
-            print("* {} * ({})".format(name, url))
+        # if __debug__:
+        #    print("* {} * ({})".format(name, url))
 
         self.url = url
         self.full_text = full_text

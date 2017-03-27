@@ -1,7 +1,12 @@
 import asyncio
 import os
+import tqdm
 from functools import wraps, partial
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+
+
+async def wait_with_progress(coros):
+    return [await f for f in tqdm.tqdm(asyncio.as_completed(coros), total=len(coros))]
 
 
 def as_run(loop=None, count=None, mode='thread'):
@@ -20,9 +25,11 @@ def as_run(loop=None, count=None, mode='thread'):
     return _
 
 
-async def run_all_async(func, arglist=None, sem=None):
-    done, _ = await asyncio.wait([sem_async(func, sem, **kwargs) for kwargs in arglist])
-    return done
+async def run_all_async(func, arglist=None, sem=None, progress=False):
+    if not progress:
+        return [await sem_async(func, sem, **kwargs) for kwargs in arglist]
+    else:
+        return await wait_with_progress([sem_async(func, sem, **kwargs) for kwargs in arglist])
 
 
 async def sem_async(func, sem, *args, **kwargs):

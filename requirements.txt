@@ -59,6 +59,7 @@ service-identity==16.0.0
 six==1.10.0
 SQLAlchemy==1.1.5
 tldextract==2.0.2
+tqdm==4.11.2
 Twisted==17.1.0
 tzlocal==1.3
 ujson==1.35

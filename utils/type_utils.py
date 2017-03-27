@@ -14,4 +14,4 @@ def ignore_except(IgnoreException=Exception, default=None):
 
 
 def sint(value, default=None):
-    return ignore_except(ValueError, default)(int)(value)
+    return ignore_except((TypeError, ValueError), default)(int)(value)

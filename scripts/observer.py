@@ -32,7 +32,7 @@ keywords = config.get("Feed filter", "keywords")
 
 ap = ArchiveProvider()
 
-async def news_observer():
+async def news_observer(progress=False):
     sem = asyncio.Semaphore(settings.LIMIT)
     kwargslist = (
         {
@@ -42,8 +42,7 @@ async def news_observer():
             'name': name
         } for name, url in feeds
     )
-    result = await run_all_async(archive_feed_by_filter, kwargslist, sem, True)
-    return (item for item in result if item)
+    return await run_all_async(archive_feed_by_filter, kwargslist, sem, progress)
 
 if __name__ == '__main__':
     import signal
@@ -51,9 +50,9 @@ if __name__ == '__main__':
 
     print("[Link Start]")
     loop = asyncio.get_event_loop()
-    items = loop.run_until_complete(news_observer())
+    result = loop.run_until_complete(news_observer(progress=True))
 
-    for item in items:
+    for item in (item for item in result if item):
         print("[{}] {}".format(item['source'], item['info']))
 
     loop.close()

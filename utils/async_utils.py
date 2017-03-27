@@ -25,7 +25,7 @@ def as_run(loop=None, count=None, mode=None):
 
 async def run_all_async(func, kwargslist=None, sem=None, progress=False):
     if not progress:
-        return [await sem_async(func, sem, **kwargs) for kwargs in kwargslist]
+        return await asyncio.gather(*[asyncio.ensure_future(sem_async(func, sem, **kwargs)) for kwargs in kwargslist])
     else:
         return await wait_with_progress([sem_async(func, sem, **kwargs) for kwargs in kwargslist])
 

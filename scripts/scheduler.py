@@ -15,15 +15,12 @@ if __name__ == '__main__':
     import signal
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-    executors = {
-        'default': ThreadPoolExecutor(settings.LIMIT),
-        'processpool': ProcessPoolExecutor(os.cpu_count())
-    }
-    scheduler = AsyncIOScheduler(executors=executors)
+    scheduler = AsyncIOScheduler()
     # every hours
     scheduler.add_job(news_observer, 'cron', minute=0, timezone="Asia/Taipei")
     scheduler.start()
     print("News Observer started.")
+    # scheduler.print_jobs()
     # print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 
     asyncio.get_event_loop().run_forever()

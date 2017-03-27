@@ -50,7 +50,7 @@ class TestArchiveProvider(unittest.TestCase):
         self.assertEqual(len(list(items)), 0)
         items = self.ap.find_all()
         self.assertEqual(len(list(items)), len(self.items))
-        total = self.ap.count_all()
+        total = self.ap.count()
         self.assertEqual(total, len(self.items))
 
     def test_sqlite_datetime_compatibility(self):

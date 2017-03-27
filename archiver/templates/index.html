@@ -68,7 +68,7 @@
           </blockquote>
         </p>
       </div>
-      <a class="chip grey-text" href="?cat={{ item['source'] }}">{{ item['published_humanize'] }}</a>
+      <span class="chip grey-text">{{ item['published_humanize'] }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ item['source'] }}">{{ item['source'] }}</a>
       <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
       {% for keyword in item['founds'] %}

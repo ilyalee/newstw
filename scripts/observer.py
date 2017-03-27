@@ -43,7 +43,7 @@ async def news_observer_v1():
 
 async def news_observer_v2():
     sem = asyncio.Semaphore(limit)
-    arglist = [
+    kwargslist = [
         {
             'url': url.strip(),
             'include_text': keyword_builder(keywords),
@@ -51,7 +51,7 @@ async def news_observer_v2():
             'name': name
         } for name, url in feeds
     ]
-    return await run_all_async(archive_feed_by_filter, arglist, sem, True)
+    return await run_all_async(archive_feed_by_filter, kwargslist, sem, True)
 
 
 if __name__ == '__main__':

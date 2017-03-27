@@ -9,37 +9,65 @@
       text-align: left;
       white-space: normal;
       font-size: small;
-      color: #888;
-    }
-
-    .card-content, .card-action {
-      text-align: right;
+      color: #999;
     }
 
     .card-title {
-      text-align: left;
-      color: #3366cc;
+      font-size: large;
+    }
+
+    .nav-wrapper {
+      padding-left: 2rem;
     }
   </style>
 </head>
 <body>
+  <nav>
+    <div class="nav-wrapper yellow darken-3">
+      <div class="row">
+        <div class="col s6">
+          <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
+             {{ data['parent'] | default('全部', true) }} ({{ data['parent_count'] }})</a>
+          {%- if data['orig_keyword'] -%}
+          <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
+          {% endif %}
+        </div>
+        <div class="col s6">
+          <form>
+            <div class="input-field">
+              <input name="keyword" id="keyword" type="search" action="" method="get" required>
+              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+              <i class="material-icons">close</i>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
   <ul>
   {% for item in data['items'] %}
-    <li>
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">{{ item['title'] |   hightlight_keywords(data['keywords']) | safe }}</span>
-          <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
-          {% for keyword in item['founds'] %}
-          <span class="chip red lighten-3 white-text">
-            {{ keyword }}
-          </span>
-          {% endfor %}
-          <span class="chip grey-text">{{ item['source'] }} / {{ item['published_humanize'] }}</span>
-          <blockquote>{{ item['summary'] |   hightlight_keywords(data['keywords']) | safe }}</blockquote>
-        </div>
-        <div class="card-action">
-          <a target="_blank" href="{{ item['link'] }}">新聞連結</a>
+    <li class="card-panel hoverable">
+      <div class="card-content">
+        <span class="card-title blue-text text-darken-1">
+          <i class="material-icons">add</i>
+          {{ item['title'] | hightlight_keywords(data['keyword']) | safe }}
+        </span>
+        <p class="left">
+          <blockquote class="truncate">
+            {{ item['summary'] | hightlight_keywords(data['keyword']) | safe }}
+          </blockquote>
+        </p>
+      </div>
+      <span class="chip grey-text">{{ item['source'] }} / {{ item['published_humanize'] }}</span>
+      <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
+      {% for keyword in item['founds'] %}
+      <span class="chip red lighten-3 white-text">
+        {{ keyword }}
+      </span>
+      {% endfor %}
+      <div class="card-action">
+        <div class="right-align">
+          <a class="waves-effect waves-light grey darken-1 btn" target="_blank" href="{{ item['link'] }}">新聞連結</a>
         </div>
       </div>
     </li>
@@ -47,6 +75,6 @@
   </ul>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 </body>
 </html>

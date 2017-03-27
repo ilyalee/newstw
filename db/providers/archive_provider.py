@@ -38,6 +38,15 @@ class ArchiveProvider(BaseProvider):
     async def as_save_all(self, items):
         return await as_run()(self.save_all)(items)
 
+    def count_report(self, keywords, sources=None):
+        if sources:
+            return self.count_items_by_values(sources, "source", keywords)
+        else:
+            return self.count(keywords)
+
+    async def as_count_report(self, keywords, sources=None):
+        return await as_run()(self.count_report)(keywords, sources)
+
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
         items = time_localizer("published", items)

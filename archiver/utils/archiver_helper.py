@@ -14,3 +14,12 @@ def fetch_report(page, limit, keywords, category):
 async def as_fetch_report(page, limit, keywords, category):
     sources = load_sources_by_category(category)
     return [] if category and not sources else await ap.as_load_report_by_page(page, limit, keywords, sources)
+
+
+def fetch_report_count(keywords, category):
+    sources = load_sources_by_category(category)
+    return [] if category and not sources else ap.count_report(keyword, sources)
+
+async def as_fetch_report_count(keywords, category):
+    sources = load_sources_by_category(category)
+    return [] if category and not sources else await ap.as_count_report(keywords, sources)

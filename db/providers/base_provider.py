@@ -30,9 +30,21 @@ class BaseProvider():
             if result:
                 return result.to_dict()
 
-    def count_all(self, columns=None, keywords=None):
+    def count(self, keywords=None):
         with query_session() as session:
             do = session.query(self.cls)
+            do = self.do_keywords(keywords, do)
+            num = do.with_entities(func.count(self.cls.id)).scalar()
+            return num
+
+    def count_items_by_values(self, values, column, keywords=None):
+        if not values:
+            return
+        if not isiterable(values):
+            values = clist(values)
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = self.do_values(values, column, do)
             do = self.do_keywords(keywords, do)
             num = do.with_entities(func.count(self.cls.id)).scalar()
             return num
@@ -86,7 +98,6 @@ class BaseProvider():
     def find_items_by_values(self, values, column, limit=None, offset=None, keywords=None):
         if not values:
             return []
-
         if not isiterable(values):
             values = clist(values)
 

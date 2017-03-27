@@ -51,7 +51,7 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False):
         futures = ((url, session.get(url, timeout=timeout)) for url in urls)
         for url, future in futures:
             if remedy:
-                log.info(f"[{__name__}] Retry: {url}")
+                log.error(f"[{__name__}] Retry: {url}")
             try:
                 with sem:
                     resopones.append(future.result())

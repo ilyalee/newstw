@@ -1,6 +1,7 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+from utils.type_utils import sint
 import sys
 
 filename = ".env"
@@ -23,4 +24,4 @@ SALT = os.environ.get("SALT")
 # time zone
 TIMEZONE = os.environ.get("TIMEZONE")
 
-LIMIT = os.environ.get("LIMIT")
+LIMIT = sint(os.environ.get("LIMIT"), 1)

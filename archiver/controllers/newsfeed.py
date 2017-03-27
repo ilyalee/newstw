@@ -35,24 +35,24 @@ async def archive_feed_by_filter(url, include_text, ap=None, name=None):
         from db.providers.archive_provider import ArchiveProvider
         ap = ArchiveProvider()
 
-    feed = NewsFeedFilter(url, include_text, full_text=True, name=name)
-    items = await feed.as_output()
-    total = len(items)
+    items = await NewsFeedFilter(url, include_text, full_text=True, name=name).as_output()
+    if not items:
+        return
 
+    total = len(items)
     # checking duplicate items by hash
     items = await ap.as_find_distinct_items_by("hash", items)
-    ids = await ap.as_save_all(items)
+    ids = list(await ap.as_save_all(items))
     acceptances = len(ids)
     rejects = total - acceptances
 
-    data = dict_cleaner(None, {
+    return dict_cleaner(None, {
         'source': detect_news_source(url),
         'url': url,
         'include': include_text,
         'acceptances': acceptances,
         'rejects': rejects,
         'items': ids,
-        'info': '%d successfully created, %d duplicates found.' % (acceptances, rejects)
+        'info': '(%d/%d)' % (acceptances, total),
+        'infomation': '(%d/%d) %d successfully created, %d duplicates found.' % (acceptances, total, acceptances, rejects)
     })
-
-    return data

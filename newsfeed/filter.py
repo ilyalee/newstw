@@ -3,6 +3,7 @@
 
 import feedparser
 import requests
+from requests.exceptions import RequestException
 import os
 import asyncio
 import functools
@@ -11,42 +12,48 @@ from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
 from newsfeed.utils.newsfeed_helper import load_remote_news_date
 from utils.async_utils import as_run
+import logging
+log = logging.getLogger(__name__)
+from typing import List
+Feeds = List[dict]
 
 
 class NewsFeedFilter:
 
     def __init__(self, url, include_text='', full_text=False, name=None):
-        # if __debug__:
-        #    print("* {} * ({})".format(name, url))
-
+        self.name = name
         self.url = url
         self.full_text = full_text
         self.include_text = include_text
 
-    def _download(self, encoding='utf-8', timeout=30):
-        session = requests.Session()
-        resp = session.get(self.url, timeout=timeout)
-        session.close()
-        resp.encoding = encoding
-        rawdata = feedparser.parse(resp.text)
-        items = self.postprocess(rawdata['entries'])
-        return items
-
-    async def _as_download(self, encoding='utf-8', timeout=30):
-        items = []
+    def _download(self, encoding='utf-8', timeout=30) -> Feeds:
         with requests.Session() as session:
-            text = None
             try:
-                resp = await as_run()(session.get)(self.url, timeout=timeout)
+                resp = session.get(self.url, timeout=timeout)
                 resp.encoding = encoding
                 text = resp.text
-            except requests.exceptions.ConnectionError as err:
-                raise ConnectionError('url: {}'.format(self.url))
-                #raise err
-            if text:
+            except RequestException as e:
+                log.error(f"[{__name__}] Failure when trying to fetch {url}")
+                log.info(e, exc_info=True)
+            else:
+                rawdata = feedparser.parse(resp.text)
+                items = self.postprocess(rawdata['entries'])
+                return items
+
+    async def _as_download(self, encoding='utf-8', timeout=30) -> Feeds:
+        url = self.url
+        with requests.Session() as session:
+            try:
+                resp = await as_run()(session.get)(url, timeout=timeout)
+                resp.encoding = encoding
+                text = resp.text
+            except RequestException as e:
+                log.error(f"[{__name__}] Failure when trying to fetch {url}")
+                log.info(e, exc_info=True)
+            else:
                 rawdata = feedparser.parse(text)
                 items = await self.as_postprocess(rawdata['entries'])
-        return items
+                return items
 
     def _data_prepare(self, items):
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']

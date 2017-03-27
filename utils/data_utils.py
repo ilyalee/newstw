@@ -13,18 +13,18 @@ from dateutil import parser
 
 
 def dict_filter(keys, items):
-    if not isinstance(keys, list):
-        keys = [keys]
-    if not isinstance(items, list):
-        items = [items]
+    if not isiterable(keys):
+        keys = clist(keys)
+    if not isiterable(items):
+        items = clist(items)
     return [{key: value for key, value in item.items() if key in keys} for item in items]
 
 
 def dict_blocker(keys, items):
-    if not isinstance(keys, list):
-        keys = [keys]
-    if not isinstance(items, list):
-        items = [items]
+    if not isiterable(keys):
+        keys = clist(keys)
+    if not isiterable(items):
+        items = clist(items)
     for key in keys:
         for item in items:
             del_key(key, True, item)
@@ -100,7 +100,7 @@ def data_kv_updater_all_load(from_key, fn, go, items):
     remote_items = []
     if go:
         targets = dict_filter([from_key], items)
-        sources = [target[from_key] for target in targets if from_key in target]
+        sources = (target[from_key] for target in targets if from_key in target)
         remote_items = fn(sources)
     return remote_items
 
@@ -123,13 +123,12 @@ def data_kv_updater_all(key, from_key, fn, go, items):
 
 def data_hasher(key, keys, items):
     for item in items:
-        text = "".join([item[key] for key in keys if key in item])
+        text = "".join(item[key] for key in keys if key in item)
         item[key] = githash(text.replace(" ", ""), hexdigest=True)
     return items
 
 
 def data_cleaner(key, items):
-    # return [*map(itertools.partial(itertools.partial(_update_text, clean_text), key), items)]
     for item in items:
         if key in item:
             item[key] = clean_text(item[key])
@@ -158,24 +157,24 @@ def datetime_encapsulator(datetime_str):
 
 
 def localize_datetime(source, formats, tzinfo, data):
-    if not isinstance(formats, list):
-        formats = [formats]
+    if not isiterable(formats):
+        formats = clist(formats)
     for i, format in enumerate(formats):
         try:
             timetext = arrow.get(source, format).replace(tzinfo=tzinfo).format()
             return timetext
-        except arrow.parser.ParserError as err:
+        except arrow.parser.ParserError as e:
             if i >= (len(formats) - 1):
                 if __debug__:
-                    data['debug'] = err
+                    data['debug'] = e
                 return ''
             else:
                 pass
 
 
 def time_localizer(key, items):
-    if not isinstance(items, list):
-        items = [items]
+    if not isiterable(items):
+        items = clist(items)
     tzinfo = settings.TIMEZONE
     for item in items:
         if key in item:
@@ -184,12 +183,14 @@ def time_localizer(key, items):
                 item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
             elif isinstance(item[key], str):
                 item[key] = arrow.get(parser.parse(item[key])).replace(tzinfo=tzinfo).format()
+            else:
+                raise arrow.parser.TzinfoParser("type missing")
     return items
 
 
 def time_corrector(key, items):
-    if not isinstance(items, list):
-        items = [items]
+    if not isiterable(items):
+        items = clist(items)
     tzinfo = settings.TIMEZONE
     for item in items:
         if key in item:
@@ -198,6 +199,8 @@ def time_corrector(key, items):
                 item[key] = arrow.get(item[key]).to(tzinfo).format()
             elif isinstance(item[key], str):
                 item[key] = arrow.get(parser.parse(item[key])).to(tzinfo).format()
+            else:
+                raise arrow.parser.TzinfoParser("type missing")
     return items
 
 
@@ -262,7 +265,7 @@ def keyword_builder(keywords):
     for keyword in keywords:
         if " " in keyword:
             sub = keyword.split(" ")
-            subp = [".*".join(map(str, comb)) for comb in itertools.permutations(sub)]
+            subp = (".*".join(map(str, comb)) for comb in itertools.permutations(sub))
             keyword_list.append('|'.join(subp))
         else:
             keyword_list.append(keyword)
@@ -287,23 +290,15 @@ def local_humanize(value):
     local = arrow.get(value).replace(tzinfo=tzinfo)
     return local.humanize(locale='zh_tw')
 
-'''
-def _filter_keys(keys, item):
-    # return dict(filter(lambda _obj: _obj[0] in keys, obj.items()))
-    return {key: value for key, value in item.items() if key in keys}
-'''
-'''
-def _update_time(key, item):
-    item.__setitem__(key, arrow.get(parser.parse(item[key])).format())
-    return item
-'''
-'''
-def _update_text(key, item):
-    item.__setitem__(key, clean_text(item[key]))
-    return item
-'''
-'''
-def _update_text(fn, key, item):
-    item.__setitem__(key, fn(item[key]))
-    return item
-'''
+
+def isiterable(target):
+    import collections
+    return isinstance('ciao', collections.Iterator)
+
+
+def clist(target):
+    import types
+    if isinstance(target, str):
+        return [target]
+    else:
+        return list(target)

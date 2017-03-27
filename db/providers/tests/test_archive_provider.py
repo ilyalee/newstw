@@ -37,17 +37,21 @@ class TestArchiveProvider(unittest.TestCase):
 
     def test_find_distinct_items_by(self):
         items = self.ap.find_distinct_items_by("hash", self.items)
-        self.assertEqual(self.items, items)
+        self.assertSequenceEqual(list(items), self.items)
+        items = self.ap.find_distinct_items_by("hash", self.items[:1])
+        self.assertSequenceEqual(list(items), self.items[:1])
+        items = self.ap.find_distinct_items_by("hash", [])
+        self.assertSequenceEqual(list(items), [])
 
     def test_save_all(self):
         items = self.ap.save_all(self.items)
-        self.assertEqual(len(items), 2)
+        self.assertEqual(len(list(items)), 2)
         items = self.ap.save_all(self.items)
-        self.assertEqual(len(items), 0)
+        self.assertEqual(len(list(items)), 0)
         items = self.ap.find_all()
-        self.assertEqual(len(items), len(self.items))
+        self.assertEqual(len(list(items)), len(self.items))
         total = self.ap.count_all()
-        self.assertEqual(total, len(items))
+        self.assertEqual(total, len(self.items))
 
     def test_sqlite_datetime_compatibility(self):
         items = data_updater("published", "published", datetime_encapsulator, True, self.items)

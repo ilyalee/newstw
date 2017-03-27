@@ -3,11 +3,15 @@
 
 from hashids import Hashids
 import settings
-from utils.data_utils import datetime_encapsulator, data_updater
+from utils.data_utils import datetime_encapsulator, data_updater, isiterable, clist
 
 
 def load_as_objs(cls, items):
-    return [cls(**item) for item in items]
+    return (cls(**item) for item in items)
+
+
+def load_as_dicts(result_set):
+    return (item.to_dict() for item in result_set)
 
 
 def id2hashid(id):
@@ -40,19 +44,20 @@ def encoded_hashid(func):
 
 def encode_hashid_list(ids):
     hashids = Hashids(salt=settings.SALT, min_length=5)
-    return [hashids.encode(id) for id in ids]
+    return (hashids.encode(id) for id in ids)
 
 
 def sqlite_datetime_compatibility(keys):
     def _(func):
         def wrapper(*args, **kargs):
+            import types
             nonlocal keys
             args = list(args)
             items = args[1]
-            if not isinstance(items, list):
-                items = [items]
-            if not isinstance(keys, list):
-                keys = [keys]
+            if not isiterable(keys):
+                keys = clist(keys)
+            if not isiterable(items):
+                items = clist(items)
             for key in keys:
                 items = data_updater(key, key, datetime_encapsulator, True, items)
             args[1] = items
@@ -68,10 +73,10 @@ def list_as_str(keys):
             nonlocal keys
             args = list(args)
             items = args[1]
-            if not isinstance(items, list):
-                items = [items]
-            if not isinstance(keys, list):
-                keys = [keys]
+            if not isiterable(keys):
+                keys = clist(keys)
+            if not isiterable(items):
+                items = clist(items)
             for key in keys:
                 if all(key in item for item in items):
                     items = data_updater(key, key, list2str, True, items)

@@ -38,8 +38,8 @@ async def news_observer():
 
 async def news_observer_v1():
     sem = asyncio.Semaphore(limit)
-    return await wait_with_progress([sem_async(archive_feed_by_filter, sem, url.strip(), keyword_builder(keywords), ap, name) for name, url in feeds])
-
+    result = await wait_with_progress([sem_async(archive_feed_by_filter, sem, url.strip(), keyword_builder(keywords), ap, name) for name, url in feeds])
+    return (item for item in result if item)
 
 async def news_observer_v2():
     sem = asyncio.Semaphore(limit)
@@ -51,14 +51,18 @@ async def news_observer_v2():
             'name': name
         } for name, url in feeds
     ]
-    return await run_all_async(archive_feed_by_filter, kwargslist, sem, True)
-
+    result = await run_all_async(archive_feed_by_filter, kwargslist, sem, True)
+    return (item for item in result if item)
 
 if __name__ == '__main__':
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     print("[Link Start]")
     loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(news_observer())
-    for data in result:
-        print("[{}] {}".format(data['source'], data['info']))
+    items = loop.run_until_complete(news_observer())
+
+    for item in items:
+        print("[{}] {}".format(item['source'], item['info']))
+
     loop.close()
-    sys.exit(0)

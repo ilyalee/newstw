@@ -46,7 +46,7 @@ class NewsDataProcessor:
             trim_data_val("summary", text, self.data)
 
     def _soup_func(self, name, path):
-        return {"select": self._soup_select, "find_all": self._soup_find_all, "attrs": self._soup_attrs}.get(name)(path)
+        return {"select": self._soup_select, "find_all": self._soup_find_all, "attrs": self._soup_attrs}.get(name, "select")(path)
 
     def _soup_attrs(self, path):
         for key, value in path.items():
@@ -112,15 +112,17 @@ class NewsDataProcessor:
                     text = res
                 elif isinstance(res, list):
                     text = res[context['ind']].text
-            except IndexError as err:
+                else:
+                    raise TypeError("type missing")
+            except IndexError as e:
                 self.data['pass'] = False
                 if __debug__:
                     self.data['debug'] = {
-                        'msg': err.args[0],
+                        'msg': e.args[0],
                         'context': context
                     }
         else:
             tags = self._soup_func(context['soup'], context['path'])
-            text = ''.join([tag.text for tag in tags])
+            text = ''.join((tag.text for tag in tags))
 
         return text

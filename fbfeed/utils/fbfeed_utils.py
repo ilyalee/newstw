@@ -32,9 +32,9 @@ def load_group(graph, fbid, **args):
     try:
         group = graph.get_object(fbid, **args)
         return group
-    except facebook.GraphAPIError as err:
+    except facebook.GraphAPIError as e:
         if __debug__:
-            print(err)
+            print(e)
         return None
 
 

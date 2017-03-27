@@ -6,6 +6,9 @@ from observer import news_observer
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 if __name__ == '__main__':
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     scheduler = AsyncIOScheduler()
     # every hours
     scheduler.add_job(news_observer, 'cron', minute=0, timezone="Asia/Taipei")
@@ -14,7 +17,4 @@ if __name__ == '__main__':
     print("News Observer started.")
     # print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 
-    try:
-        asyncio.get_event_loop().run_forever()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    asyncio.get_event_loop().run_forever()

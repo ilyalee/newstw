@@ -9,6 +9,7 @@ import asyncio
 import functools
 import os
 from utils.async_utils import as_run
+from utils.data_utils import isiterable, clist
 
 
 class BaseProvider():
@@ -57,8 +58,8 @@ class BaseProvider():
         return {'AND': _and(do, keywords), 'OR': _or(do, keywords)}.get(op, 'OR')
 
     def do_values(self, values, column, do):
-        targets = [getattr(self.cls, column) == value
-                   for value in values]
+        targets = (getattr(self.cls, column) == value
+                   for value in values)
         return do.filter(or_(*targets))
 
     def find_all(self, limit=None, offset=None, keywords=None):
@@ -84,8 +85,8 @@ class BaseProvider():
         if not values:
             return []
 
-        if isinstance(values, str):
-            values = [values]
+        if not isiterable(values):
+            values = clist(values)
 
         with query_session() as session:
             do = session.query(self.cls)

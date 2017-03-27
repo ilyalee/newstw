@@ -3,6 +3,7 @@
 
 import asyncio
 import os
+import settings
 from observer import news_observer
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -12,7 +13,7 @@ if __name__ == '__main__':
 
     scheduler = AsyncIOScheduler()
     executors = {
-        'default': ThreadPoolExecutor(5),
+        'default': ThreadPoolExecutor(settings.LIMIT),
         'processpool': ProcessPoolExecutor(os.cpu_count())
     }
     # every hours

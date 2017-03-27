@@ -10,7 +10,7 @@ from archiver.controllers.newsfeed import archive_feed_by_filter
 from utils.async_utils import run_all_async, sem_async, wait_with_progress
 from utils.data_utils import keyword_builder
 from itertools import chain, repeat
-import requests
+import settings
 import configparser
 from db.providers.archive_provider import ArchiveProvider
 
@@ -29,12 +29,11 @@ config.read('config/feeds.cfg')
 
 feeds = load_feeds(config, ['Print media', 'Electronic media'])
 keywords = config.get("Feed filter", "keywords")
-limit = 5
 
 ap = ArchiveProvider()
 
 async def news_observer():
-    sem = asyncio.Semaphore(limit)
+    sem = asyncio.Semaphore(settings.LIMIT)
     kwargslist = (
         {
             'url': url.strip(),

@@ -27,7 +27,7 @@
       <div class="row">
         <div class="col s8">
           <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
-             {{ data['parent'] | default('全部', true) }} ({{ data['parent_count'] }})</a>
+             {{ data['parent'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
           {%- if data['orig_keyword'] -%}
           <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
           {% endif %}

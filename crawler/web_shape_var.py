@@ -157,4 +157,9 @@ trimtext['any'] = []
 trimtext['ltn'] = ['相關影音']
 trimtext['ctitv'] = ['※中天快點TV非讀不可:']
 trimtext['udn'] = ['分享facebook']
-trimtext['appledaily'] = ['有話要說 投稿「即時論壇」']
+trimtext['appledaily'] = [
+    '有話要說 投稿「即時論壇」',
+    '想了解更多中部房市訊息，請到蘋果地產王粉絲團',
+    '【加入環境資訊中心粉絲頁，掌握環境新知！】',
+    '【更多新聞，請看《蘋果陪審團》粉絲團】'
+]

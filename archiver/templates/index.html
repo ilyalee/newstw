@@ -1,7 +1,7 @@
 <html>
 <title>大肚山計畫媒體輿情剪報系統 - PROTOTYPE</title>
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
@@ -32,7 +32,7 @@
         <div class="col s8">
           {%- if not data['orig_keyword'] and not data['category'] -%}
           <ul class="header">
-            <li><a href="?">總覽 ({{ data['parent_count'] }})</a></li>
+            <li><a href="?">總覽</a></li>
             <li><a href="?cat=pmedia">平面</a></li>
             <li><a href="?cat=emedia">電子</a></li>
           </ul>
@@ -44,7 +44,7 @@
             {% endif %}
           {% endif %}
         </div>
-        <div class="col s4">
+        <div class="col s4 hide-on-small-only">
           <form>
             <div class="input-field">
               <input name="keyword" id="keyword" type="search" action="" method="get" required>

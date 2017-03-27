@@ -53,7 +53,7 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5):
                 with sem:
                     resopones.append(future.result())
             except requests.exceptions.RequestException as e:
-                log.error(f"Failure when trying to fetch {url}")
+                log.error(f"[{__name__}] Failure when trying to fetch {url}")
                 log.info(e, exc_info=True)
                 continue
 

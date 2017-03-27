@@ -12,12 +12,12 @@ from utils.type_utils import sint
 from utils.data_utils import hightlight_keywords
 from db.utils.db_utils import reload_keyword
 
+
 Config.REQUEST_TIMEOUT = 300
 env = Environment(
     loader=PackageLoader('archiver', 'templates'),
     autoescape=select_autoescape(['html'])
 )
-
 
 env.filters['hightlight_keywords'] = hightlight_keywords
 
@@ -47,5 +47,10 @@ async def index(request, methods=['GET']):
     data['count'] = await as_fetch_report_count(data['keyword'], data['category'])
     data['items'] = await as_fetch_report(data['page'], data['limit'], data['keyword'], data['category'])
     (data['keyword'], _) = reload_keyword(data['keyword'])
+    if data['category']:
+        import configparser
+        config = configparser.ConfigParser()
+        config.read('config/feeds.cfg')
+        data['category_zh_tw'] = config.get('zh_tw', data['category'])
 
     return html(template.render(data=data))

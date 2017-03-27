@@ -27,7 +27,7 @@
       <div class="row">
         <div class="col s8">
           <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
-             {{ data['parent'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
+             {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
           {%- if data['orig_keyword'] -%}
           <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
           {% endif %}
@@ -59,12 +59,12 @@
           </blockquote>
         </p>
       </div>
-      <span class="chip grey-text">{{ item['source'] }} / {{ item['published_humanize'] }}</span>
+      <a class="chip grey-text" href="?cat={{ item['source'] }}">{{ item['source'] }} / {{ item['published_humanize'] }}</a>
       <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
       {% for keyword in item['founds'] %}
-      <span class="chip red lighten-3 white-text">
+      <a class="chip red lighten-3 white-text" href="?keyword={{ keyword }}">
         {{ keyword }}
-      </span>
+      </a>
       {% endfor %}
       <div class="card-action">
         <div class="right-align">

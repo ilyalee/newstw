@@ -23,4 +23,4 @@ SALT = os.environ.get("SALT")
 # time zone
 TIMEZONE = os.environ.get("TIMEZONE")
 
-LIMIT = os.env.get("LIMIT")
+LIMIT = os.environ.get("LIMIT")

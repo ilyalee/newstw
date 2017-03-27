@@ -34,23 +34,15 @@ limit = 5
 ap = ArchiveProvider()
 
 async def news_observer():
-    return await news_observer_v2()
-
-async def news_observer_v1():
     sem = asyncio.Semaphore(limit)
-    result = await wait_with_progress([sem_async(archive_feed_by_filter, sem, url.strip(), keyword_builder(keywords), ap, name) for name, url in feeds])
-    return (item for item in result if item)
-
-async def news_observer_v2():
-    sem = asyncio.Semaphore(limit)
-    kwargslist = [
+    kwargslist = (
         {
             'url': url.strip(),
             'include_text': keyword_builder(keywords),
             'ap': ap,
             'name': name
         } for name, url in feeds
-    ]
+    )
     result = await run_all_async(archive_feed_by_filter, kwargslist, sem, True)
     return (item for item in result if item)
 

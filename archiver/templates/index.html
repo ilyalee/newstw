@@ -63,13 +63,13 @@
           </blockquote>
         </p>
       </div>
-      <a class="chip grey-text" href="?cat={{ item['source'] }}">{{ item['source'] }} / {{ item['published_humanize'] }}</a>
       <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
       {% for keyword in item['founds'] %}
       <a class="chip red lighten-3 white-text" href="?keyword={{ keyword }}">
         {{ keyword }}
       </a>
       {% endfor %}
+      <a class="chip grey-text" href="?cat={{ item['source'] }}">{{ item['source'] }} / {{ item['published_humanize'] }}</a>
       <div class="card-action">
         <p class="right-align">
           <a class="waves-effect waves-light grey btn" target="_blank" href="{{ item['link'] }}">新聞連結</a>

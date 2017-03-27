@@ -12,6 +12,10 @@
       color: #999;
     }
 
+    ul.header > li > a {
+      font-size: large;
+    }
+
     .card-title {
       font-size: large;
     }
@@ -26,10 +30,18 @@
     <div class="nav-wrapper yellow darken-3">
       <div class="row">
         <div class="col s8">
-          <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
-             {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
-          {%- if data['orig_keyword'] -%}
-          <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
+          {%- if not data['orig_keyword'] and not data['category'] -%}
+          <ul class="header">
+            <li><a href="?">總覽 ({{ data['parent_count'] }})</a></li>
+            <li><a href="?cat=pmedia">平面</a></li>
+            <li><a href="?cat=emedia">電子</a></li>
+          </ul>
+          {% else %}
+            <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
+            {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
+            {%- if data['orig_keyword'] -%}
+            <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
+            {% endif %}
           {% endif %}
         </div>
         <div class="col s4">

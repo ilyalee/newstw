@@ -121,19 +121,13 @@
   </script>
 
   <script type="text/javascript">
-    function debounce(func, wait, immediate) {
-    	var timeout;
-    	return function() {
-    		var context = this, args = arguments
-    		var later = function() {
-    			timeout = null
-    			if (!immediate) func.apply(context, args)
-    		};
-    		var callNow = immediate && !timeout
-    		clearTimeout(timeout)
-    		timeout = setTimeout(later, wait)
-    		if (callNow) func.apply(context, args)
-    	}
+    jQuery.urlParam = function(name) {
+      var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
+      if (results) {
+        return results[1] || 0
+      } else {
+        return null
+      }
     }
 
     Handlebars.registerHelper('list', function(items) {
@@ -147,18 +141,29 @@
     var url = 'api/v1/archive/list?'
     var page = 1
     var limit = 10
+
+    keyword = jQuery.urlParam('keyword') || ''
+    limit = jQuery.urlParam('limit') || limit
+    page = jQuery.urlParam('page') || page
+    cat = jQuery.urlParam('cat') || ''
+
+    var done = false
     window.addEventListener('scroll', jQuery.throttle( 300, function() {
       var wrap = document.getElementById('cards')
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset
       var y = yOffset + window.innerHeight
-      if (y >= contentHeight) {
+      if (!done && y >= contentHeight) {
         page = page + 1
-        var params = jQuery.param({ page, limit })
+        var params = jQuery.param({ page, limit, cat, keyword })
+        console.log(params)
         fetch(url + params)
           .then(function(response) {
             return response.json()
           }).then(function(json) {
+            if (json.length == 0) {
+              done = true
+            }
             var source   = $("#card-template").html()
             var template = Handlebars.compile(source)
             jQuery.each(json, function (index, item) {
@@ -166,8 +171,8 @@
               var html = template(context)
               jQuery('#cards').append(html)
             })
-
           }).catch(function(ex) {
+            // pass
           })
         }
       }))

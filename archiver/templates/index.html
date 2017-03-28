@@ -154,7 +154,12 @@
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset
       var y = yOffset + window.innerHeight
-      if (!done && y >= contentHeight) {
+      if (y >= contentHeight) {
+        if (done) {
+          Materialize.toast("已經到底了 _(:з」∠)_", 3000)
+          return
+        }
+
         page = page + 1
         var params = jQuery.param({ page, limit, cat, keyword })
 
@@ -163,7 +168,6 @@
             return response.json()
           }).then(function(json) {
             if (json.length == 0) {
-              Materialize.toast("已經到底了", 1500)
               done = true
               return done
             }

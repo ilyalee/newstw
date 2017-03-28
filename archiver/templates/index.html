@@ -163,6 +163,7 @@
             return response.json()
           }).then(function(json) {
             if (json.length == 0) {
+              Materialize.toast("已經到底了", 1500)
               done = true
               return done
             }

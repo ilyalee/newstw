@@ -149,15 +149,17 @@
     cat = decodeURIComponent(cat)
 
     var done = false
+    var showed = false
     window.addEventListener('scroll', jQuery.throttle( 250, function() {
       var wrap = document.getElementById('cards')
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset
       var y = yOffset + window.innerHeight
       if (y >= contentHeight) {
-        if (done) {
+        if (showed && done) {
           Materialize.toast("已經到底了 _(:з」∠)_", 3000)
-          return
+          showed = true
+          return showed
         }
 
         page = page + 1

@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <style>
     blockquote {
       text-align: left;
@@ -54,7 +55,7 @@
       </div>
     </div>
   </nav>
-  <ul>
+  <ul id="cards">
   {% for item in data['items'] %}
     <li class="card-panel hoverable">
       <div class="card-content">
@@ -87,5 +88,91 @@
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+
+  {% raw %}
+  <script id="card-template" type="text/x-handlebars-template">
+    <li class="card-panel hoverable">
+      <div class="card-content">
+        <span class="card-title blue-text text-darken-1">
+          <i class="material-icons">add</i>
+          {{ title }}
+        </span>
+        <p class="left">
+          <blockquote class="truncate">
+            {{ summary }}
+          </blockquote>
+        </p>
+      </div>
+      <span class="chip grey-text">{{ published_humanize }}</span>
+      <a class="chip orange lighten-3 white-text" href="?cat={{ source }}">{{ source }}</a>
+      <span class="chip green lighten-3 white-text">#{{ id }}</span>
+      {{#list founds}}
+        {{keyword}}
+      {{/list}}
+      <div class="card-action">
+        <p class="right-align">
+          <a class="waves-effect waves-light grey btn" target="_blank" href="{{ link }}">新聞連結</a>
+        </p>
+      </div>
+    </li>
+  </script>
+
+  <script type="text/javascript">
+    function debounce(func, wait, immediate) {
+    	var timeout;
+    	return function() {
+    		var context = this, args = arguments
+    		var later = function() {
+    			timeout = null
+    			if (!immediate) func.apply(context, args)
+    		};
+    		var callNow = immediate && !timeout
+    		clearTimeout(timeout)
+    		timeout = setTimeout(later, wait)
+    		if (callNow) func.apply(context, args)
+    	}
+    }
+
+    Handlebars.registerHelper('list', function(items) {
+      var out = ''
+      for(var i = 0, l = items.length; i < l; i++) {
+        out = out + '<a class="chip red lighten-3 white-text" href="?keyword='+ items[i] +'">' + items[i] + '</a>'
+      }
+      return out
+    })
+
+    var url = 'api/v1/archive/list?'
+    var page = 1
+    var limit = 10
+    window.addEventListener('scroll', jQuery.throttle( 300, function() {
+      var wrap = document.getElementById('cards')
+      var contentHeight = wrap.offsetHeight
+      var yOffset = window.pageYOffset
+      var y = yOffset + window.innerHeight
+      if (y >= contentHeight) {
+        page = page + 1
+        var params = jQuery.param({ page, limit })
+        fetch(url + params)
+          .then(function(response) {
+            return response.json()
+          }).then(function(json) {
+            var source   = $("#card-template").html()
+            var template = Handlebars.compile(source)
+            jQuery.each(json, function (index, item) {
+              var context = item
+              var html = template(context)
+              jQuery('#cards').append(html)
+            })
+
+          }).catch(function(ex) {
+          })
+        }
+      }))
+
+  </script>
+  {% endraw %}
 </body>
 </html>

@@ -148,7 +148,7 @@
     cat = jQuery.urlParam('cat') || ''
 
     var done = false
-    window.addEventListener('scroll', jQuery.throttle( 300, function() {
+    window.addEventListener('scroll', jQuery.throttle( 250, function() {
       var wrap = document.getElementById('cards')
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset

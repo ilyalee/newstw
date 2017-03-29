@@ -44,7 +44,7 @@
       <div class="nav-wrapper teal lighten-2">
         <div class="row">
           <div class="col left">
-            {%- if not data['keyword'] -%}
+            {%- if not data['keyword'] and not data['category'] -%}
             <ul class="header">
               <!-- Dropdown Trigger -->
               <li><a class="dropdown-button" href="#!" data-activates="dropdown-time">報表<i class="material-icons right">arrow_drop_down</i></a></li>

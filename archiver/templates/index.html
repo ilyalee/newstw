@@ -25,51 +25,51 @@
       margin-left: 1rem;
     }
 
-    nav.fixed {
-      margin-top: 0;
-      position: fixed;
-      z-index: 2;
-    }
-
-    ul#cards {
-      padding-top: 4rem;
-    }
-
   </style>
 </head>
 <body>
-  <nav class="fixed">
-    <div class="nav-wrapper teal lighten-2">
-      <div class="row">
-        <div class="col left">
-          {%- if not data['keyword'] and not data['category'] -%}
-          <ul class="header">
-            <li><a href="?">總覽</a></li>
-            <li><a href="?cat=pmedia">平面</a></li>
-            <li><a href="?cat=emedia">電子</a></li>
-          </ul>
-          {% else %}
-          <div class="header">
-            <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
-            {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
-            {%- if data['keyword'] -%}
-            <a class="breadcrumb">{{ data['keyword'] }} ({{ data['count'] }})</a>
-          </div>
-            {% endif %}
-          {% endif %}
-        </div>
-        <div class="col right hide-on-small-only">
-          <form>
-            <div class="input-field">
-              <input name="keyword" id="keyword" type="search" action="" method="get" required>
-              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-              <i class="material-icons">close</i>
+  <!-- Dropdown Structure -->
+  <ul id="dropdown-time" class="dropdown-content">
+    <li><a href="/today">日報</a></li>
+    <li><a href="/week">週報</a></li>
+    <li class="divider"></li>
+    <li><a href="/">總覽</a></li>
+  </ul>
+  <div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper teal lighten-2">
+        <div class="row">
+          <div class="col left">
+            {%- if not data['keyword'] -%}
+            <ul class="header">
+              <!-- Dropdown Trigger -->
+              <li><a class="dropdown-button" href="#!" data-activates="dropdown-time">報表<i class="material-icons right">arrow_drop_down</i></a></li>
+              <li><a href="?cat=pmedia">平面</a></li>
+              <li><a href="?cat=emedia">電子</a></li>
+            </ul>
+            {% else %}
+            <div class="header">
+              <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
+              {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
+              {%- if data['keyword'] -%}
+              <a class="breadcrumb">{{ data['keyword'] }} ({{ data['count'] }})</a>
             </div>
-          </form>
+              {% endif %}
+            {% endif %}
+          </div>
+          <div class="col right hide-on-small-only">
+            <form>
+              <div class="input-field">
+                <input name="keyword" id="keyword" type="search" action="" method="get" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
   <ul id="cards">
   {% for item in data['items'] %}
     <li class="card-panel hoverable">
@@ -137,18 +137,22 @@
   </script>
 
   <script type="text/javascript">
-  jQuery.urlContain = function(name) {
-    return (window.location.pathname.indexOf(name) !=-1)
-  }
+    jQuery(document).ready(function () {
+      jQuery('.dropdown-button').dropdown({ hover: true })
+    })
 
-  jQuery.urlSub = function(name) {
-    var results = window.location.pathname.match(/([^\/]*)\/*$/)
-    if (results) {
-      return results[0].replace('/', '')
-    } else {
-      return null
+    jQuery.urlContain = function(name) {
+      return (window.location.pathname.indexOf(name) !=-1)
     }
-  }
+
+    jQuery.urlSub = function(name) {
+      var results = window.location.pathname.match(/([^\/]*)\/*$/)
+      if (results) {
+        return results[0].replace('/', '')
+      } else {
+        return null
+      }
+    }
 
     jQuery.urlParam = function(name) {
       var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
@@ -178,6 +182,9 @@
 
     if (jQuery.urlContain('news_archiver')) {
       url = '/news_archiver' + url
+      jQuery('ul#dropdown-time > li > a').each(function(i, link) {
+        link = jQuery(link).attr('href', '/news_archiver' + jQuery(link).attr('href'))
+      })
     }
 
     if ('today' === jQuery.urlSub('today')) {

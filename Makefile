@@ -71,10 +71,10 @@ run_all:
 	make run_scheduler >/dev/null 2>&1 &
 
 kill_all:
-	lsof -t -i tcp:9527 | xargs kill -9
-	lsof -t -i tcp:9528 | xargs kill -9
-	lsof -t -i tcp:9529 | xargs kill -9
-	lsof -t -i tcp:9530 | xargs kill -9
+	-lsof -t -i tcp:9527 | xargs kill -9
+	-lsof -t -i tcp:9528 | xargs kill -9
+	-lsof -t -i tcp:9529 | xargs kill -9
+	-lsof -t -i tcp:9530 | xargs kill -9
 	-pkill -f "make run_crawler"
 	-pkill -f "make run_newsfeed"
 	-pkill -f "make run_fbfeed"

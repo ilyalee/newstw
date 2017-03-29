@@ -38,7 +38,7 @@ async def as_fetch_news(url, encoding='utf-8', timeout=60):
             return await NewsDataProcessor(resp.url, html).as_output()
 
 
-def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False):
+def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, total_connection=60):
     from concurrent.futures import ThreadPoolExecutor
     from requests_futures.sessions import FuturesSession
     import threading
@@ -47,11 +47,17 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False):
     resopones = []
     with FuturesSession(session=requests.Session(),
                         executor=ThreadPoolExecutor(max_workers=os.cpu_count())) as session:
+        connection = 0
         failed_urls = []
         futures = ((url, session.get(url, timeout=timeout)) for url in urls)
         for url, future in futures:
+            connection = connection + 1
+            if connection > total_connection:
+                break
             if remedy:
                 log.error(f"[{__name__}] Retry: {url}")
+            if __debug__:
+                print(f"{url}")
             try:
                 with sem:
                     resopones.append(future.result())

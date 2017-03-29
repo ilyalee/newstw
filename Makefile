@@ -3,6 +3,42 @@ init:
 	source "./venv/bin/activate"
 	pip3 install -r requirements.txt
 
+watch_crawler:
+	watchmedo shell-command \
+	  --patterns="*.html;*.css;*.js" \
+	  --recursive \
+	  --command='echo "${watch_src_path}" && kill -HUP `cat dev_crawler.pid`'
+
+watch_newsfeed:
+	watchmedo shell-command \
+	  --patterns="*.html;*.css;*.js" \
+	  --recursive \
+	  --command='echo "${watch_src_path}" && kill -HUP `cat dev_newsfeed.pid`'
+
+watch_fbfeed:
+	watchmedo shell-command \
+	  --patterns="*.html;*.css;*.js" \
+	  --recursive \
+	  --command='echo "${watch_src_path}" && kill -HUP `cat dev_fbfeed.pid`'
+
+watch_archiver:
+	watchmedo shell-command \
+	  --patterns="*.html;*.css;*.js" \
+	  --recursive \
+	  --command='echo "${watch_src_path}" && kill -HUP `cat dev_archiver.pid`'
+
+dev_crawler:
+	gunicorn --pid=dev_crawler.pid --reload --bind localhost:9527 --worker-class sanic_gunicorn.Worker crawler.crawler:app
+
+dev_newsfeed:
+	gunicorn --pid=dev_newsfeed.pid --reload --bind localhost:9528 --worker-class sanic_gunicorn.Worker newsfeed.newsfeed:app
+
+dev_fbfeed:
+	gunicorn --pid=dev_fbfeed.pid --reload --bind localhost:9529 --worker-class sanic_gunicorn.Worker fbfeed.fbfeed:app
+
+dev_archiver:
+	gunicorn --pid=dev_archiver.pid --reload --bind localhost:9530 --worker-class sanic_gunicorn.Worker archiver.news_archive:app
+
 pyclean:
 	find . | grep -E "\(__pycache__|.pyc|.pyo$\)" | xargs rm -rf
 

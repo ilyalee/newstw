@@ -4,7 +4,9 @@
 from sanic import Sanic
 from sanic.response import json
 from crawler.utils.crawler_helper import as_fetch_news
+import setproctitle
 
+setproctitle.setproctitle(__name__)
 app = Sanic(__name__)
 
 

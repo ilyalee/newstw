@@ -4,30 +4,35 @@
 from sanic import Sanic
 from sanic.response import json
 from archiver.blueprints import bp_v1
-from sanic.response import html
+from sanic.response import html, text
 from archiver.utils.archiver_helper import as_fetch_report, as_fetch_report_count, as_fetch_report_today, as_fetch_report_week, as_fetch_report_today_count, as_fetch_report_week_count
 from jinja2 import Environment, PackageLoader, select_autoescape, Markup, escape
 from sanic.config import Config
 from utils.type_utils import sint
 from utils.data_utils import hightlight_keywords
 from db.utils.db_utils import reload_keyword
+import setproctitle
 
+setproctitle.setproctitle(__name__)
+
+app = Sanic(__name__)
+app.static('/static', 'archiver/static')
+app.blueprint(bp_v1)
 
 Config.REQUEST_TIMEOUT = 300
 env = Environment(
     loader=PackageLoader('archiver', 'templates'),
     autoescape=select_autoescape(['html'])
 )
-
 env.filters['hightlight_keywords'] = hightlight_keywords
-
-app = Sanic(__name__)
-app.blueprint(bp_v1)
-
 template = env.get_template('index.html')
 
+from functools import lru_cache
 
-@app.route("/")
+
+@lru_cache(None)
+@app.route('/')
+@app.head('/')
 async def index(request, methods=['GET']):
     data = {}
     page = 1
@@ -53,10 +58,12 @@ async def index(request, methods=['GET']):
         config.read('config/feeds.cfg')
         data['category_zh_tw'] = config.get('zh_tw', data['category'])
 
-    return html(template.render(data=data))
+    return html(template.render(data=data, debug=__debug__))
 
 
-@app.route("/today")
+@lru_cache(None)
+@app.route('/today')
+@app.head('/today')
 async def index(request, methods=['GET']):
     data = {}
     page = 1
@@ -80,10 +87,12 @@ async def index(request, methods=['GET']):
         config.read('config/feeds.cfg')
         data['category_zh_tw'] = config.get('zh_tw', data['category'])
 
-    return html(template.render(data=data))
+    return html(template.render(data=data, debug=__debug__))
 
 
+@lru_cache(None)
 @app.route("/week")
+@app.head('/week')
 async def index(request, methods=['GET']):
     data = {}
     page = 1
@@ -107,4 +116,4 @@ async def index(request, methods=['GET']):
         config.read('config/feeds.cfg')
         data['category_zh_tw'] = config.get('zh_tw', data['category'])
 
-    return html(template.render(data=data))
+    return html(template.render(data=data, debug=__debug__))

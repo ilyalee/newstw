@@ -5,7 +5,9 @@ from sanic import Sanic
 from sanic.response import json
 from newsfeed.utils.newsfeed_helper import flag
 from newsfeed.filter import NewsFeedFilter
+import setproctitle
 
+setproctitle.setproctitle(__name__)
 app = Sanic(__name__)
 
 

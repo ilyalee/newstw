@@ -13,6 +13,9 @@ from itertools import chain, repeat
 import settings
 import configparser
 from db.providers.archive_provider import ArchiveProvider
+import setproctitle
+
+setproctitle.setproctitle(__name__)
 
 
 def load_feeds(config, lst):

@@ -10,6 +10,9 @@ import asyncio
 from observer import news_observer
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+import setproctitle
+
+setproctitle.setproctitle(__name__)
 
 if __name__ == '__main__':
     import signal

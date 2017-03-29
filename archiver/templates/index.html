@@ -53,8 +53,8 @@
               {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
               {%- if data['keyword'] -%}
               <a class="breadcrumb">{{ data['keyword'] }} ({{ data['count'] }})</a>
-            </div>
               {% endif %}
+            </div>
             {% endif %}
           </div>
           <div class="col right hide-on-small-only">
@@ -101,6 +101,9 @@
   {% endfor %}
   </ul>
 
+  {%- if debug -%}
+  <script type="text/javascript" src="static/js/live.js"></script>
+  {% endif %}
   {% raw %}
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>

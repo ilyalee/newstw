@@ -4,7 +4,9 @@
 from sanic import Sanic
 from sanic.response import json
 from fbfeed.utils.fbfeed_helper import flag, as_fetch_feed
+import setproctitle
 
+setproctitle.setproctitle(__name__)
 app = Sanic(__name__)
 
 

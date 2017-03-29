@@ -137,6 +137,10 @@
   </script>
 
   <script type="text/javascript">
+  jQuery.urlContain = function(name) {
+    return (window.location.pathname.indexOf(name) !=-1)
+  }
+
   jQuery.urlSub = function(name) {
     var results = window.location.pathname.match(/([^\/]*)\/*$/)
     if (results) {
@@ -171,6 +175,10 @@
     var url = '/api/v1/archive/list?'
     var page = 1
     var limit = 10
+
+    if (jQuery.urlContain('news_archiver')) {
+      url = '/news_archiver' + url
+    }
 
     if ('today' === jQuery.urlSub('today')) {
       url = url + 'time=today&'

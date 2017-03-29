@@ -26,7 +26,7 @@ else:
         engine = create_engine(db_url, connect_args={
                                'check_same_thread': False})
     else:
-        engine = create_engine(db_url, pool_size=1)
+        engine = create_engine(db_url)
 
 if sqlite_memory_mode:
     from db.models import Base
@@ -59,3 +59,4 @@ def scoped_session():
 def query_session():
     session = Session()
     yield session
+    session.close()

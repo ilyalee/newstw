@@ -28,33 +28,48 @@ class NewsFeedFilter:
 
     def _download(self, encoding='utf-8', timeout=30) -> Feeds:
         items = []
-        with requests.Session() as session:
-            try:
-                resp = session.get(self.url, timeout=timeout)
-                resp.encoding = encoding
-                text = resp.text
-            except RequestException as e:
-                log.error(f"[{__name__}] Failure when trying to fetch {url}")
-                log.info(e, exc_info=True)
-            else:
-                rawdata = feedparser.parse(resp.text)
-                items = self.postprocess(rawdata['entries'])
+        url = self.url
+        remedy = False
+        while True:
+            if remedy:
+                log.error(f"[{__name__}] Retry: {url}")
+            with requests.Session() as session:
+                try:
+                    resp = session.get(url, timeout=timeout)
+                    resp.encoding = encoding
+                    text = resp.text
+                except RequestException as e:
+                    remedy = True
+                    log.error(f"[{__name__}] Failure when trying to fetch {url}")
+                    log.info(e, exc_info=True)
+                else:
+                    remedy = False
+                    rawdata = feedparser.parse(resp.text)
+                    items = self.postprocess(rawdata['entries'])
+                    break
         return items
 
     async def _as_download(self, encoding='utf-8', timeout=30) -> Feeds:
         items = []
         url = self.url
-        with requests.Session() as session:
-            try:
-                resp = await as_run()(session.get)(url, timeout=timeout)
-                resp.encoding = encoding
-                text = resp.text
-            except RequestException as e:
-                log.error(f"[{__name__}] Failure when trying to fetch {url}")
-                log.info(e, exc_info=True)
-            else:
-                rawdata = feedparser.parse(text)
-                items = await self.as_postprocess(rawdata['entries'])
+        remedy = False
+        while True:
+            if remedy:
+                log.error(f"[{__name__}] Retry: {self.url}")
+            with requests.Session() as session:
+                try:
+                    resp = await as_run()(session.get)(url, timeout=timeout)
+                    resp.encoding = encoding
+                    text = resp.text
+                except RequestException as e:
+                    remedy = True
+                    log.error(f"[{__name__}] Failure when trying to fetch {url}")
+                    log.info(e, exc_info=True)
+                else:
+                    remedy = False
+                    rawdata = feedparser.parse(text)
+                    items = await self.as_postprocess(rawdata['entries'])
+                    break
         return items
 
     def _data_prepare(self, items):
@@ -99,9 +114,9 @@ class NewsFeedFilter:
         return self._data_produce(items)
 
     async def as_postprocess(self, items):
-        items = await as_run()(self._data_prepare)(items)
-        items = await as_run()(self._data_filter)(items)
-        items = await as_run()(self._data_produce)(items)
+        items = await as_run(mode='process')(self._data_prepare)(items)
+        items = await as_run(mode='process')(self._data_filter)(items)
+        items = await as_run(mode='process')(self._data_produce)(items)
         return items
 
     def output(self):

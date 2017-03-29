@@ -8,7 +8,7 @@ trimtext = {}
 
 source_default = 'any'
 source['chinatimes'] = [
-    "www.chinatimes.com",
+    "chinatimes.com",
     "04784784225885481651/11191251640937190187"
 ]
 source['ltn'] = [
@@ -70,6 +70,10 @@ source['supplements'] = [
     "04784784225885481651/3004179234881120660",
     "04784784225885481651/3004179234881119137"
 ]
+source['youtube'] = [
+    "youtube.com",
+    "youtu.be"
+]
 
 context['any'] = [
     {'save': "title", 'path': "h1", 'ind': 0},
@@ -97,7 +101,7 @@ context['appledaily'] = [
 ]
 context['udn'] = [
     {'save': "title", 'path': "#story_body_content > h1", 'ind': 0},
-    {'save': "summary", 'path': "#story_body_content > p", 'ind': -1},
+    {'save': "summary", 'path': "p", 'ind': -1},
     {'save': "_rawtime", 'path': ".story_bady_info_author", 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
 ]

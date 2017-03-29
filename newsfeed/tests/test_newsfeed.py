@@ -6,13 +6,14 @@ from utils.pprint_helper import pprint_color
 import unittest
 import warnings
 
+
 class TestNewsFeed(unittest.TestCase):
 
     def setUp(self):
         warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
 
     def test_fetch_feed(self):
-        url = "http://www.chinatimes.com/rss/realtimenews.xml"
+        url = "http://news.ltn.com.tw/rss/focus.xml"
         feed = NewsFeedFilter(url).output()
         self.assertIn("title", feed[0])
         self.assertIn("summary", feed[0])
@@ -23,7 +24,7 @@ class TestNewsFeed(unittest.TestCase):
         self.assertNotIn("keyword", feed[0])
         feed = NewsFeedFilter(url, full_text=True).output()
         self.assertIn("summary", feed[0])
-        #pprint_color(feed[0])
+        # pprint_color(feed[0])
         feed = NewsFeedFilter(url, "台灣").output()
         for item in feed:
             self.assertIn("title", item)

@@ -86,9 +86,9 @@ class NewsFeedFilter:
 
         remote_items = data_kv_updater_all_load("link", fetch_news_all, self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
-            remote_items, "summary", "link", fetch_news_all, self.full_text, items)
+            remote_items, "summary", "summary", self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
-            remote_items, "published", "published", load_remote_news_date, self.full_text, items)
+            remote_items, "published", "published", self.full_text, items)
         return items
 
     def _data_filter(self, items):

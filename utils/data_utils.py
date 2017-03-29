@@ -107,10 +107,10 @@ def data_kv_updater_all_load(from_key, fn, go, items):
     return remote_items
 
 
-def data_kv_updater_all_by_remote_items(remote_items, key, from_key, fn, go, items):
+def data_kv_updater_all_by_remote_items(remote_items, key, from_key, go, items):
     if go:
         for i in range(len(remote_items)):
-            new_val = remote_items[i][key]
+            new_val = remote_items[i][from_key]
             if new_val:
                 items[i][key] = new_val
     return items

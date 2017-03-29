@@ -46,7 +46,7 @@ class NewsFeedFilter:
         url = self.url
         with requests.Session() as session:
             try:
-                resp = await as_run()(session.get)(url, timeout=timeout)
+                resp = await as_run(mode='process')(session.get)(url, timeout=timeout)
                 resp.encoding = encoding
                 text = resp.text
             except RequestException as e:

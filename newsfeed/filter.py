@@ -55,7 +55,7 @@ class NewsFeedFilter:
         remedy = False
         while True:
             if remedy:
-                log.error(f"[{__name__}] Retry: {self.url}")
+                log.error(f"[{__name__}] Retry: {url}")
             with requests.Session() as session:
                 try:
                     resp = await as_run()(session.get)(url, timeout=timeout)

@@ -59,8 +59,9 @@ class ArchiveProvider(BaseProvider):
         return await as_run()(self.count_report_today)(keywords, sources)
 
     def count_report_week(self, keywords, sources=None):
-        start = arrow.now(self.tzinfo).floor('week').shift(days=-1).replace(hour=8).datetime
-        end = arrow.now(self.tzinfo).ceil('week').replace(hour=7).datetime
+        start = arrow.now(self.tzinfo).floor('week').shift(
+            weeks=-1, days=-1).replace(hour=8).datetime
+        end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
         if sources:
             return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
         else:

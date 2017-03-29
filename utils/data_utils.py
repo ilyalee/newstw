@@ -10,6 +10,7 @@ import settings
 from hashlib import sha3_224
 from urllib.parse import urlparse, parse_qs
 from dateutil import parser
+from string import whitespace
 
 
 def dict_filter(keys, items):
@@ -125,7 +126,7 @@ def data_kv_updater_all(key, from_key, fn, go, items):
 def data_hasher(key, keys, items):
     for item in items:
         text = "".join(item[key] for key in keys if key in item)
-        item[key] = githash(text.replace(" ", ""), hexdigest=True)
+        item[key] = githash(text.translate(dict.fromkeys(map(ord, whitespace))), hexdigest=True)
     return items
 
 

@@ -3,6 +3,19 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+
+def pg_vacuum(db_url):
+    if db_url.startswith('postgres://'):
+        from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+        connection = engine.raw_connection()
+        connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cursor = connection.cursor()
+        cursor.execute("VACUUM ANALYSE archive")
+        connection.close()
+        return True
+    else:
+        return False
+
 creator = None
 # ref: https://github.com/seanpar203/sanic-starter
 
@@ -35,8 +48,11 @@ if sqlite_memory_mode:
 Session = sessionmaker(bind=engine)
 
 try:
-    connection = engine.connect()
-    connection.close()
+    if not pg_vacuum(db_url):
+        pass
+    else:
+        connection = engine.connect()
+        connection.close()
 except:
     import sys
     sys.exit("[Connection Error: make sure the database is running.]")

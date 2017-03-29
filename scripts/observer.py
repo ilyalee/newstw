@@ -13,6 +13,7 @@ from itertools import chain, repeat
 import settings
 import configparser
 from db.providers.archive_provider import ArchiveProvider
+from db.database import pg_vacuum
 import setproctitle
 
 setproctitle.setproctitle(__name__)
@@ -57,5 +58,7 @@ if __name__ == '__main__':
 
     for item in items:
         print("[{}] {}".format(item['source'], item['info']))
+
+    pg_vacuum(settings.DATABASE_URL)
 
     loop.close()

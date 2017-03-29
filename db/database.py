@@ -4,8 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-def pg_vacuum(db_url):
-    if db_url.startswith('postgres://'):
+def pg_vacuum(go):
+    if go:
         from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
         connection = engine.raw_connection()
         connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -48,7 +48,7 @@ if sqlite_memory_mode:
 Session = sessionmaker(bind=engine)
 
 try:
-    if not pg_vacuum(db_url):
+    if not pg_vacuum(db_url.startswith('postgres://')):
         pass
     else:
         connection = engine.connect()

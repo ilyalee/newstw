@@ -59,6 +59,7 @@ if __name__ == '__main__':
     for item in items:
         print("[{}] {}".format(item['source'], item['info']))
 
-    pg_vacuum(settings.DATABASE_URL)
+    db_url = settings.DATABASE_URL
+    pg_vacuum(db_url.startswith('postgres://'))
 
     loop.close()

@@ -112,8 +112,9 @@ class ArchiveProvider(BaseProvider):
 
     def load_report_week(self, page=None, limit=None, keywords=None, sources=None):
         offset = (page - 1) * limit
-        start = arrow.now(self.tzinfo).floor('week').shift(days=-1).replace(hour=8).datetime
-        end = arrow.now(self.tzinfo).ceil('week').replace(hour=7).datetime
+        start = arrow.now(self.tzinfo).floor('week').shift(
+            weeks=-1, days=-1).replace(hour=8).datetime
+        end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
         if sources:
             items = self.find_items_by_values_and_datetime_between(
                 sources, "source", "published", start, end, limit, offset, keywords)

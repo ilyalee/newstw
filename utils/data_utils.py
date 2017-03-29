@@ -72,6 +72,7 @@ def data_remover(val, key, items):
 
 
 def data_updater(key, from_key, fn, condition, items):
+    items = clist(items)
     if condition:
         targets = dict_filter([from_key], items)
         select_key = isinstance(condition, bool)
@@ -179,7 +180,7 @@ def time_localizer(key, items):
     for item in items:
         if key in item:
             import datetime
-            if isinstance(item[key], datetime.date):
+            if isinstance(item[key], datetime.datetime):
                 item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
             elif isinstance(item[key], str):
                 item[key] = arrow.get(parser.parse(item[key])).replace(tzinfo=tzinfo).format()

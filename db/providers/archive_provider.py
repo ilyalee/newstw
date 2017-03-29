@@ -47,6 +47,28 @@ class ArchiveProvider(BaseProvider):
     async def as_count_report(self, keywords, sources=None):
         return await as_run()(self.count_report)(keywords, sources)
 
+    def count_report_today(self, keywords, sources=None):
+        start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
+        end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
+        if sources:
+            return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
+        else:
+            return self.count_by_datetime_between("published", start, end, keywords)
+
+    async def as_count_report_today(self, keywords, sources=None):
+        return await as_run()(self.count_report_today)(keywords, sources)
+
+    def count_report_week(self, keywords, sources=None):
+        start = arrow.now(self.tzinfo).floor('week').shift(days=-1).replace(hour=8).datetime
+        end = arrow.now(self.tzinfo).ceil('week').replace(hour=7).datetime
+        if sources:
+            return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
+        else:
+            return self.count_by_datetime_between("published", start, end, keywords)
+
+    async def as_count_report_week(self, keywords, sources=None):
+        return await as_run()(self.count_report_week)(keywords, sources)
+
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
         items = time_localizer("published", items)
@@ -69,18 +91,41 @@ class ArchiveProvider(BaseProvider):
         items = await run(self.load_report_all)(limit, offset, keywords)
         return items
 
-    def load_report_today(self, limit=None, offset=None, keywords=None):
-        start = arrow.now(self.tzinfo).floor('day').datetime
-        end = arrow.now(self.tzinfo).ceil('day').datetime
-        items = self.find_items_by_datetime_between(
-            "published", start, end, limit, offset, keywords)
-        items = time_localizer("published", items)
+    def load_report_today(self, page=None, limit=None, keywords=None, sources=None):
+        offset = (page - 1) * limit
+        start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
+        end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
+        if sources:
+            items = self.find_items_by_values_and_datetime_between(
+                sources, "source", "published", start, end, limit, offset, keywords)
+        else:
+            items = self.find_items_by_datetime_between(
+                "published", start, end, limit, offset, keywords)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
-    async def as_load_report_today(self, limit=None, offset=None, keywords=None):
-        return await as_run()(self.load_report_today)(limit, offset, keywords)
+    async def as_load_report_today(self, page=None, limit=None, keywords=None, sources=None):
+        return await as_run()(self.load_report_today)(page, limit, keywords, sources)
+
+    def load_report_week(self, page=None, limit=None, keywords=None, sources=None):
+        offset = (page - 1) * limit
+        start = arrow.now(self.tzinfo).floor('week').shift(days=-1).replace(hour=8).datetime
+        end = arrow.now(self.tzinfo).ceil('week').replace(hour=7).datetime
+        if sources:
+            items = self.find_items_by_values_and_datetime_between(
+                sources, "source", "published", start, end, limit, offset, keywords)
+        else:
+            items = self.find_items_by_datetime_between(
+                "published", start, end, limit, offset, keywords)
+        items = data_updater("founds", "founds", str2list, True, items)
+        items = data_updater("id", "id", id2hashid, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
+        return items
+
+    async def as_load_report_week(self, page=None, limit=None, keywords=None, sources=None):
+        return await as_run()(self.load_report_week)(page, limit, keywords, sources)
 
     def load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
         offset = (page - 1) * limit

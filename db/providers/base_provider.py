@@ -37,14 +37,43 @@ class BaseProvider():
             num = do.with_entities(func.count(self.cls.id)).scalar()
             return num
 
-    def count_items_by_values(self, values, column, keywords=None):
+    def count_items_by_values(self, values, values_column, keywords=None):
         if not values:
             return
         if not isiterable(values):
             values = clist(values)
         with query_session() as session:
             do = session.query(self.cls)
-            do = self.do_values(values, column, do)
+            do = self.do_values(values, values_column, do)
+            do = self.do_keywords(keywords, do)
+            num = do.with_entities(func.count(self.cls.id)).scalar()
+            return num
+
+    def count_by_datetime_between(self, datetime_column, start, end, keywords=None):
+        if not datetime_column:
+            return
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = do.filter(getattr(self.cls, datetime_column).between(
+                start, end))
+            do = self.do_keywords(keywords, do)
+            num = do.with_entities(func.count(self.cls.id)).scalar()
+            return num
+
+    def count_items_by_values_and_datetime_between(self, values, values_column, datetime_column, start, end, keywords=None):
+        if not values:
+            return
+        if not values_column:
+            return
+        if not datetime_column:
+            return
+        if not isiterable(values):
+            values = clist(values)
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = do.filter(getattr(self.cls, datetime_column).between(
+                start, end))
+            do = self.do_values(values, values_column, do)
             do = self.do_keywords(keywords, do)
             num = do.with_entities(func.count(self.cls.id)).scalar()
             return num
@@ -90,20 +119,42 @@ class BaseProvider():
 
         with query_session() as session:
             do = session.query(self.cls)
+            do = do.filter(getattr(self.cls, datetime_column).between(
+                start, end)).order_by(desc(getattr(self.cls, datetime_column)))
             do = self.do_keywords(keywords, do)
-            result_set = do.filter(getattr(self.cls, datetime_column).between(
-                start, end)).order_by(desc(getattr(self.cls, datetime_column))).limit(limit).offset(offset).all()
+            result_set = do.limit(limit).offset(offset).all()
             return load_as_dicts(result_set)
 
-    def find_items_by_values(self, values, column, limit=None, offset=None, keywords=None):
+    def find_items_by_values_and_datetime_between(self, values, values_column, datetime_column, start, end, limit=None, offset=None, keywords=None):
         if not values:
+            return []
+        if not values_column:
+            return []
+        if not datetime_column:
             return []
         if not isiterable(values):
             values = clist(values)
 
         with query_session() as session:
             do = session.query(self.cls)
-            do = self.do_values(values, column, do)
+            do = do.filter(getattr(self.cls, datetime_column).between(
+                start, end)).order_by(desc(getattr(self.cls, datetime_column)))
+            do = self.do_values(values, values_column, do)
+            do = self.do_keywords(keywords, do)
+            result_set = do.limit(limit).offset(offset).all()
+            return load_as_dicts(result_set)
+
+    def find_items_by_values(self, values, values_column, limit=None, offset=None, keywords=None):
+        if not values:
+            return []
+        if not values_column:
+            return []
+        if not isiterable(values):
+            values = clist(values)
+
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = self.do_values(values, values_column, do)
             do = self.do_keywords(keywords, do)
             orders = list2str(self.order_by_columns)
             result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()

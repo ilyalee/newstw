@@ -21,24 +21,40 @@
       font-size: x-small;
     }
 
+    div.header {
+      margin-left: 1rem;
+    }
+
+    nav.fixed {
+      margin-top: 0;
+      position: fixed;
+      z-index: 2;
+    }
+
+    ul#cards {
+      padding-top: 4rem;
+    }
+
   </style>
 </head>
 <body>
-  <nav>
-    <div class="nav-wrapper yellow darken-3">
+  <nav class="fixed">
+    <div class="nav-wrapper teal lighten-2">
       <div class="row">
-        <div class="col">
-          {%- if not data['orig_keyword'] and not data['category'] -%}
+        <div class="col left">
+          {%- if not data['keyword'] and not data['category'] -%}
           <ul class="header">
             <li><a href="?">總覽</a></li>
             <li><a href="?cat=pmedia">平面</a></li>
             <li><a href="?cat=emedia">電子</a></li>
           </ul>
           {% else %}
+          <div class="header">
             <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
             {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
-            {%- if data['orig_keyword'] -%}
-            <a class="breadcrumb">{{ data['orig_keyword'] }} ({{ data['count'] }})</a>
+            {%- if data['keyword'] -%}
+            <a class="breadcrumb">{{ data['keyword'] }} ({{ data['count'] }})</a>
+          </div>
             {% endif %}
           {% endif %}
         </div>
@@ -60,15 +76,15 @@
       <div class="card-content">
         <span class="card-title blue-text text-darken-1">
           <i class="material-icons">add</i>
-          {{ item['title'] | hightlight_keywords(data['keyword']) | safe }}
+          {{ item['title'] | hightlight_keywords(data['_keyword']) | safe }}
         </span>
         <p class="left">
           <blockquote class="truncate">
-            {{ item['summary'] | hightlight_keywords(data['keyword']) | safe }}
+            {{ item['summary'] | hightlight_keywords(data['_keyword']) | safe }}
           </blockquote>
         </p>
       </div>
-      <span class="chip grey-text">{{ item['published_humanize'] }}</span>
+      <span title="{{ item['published'] }}" class="chip grey-text">{{ item['published_humanize'] }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ item['source'] }}">{{ item['source'] }}</a>
       <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
       {% for keyword in item['founds'] %}
@@ -85,13 +101,14 @@
   {% endfor %}
   </ul>
 
+  {% raw %}
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
-  {% raw %}
   <script id="card-template" type="text/x-handlebars-template">
     <li class="card-panel hoverable">
       <div class="card-content">
@@ -105,7 +122,7 @@
           </blockquote>
         </p>
       </div>
-      <span class="chip grey-text">{{ published_humanize }}</span>
+      <span title="{{ timeformat published 'YYYY-MM-DD HH:mm:SSZZ' }}" class="chip grey-text">{{ published_humanize }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ source }}">{{ source }}</a>
       <span class="chip green lighten-3 white-text">#{{ id }}</span>
       {{#list founds}}
@@ -120,6 +137,15 @@
   </script>
 
   <script type="text/javascript">
+  jQuery.urlSub = function(name) {
+    var results = window.location.pathname.match(/([^\/]*)\/*$/)
+    if (results) {
+      return results[0].replace('/', '')
+    } else {
+      return null
+    }
+  }
+
     jQuery.urlParam = function(name) {
       var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
       if (results) {
@@ -129,6 +155,11 @@
       }
     }
 
+    Handlebars.registerHelper('timeformat', function (date, format) {
+        var mmnt = moment.unix(date)
+        return mmnt.format(format)
+    })
+
     Handlebars.registerHelper('list', function(items) {
       var out = ''
       for(var i = 0, l = items.length; i < l; i++) {
@@ -137,9 +168,15 @@
       return out
     })
 
-    var url = 'api/v1/archive/list?'
+    var url = '/api/v1/archive/list?'
     var page = 1
     var limit = 10
+
+    if ('today' === jQuery.urlSub('today')) {
+      url = url + 'time=today&'
+    } else if ('week' === jQuery.urlSub('week')) {
+      url = url + 'time=week&'
+    }
 
     keyword = jQuery.urlParam('keyword') || ''
     keyword = decodeURIComponent(keyword)
@@ -150,7 +187,7 @@
 
     var done = false
     var showed = false
-    window.addEventListener('scroll', jQuery.throttle( 250, function() {
+    window.addEventListener('scroll', jQuery.throttle(250, function() {
       var wrap = document.getElementById('cards')
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset
@@ -160,6 +197,9 @@
           Materialize.toast("已經到底了 (┌・ω・)┌", 5000)
           showed = true
           return showed
+        }
+        if (done) {
+          return done
         }
 
         page = page + 1

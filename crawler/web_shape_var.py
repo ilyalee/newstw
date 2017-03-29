@@ -53,7 +53,7 @@ source['ctitv'] = [
     "UCpu3bemTQwAU8PqM4kJdoEQ"
 ]
 source['ettoday'] = [
-    "www.ettoday.net",
+    "ettoday.net",
     "04784784225885481651/10236880490079678464",
     "feeds.feedburner.com/ettoday/realtime"
 ]
@@ -141,8 +141,8 @@ context['ctitv'] = [
 context['ettoday'] = [
     {'save': "title", 'path': ["h2", "h1.title"], 'ind': 0},
     {'save': "summary", 'path': ["section > p", ".subjcet_article > .story"], 'ind': -1},
-    {'save': "_rawtime", 'path': ".news-time", 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': "YYYY年MM月DD日 HH:mm"}
+    {'save': "_rawtime", 'path': [".news-time", ".date"], 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY年MM月DD日 HH:mm", "時間： YYYY/MM/DD HH:mm"]}
 ]
 context['ebc'] = [
     {'save': "title", 'path': ".newsTargetTitle > h1", 'ind': 0},

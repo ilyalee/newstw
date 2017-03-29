@@ -25,6 +25,10 @@
       margin-left: 1rem;
     }
 
+    .card-panel blockquote {
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -140,8 +144,13 @@
   </script>
 
   <script type="text/javascript">
+    jQuery('#cards').delegate('blockquote','click',function() {
+        jQuery(this).toggleClass('truncate')
+    })
+
     jQuery(document).ready(function () {
       jQuery('.dropdown-button').dropdown({ hover: true })
+      clickableTruncate()
     })
 
     jQuery.urlContain = function(name) {
@@ -243,13 +252,6 @@
           })
         }
       }))
-
-    $('.card-panel').on('click', function() {
-      var ele = $(this).find('blockquote')
-      jQuery(ele).toggleClass('truncate')
-    })
-
-
 
   </script>
   {% endraw %}

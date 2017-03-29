@@ -244,6 +244,13 @@
         }
       }))
 
+    $('.card-panel').on('click', function() {
+      var ele = $(this).find('blockquote')
+      jQuery(ele).toggleClass('truncate')
+    })
+
+
+
   </script>
   {% endraw %}
 </body>

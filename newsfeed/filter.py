@@ -6,7 +6,7 @@ import requests
 from requests.exceptions import RequestException
 import os
 import asyncio
-import functools
+from functools import partial
 from utils.data_utils import dict_filter, time_corrector, link_corrector, data_cleaner, data_filter, data_inserter, data_updater, data_kv_updater_all_load, data_kv_updater_all_by_remote_items, data_hasher, data_remover
 from crawler.utils.crawler_helper import fetch_news_all
 from crawler.utils.crawler_utils import detect_news_source
@@ -25,22 +25,24 @@ class NewsFeedFilter:
         self.url = url
         self.full_text = full_text
         self.include_text = include_text
+        self.source = detect_news_source(url)
 
     def _download(self, encoding='utf-8', timeout=30) -> Feeds:
         items = []
-        url = self.url
+        if 'any' == self.source:
+            return items
         remedy = False
         while True:
             if remedy:
-                log.error(f"[{__name__}] Retry: {url}")
+                log.error(f"[{__name__}] Retry: { self.url}")
             with requests.Session() as session:
                 try:
-                    resp = session.get(url, timeout=timeout)
+                    resp = session.get(self.url, timeout=timeout)
                     resp.encoding = encoding
                     text = resp.text
                 except RequestException as e:
                     remedy = True
-                    log.error(f"[{__name__}] Failure when trying to fetch {url}")
+                    log.error(f"[{__name__}] Failure when trying to fetch { self.url}")
                     log.info(e, exc_info=True)
                 else:
                     remedy = False
@@ -84,11 +86,14 @@ class NewsFeedFilter:
         items = data_cleaner("title", items)
         items = data_cleaner("summary", items)
 
-        remote_items = data_kv_updater_all_load("link", fetch_news_all, self.full_text, items)
+        remote_items = data_kv_updater_all_load("link", partial(
+            fetch_news_all, source=self.source), self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
             remote_items, "summary", "summary", self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
             remote_items, "published", "published", self.full_text, items)
+        items = data_kv_updater_all_by_remote_items(
+            remote_items, "source", "source", self.full_text, items)
         return items
 
     def _data_filter(self, items):
@@ -97,12 +102,13 @@ class NewsFeedFilter:
 
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
-        if detect_news_source(self.url) == "supplements":
-            items = data_updater("source", "link", detect_news_source, True, items)
-        else:
-            items = data_updater("source", "link", detect_news_source, self.url, items)
+        if not self.full_text:
+            if "supplements" == self.source:
+                items = data_updater("source", "link", detect_news_source, True, items)
+            else:
+                items = data_updater("source", "link", detect_news_source, self.url, items)
         items = data_remover("any", "source", items)
-        if (__debug__) and 0 == len(items) and detect_news_source(self.url) == 'any':
+        if (__debug__) and 0 == len(items) and 'any' == self.source:
             print("please debug this source: {} | {}".format(
                 self.url, detect_news_source(self.url)))
         items = data_hasher("hash", ["title", "published", "source"], items)

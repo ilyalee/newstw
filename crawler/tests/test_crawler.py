@@ -72,16 +72,16 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("_rawtime", news)
                 self.assertIn("published", news)
                 self.assertIn("link", news)
-                self.assertIn("from", news)
+                self.assertIn("source", news)
                 self.assertTrue(news["pass"])
                 self.assertTrue(True)
-                #pprint_color(news)
+                # pprint_color(news)
 
     def test_shorten_url(self):
         news = fetch_news("https://goo.gl/6IXNnC")
-        #pprint_color(news)
+        # pprint_color(news)
 
-        self.assertIn("from", news)
+        self.assertIn("source", news)
 
     def tearDown(self):
         pass

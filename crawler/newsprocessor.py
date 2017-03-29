@@ -9,16 +9,22 @@ from utils.async_utils import as_run
 
 class NewsDataProcessor:
 
-    def __init__(self, url, html):
+    def __init__(self, url, html, source=None):
         self.data = {}
         self.soup = BeautifulSoup(html, "html.parser")
         self.url = normalize_link(url)
         self.html = html
-        self.source = detect_news_source(self.url)
+        if not source:
+            self.source = detect_news_source(self.url)
+        else:
+            self.source = source
         self.context = load_context(self.source)
         self.trimtext = load_trimtext(self.source)
+        self.dummy = {'pass': False, 'link': '', 'source': 'any'}
 
     def output(self):
+        if 'any' == self.source:
+            return self.dummy
         self._process(self.html)
         self.data['pass'] = self.data.get("pass", True)
         return self.data
@@ -30,7 +36,7 @@ class NewsDataProcessor:
 
     def _process(self, html):
         self.data['link'] = self.url
-        self.data['from'] = self.source
+        self.data['source'] = self.source
         if self.source == 'any':
             self.data['pass'] = False
             if __debug__:
@@ -54,7 +60,7 @@ class NewsDataProcessor:
             if found:
                 return found.attrs[value]
         if __debug__:
-            print("_soup_attrs can not find any value of specific attrs")
+            print("_soup_attrs can not find any value of specific attrs:", path)
 
     def _soup_select(self, path):
         if isinstance(path, str):

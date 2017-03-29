@@ -26,7 +26,7 @@ else:
         engine = create_engine(db_url, connect_args={
                                'check_same_thread': False})
     else:
-        engine = create_engine(db_url, pool_size=20)
+        engine = create_engine(db_url, pool_size=10)
 
 if sqlite_memory_mode:
     from db.models import Base

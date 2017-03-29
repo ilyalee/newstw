@@ -35,10 +35,11 @@ run_all:
 	make run_scheduler >/dev/null 2>&1 &
 
 kill_all:
-	lsof -t -i tcp:9527 | xargs kill -9
-	lsof -t -i tcp:9528 | xargs kill -9
-	lsof -t -i tcp:9529 | xargs kill -9
-	lsof -t -i tcp:9530 | xargs kill -9
+	pkill -f run_crawler
+	pkill -f run_newsfeed
+	pkill -f run_fbfeed
+	pkill -f run_news_archiver
+	pkill -f run_scheduler
 
 deps:
 	pip3 freeze > ./requirements.txt

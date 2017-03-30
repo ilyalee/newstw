@@ -54,10 +54,13 @@ if __name__ == '__main__':
 
     print("[Link Start]")
     loop = asyncio.get_event_loop()
-    items = loop.run_until_complete(news_observer(progress=True))
+    result = loop.run_until_complete(news_observer(progress=True))
 
-    for item in items:
-        print("[{}] {}".format(item['source'], item['info']))
+    for data in result:
+        print("[{}] {}".format(data['source'], data['info']))
+        if __debug__:
+            if 'supplements' == data['source'] and 'items' in data:
+                print("→({}){}".format(data['url'], data['items']))
 
     db_url = settings.DATABASE_URL
     pg_vacuum(db_url.startswith('postgres://'))

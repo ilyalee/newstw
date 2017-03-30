@@ -302,7 +302,7 @@ def isiterable(target):
 
 def clist(target):
     import types
-    if isinstance(target, str):
+    if isinstance(target, str) or isinstance(target, dict):
         return [target]
     else:
         return list(target)

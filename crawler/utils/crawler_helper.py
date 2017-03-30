@@ -38,7 +38,7 @@ async def as_fetch_news(url, encoding='utf-8', timeout=60):
             return await NewsDataProcessor(resp.url, html).as_output()
 
 
-def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, total_connection=50, source=None):
+def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, total_connection=100, source=None):
     from concurrent.futures import ThreadPoolExecutor
     from requests_futures.sessions import FuturesSession
     import threading

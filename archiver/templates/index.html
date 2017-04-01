@@ -62,9 +62,11 @@
             {% endif %}
           </div>
           <div class="col right hide-on-small-only">
-            <form>
+            <form action="." method="get">
               <div class="input-field">
-                <input name="keyword" id="keyword" type="search" action="" method="get" required>
+                <input name="keyword" id="keyword" type="search" required>
+                <input name="cat" id="cat" value="" type="hidden" />
+                <input name="parent" id="parent" value="" type="hidden" />
                 <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                 <i class="material-icons">close</i>
               </div>
@@ -210,6 +212,10 @@
     page = jQuery.urlParam('page') || page
     cat = jQuery.urlParam('cat') || ''
     cat = decodeURIComponent(cat)
+    parent = jQuery.urlParam('parent') || ''
+    $('input#parent').val(parent)
+    $('input#cat').val(cat)
+
 
     var done = false
     var showed = false

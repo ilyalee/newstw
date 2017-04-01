@@ -6,7 +6,7 @@ from utils.data_utils import data_updater, hightlight_keywords
 from functools import partial
 from db.utils.db_utils import reload_keyword
 
-async def as_request_report(request, time='any', hightlight=True):
+async def as_request_report(request, time='any', hightlight=True, count=False):
     data = {}
     page = 1
     limit = 10
@@ -19,12 +19,14 @@ async def as_request_report(request, time='any', hightlight=True):
     data['_keyword'] = keyword
 
     data['items'] = await as_report(time, data['page'], data['limit'], data['_keyword'], data['category'])
-    data['count'] = await as_report_count(time, data['_keyword'], data['category'])
 
     data['parent'] = request.args.get('parent', None)
-    data['parent_count'] = await as_report_count(time, data['parent'], data['category'])
     if data['parent'] and data['_keyword']:
         data['_keyword'] = " ".join({data['_keyword'], data['parent']})
+
+    if count:
+        data['count'] = await as_report_count(time, data['_keyword'], data['category'])
+        data['parent_count'] = await as_report_count(time, data['parent'], data['category'])
 
     if data['category']:
         import configparser

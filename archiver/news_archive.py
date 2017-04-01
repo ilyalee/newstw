@@ -27,16 +27,16 @@ template = env.get_template('index.html')
 @app.route('/')
 @app.head('/')
 async def index(request, methods=['GET']):
-    return html(template.render(data=await as_request_report(request), debug=__debug__))
+    return html(template.render(data=await as_request_report(request, count=True), debug=__debug__))
 
 
 @app.route('/daily')
 @app.head('/daily')
 async def index(request, methods=['GET']):
-    return html(template.render(data=await as_request_report(request, 'daily'), debug=__debug__))
+    return html(template.render(data=await as_request_report(request, 'daily', count=True), debug=__debug__))
 
 
 @app.route("/weekly")
 @app.head('/weekly')
 async def index(request, methods=['GET']):
-    return html(template.render(data=await as_request_report(request, 'weekly'), debug=__debug__))
+    return html(template.render(data=await as_request_report(request, 'weekly', count=True), debug=__debug__))

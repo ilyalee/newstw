@@ -10,8 +10,10 @@ def pg_vacuum(go):
         connection = engine.raw_connection()
         connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = connection.cursor()
-        cursor.execute("VACUUM ANALYSE archive")
+        cursor.execute("VACUUM ANALYSE archives")
         connection.close()
+        if __debug__:
+            print("VACUUM ANALYSE archives")
         return True
     else:
         return False
@@ -48,11 +50,9 @@ if sqlite_memory_mode:
 Session = sessionmaker(bind=engine)
 
 try:
-    if not pg_vacuum(db_url.startswith('postgres://')):
-        pass
-    else:
-        connection = engine.connect()
-        connection.close()
+    connection = engine.connect()
+    connection.close()
+    pg_vacuum(db_url.startswith('postgresql://'))
 except:
     import sys
     sys.exit("[Connection Error: make sure the database is running.]")

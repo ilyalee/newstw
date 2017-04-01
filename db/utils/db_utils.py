@@ -87,10 +87,10 @@ def list_as_str(keys):
     return _
 
 
-def str2list(str, delimiter=','):
-    if not str:
+def str2list(string, delimiter=','):
+    if not string:
         return []
-    return sorted(filter(None, str.split(delimiter)))
+    return sorted(filter(None, string.split(delimiter)))
 
 
 def list2str(lst, delimiter=','):

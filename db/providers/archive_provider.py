@@ -47,7 +47,7 @@ class ArchiveProvider(BaseProvider):
     async def as_count_report(self, keywords, sources=None):
         return await as_run()(self.count_report)(keywords, sources)
 
-    def count_report_today(self, keywords, sources=None):
+    def count_report_daily(self, keywords, sources=None):
         start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
         end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
         if sources:
@@ -55,10 +55,10 @@ class ArchiveProvider(BaseProvider):
         else:
             return self.count_by_datetime_between("published", start, end, keywords)
 
-    async def as_count_report_today(self, keywords, sources=None):
-        return await as_run()(self.count_report_today)(keywords, sources)
+    async def as_count_report_daily(self, keywords, sources=None):
+        return await as_run()(self.count_report_daily)(keywords, sources)
 
-    def count_report_week(self, keywords, sources=None):
+    def count_report_weekly(self, keywords, sources=None):
         start = arrow.now(self.tzinfo).floor('week').shift(
             weeks=-1, days=-1).replace(hour=8).datetime
         end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
@@ -67,8 +67,8 @@ class ArchiveProvider(BaseProvider):
         else:
             return self.count_by_datetime_between("published", start, end, keywords)
 
-    async def as_count_report_week(self, keywords, sources=None):
-        return await as_run()(self.count_report_week)(keywords, sources)
+    async def as_count_report_weekly(self, keywords, sources=None):
+        return await as_run()(self.count_report_weekly)(keywords, sources)
 
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
@@ -92,7 +92,7 @@ class ArchiveProvider(BaseProvider):
         items = await run(self.load_report_all)(limit, offset, keywords)
         return items
 
-    def load_report_today(self, page=None, limit=None, keywords=None, sources=None):
+    def load_report_daily(self, page=None, limit=None, keywords=None, sources=None):
         offset = (page - 1) * limit
         start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
         end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
@@ -107,10 +107,10 @@ class ArchiveProvider(BaseProvider):
         items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
-    async def as_load_report_today(self, page=None, limit=None, keywords=None, sources=None):
-        return await as_run()(self.load_report_today)(page, limit, keywords, sources)
+    async def as_load_report_daily(self, page=None, limit=None, keywords=None, sources=None):
+        return await as_run()(self.load_report_daily)(page, limit, keywords, sources)
 
-    def load_report_week(self, page=None, limit=None, keywords=None, sources=None):
+    def load_report_weekly(self, page=None, limit=None, keywords=None, sources=None):
         offset = (page - 1) * limit
         start = arrow.now(self.tzinfo).floor('week').shift(
             weeks=-1, days=-1).replace(hour=8).datetime
@@ -126,8 +126,8 @@ class ArchiveProvider(BaseProvider):
         items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
-    async def as_load_report_week(self, page=None, limit=None, keywords=None, sources=None):
-        return await as_run()(self.load_report_week)(page, limit, keywords, sources)
+    async def as_load_report_weekly(self, page=None, limit=None, keywords=None, sources=None):
+        return await as_run()(self.load_report_weekly)(page, limit, keywords, sources)
 
     def load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
         offset = (page - 1) * limit

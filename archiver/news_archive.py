@@ -4,13 +4,10 @@
 from sanic import Sanic
 from sanic.response import json
 from archiver.blueprints import bp_v1
-from sanic.response import html, text
-from archiver.utils.archiver_helper import as_fetch_report, as_fetch_report_count, as_fetch_report_today, as_fetch_report_week, as_fetch_report_today_count, as_fetch_report_week_count
-from jinja2 import Environment, PackageLoader, select_autoescape, Markup, escape
+from sanic.response import html
+from jinja2 import Environment, PackageLoader, select_autoescape
 from sanic.config import Config
-from utils.type_utils import sint
-from utils.data_utils import hightlight_keywords
-from db.utils.db_utils import reload_keyword
+from archiver.controllers.newsfeedlist import as_request_report
 import setproctitle
 
 setproctitle.setproctitle(__name__)
@@ -24,96 +21,22 @@ env = Environment(
     loader=PackageLoader('archiver', 'templates'),
     autoescape=select_autoescape(['html'])
 )
-env.filters['hightlight_keywords'] = hightlight_keywords
 template = env.get_template('index.html')
 
-from functools import lru_cache
 
-
-@lru_cache(None)
 @app.route('/')
 @app.head('/')
 async def index(request, methods=['GET']):
-    data = {}
-    page = 1
-    limit = 10
-    data['page'] = sint(request.args.get('page', page), page)
-    data['limit'] = sint(request.args.get('limit', limit), limit)
-    keyword = request.args.get('keyword', None)
-    data['keyword'] = keyword
-    data['_keyword'] = keyword
-    data['category'] = request.args.get('cat', None)
-    data['parent'] = request.args.get('parent', None)
-    if data['_keyword'] == data['parent']:
-        data['parent'] = ""
-    data['parent_count'] = await as_fetch_report_count(data['parent'], data['category'])
-    if data['parent'] and data['keyword']:
-        data['_keyword'] = " ".join({data['_keyword'], data['parent']})
-    data['count'] = await as_fetch_report_count(data['_keyword'], data['category'])
-    data['items'] = await as_fetch_report(data['page'], data['limit'], data['_keyword'], data['category'])
-    (data['_keyword'], _) = reload_keyword(data['_keyword'])
-    if data['category']:
-        import configparser
-        config = configparser.ConfigParser()
-        config.read('config/feeds.cfg')
-        data['category_zh_tw'] = config.get('zh_tw', data['category'])
-
-    return html(template.render(data=data, debug=__debug__))
+    return html(template.render(data=await as_request_report(request), debug=__debug__))
 
 
-@lru_cache(None)
-@app.route('/today')
-@app.head('/today')
+@app.route('/daily')
+@app.head('/daily')
 async def index(request, methods=['GET']):
-    data = {}
-    page = 1
-    limit = 10
-    data['page'] = sint(request.args.get('page', page), page)
-    data['limit'] = sint(request.args.get('limit', limit), limit)
-    keyword = request.args.get('keyword', None)
-    data['keyword'] = keyword
-    data['_keyword'] = keyword
-    data['category'] = request.args.get('cat', None)
-    data['parent'] = request.args.get('parent', None)
-    data['parent_count'] = await as_fetch_report_today_count(data['parent'], data['category'])
-    if data['parent'] and data['_keyword']:
-        data['_keyword'] = " ".join({data['_keyword'], data['parent']})
-    data['count'] = await as_fetch_report_today_count(data['_keyword'], data['category'])
-    data['items'] = await as_fetch_report_today(data['page'], data['limit'], data['_keyword'], data['category'])
-    (data['_keyword'], _) = reload_keyword(data['_keyword'])
-    if data['category']:
-        import configparser
-        config = configparser.ConfigParser()
-        config.read('config/feeds.cfg')
-        data['category_zh_tw'] = config.get('zh_tw', data['category'])
-
-    return html(template.render(data=data, debug=__debug__))
+    return html(template.render(data=await as_request_report(request, 'daily'), debug=__debug__))
 
 
-@lru_cache(None)
-@app.route("/week")
-@app.head('/week')
+@app.route("/weekly")
+@app.head('/weekly')
 async def index(request, methods=['GET']):
-    data = {}
-    page = 1
-    limit = 10
-    data['page'] = sint(request.args.get('page', page), page)
-    data['limit'] = sint(request.args.get('limit', limit), limit)
-    keyword = request.args.get('keyword', None)
-    data['keyword'] = keyword
-    data['_keyword'] = keyword
-    data['category'] = request.args.get('cat', None)
-    data['parent'] = request.args.get('parent', None)
-    data['parent_count'] = await as_fetch_report_week_count(data['parent'], data['category'])
-    if data['parent'] and data['_keyword']:
-        data['_keyword'] = " ".join({data['_keyword'], data['parent']})
-    data['count'] = await as_fetch_report_week_count(data['_keyword'], data['category'])
-    data['items'] = await as_fetch_report_week(data['page'], data['limit'], data['_keyword'], data['category'])
-    (data['_keyword'], _) = reload_keyword(data['_keyword'])
-    if data['category']:
-        import configparser
-        config = configparser.ConfigParser()
-        config.read('config/feeds.cfg')
-        data['category_zh_tw'] = config.get('zh_tw', data['category'])
-
-    return html(template.render(data=data, debug=__debug__))
+    return html(template.render(data=await as_request_report(request, 'weekly'), debug=__debug__))

@@ -25,37 +25,37 @@ async def as_fetch_report_count(keywords, category):
     return [] if category and not sources else await ap.as_count_report(keywords, sources)
 
 
-def fetch_report_today_count(keywords, category):
+def fetch_report_daily_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else ap.count_report_today(keyword, sources)
+    return [] if category and not sources else ap.count_report_daily(keyword, sources)
 
-async def as_fetch_report_today_count(keywords, category):
+async def as_fetch_report_daily_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else await ap.as_count_report_today(keywords, sources)
+    return [] if category and not sources else await ap.as_count_report_daily(keywords, sources)
 
 
-def fetch_report_week_count(keywords, category):
+def fetch_report_weekly_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else ap.count_report_week(keyword, sources)
+    return [] if category and not sources else ap.count_report_weekly(keyword, sources)
 
-async def as_fetch_report_week_count(keywords, category):
+async def as_fetch_report_weekly_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else await ap.as_count_report_week(keywords, sources)
+    return [] if category and not sources else await ap.as_count_report_weekly(keywords, sources)
 
 
-def fetch_report_today(page, limit, keywords, category):
+def fetch_report_daily(page, limit, keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else ap.load_report_today(page, limit, keywords, sources)
+    return [] if category and not sources else ap.load_report_daily(page, limit, keywords, sources)
 
-async def as_fetch_report_today(page, limit, keywords, category):
+async def as_fetch_report_daily(page, limit, keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else await ap.as_load_report_today(page, limit, keywords, sources)
+    return [] if category and not sources else await ap.as_load_report_daily(page, limit, keywords, sources)
 
 
-def fetch_report_week(page, limit, keywords, category):
+def fetch_report_weekly(page, limit, keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else ap.load_report_week(page, limit, keywords, sources)
+    return [] if category and not sources else ap.load_report_weekly(page, limit, keywords, sources)
 
-async def as_fetch_report_week(page, limit, keywords, category):
+async def as_fetch_report_weekly(page, limit, keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else await ap.as_load_report_week(page, limit, keywords, sources)
+    return [] if category and not sources else await ap.as_load_report_weekly(page, limit, keywords, sources)

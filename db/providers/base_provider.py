@@ -79,6 +79,9 @@ class BaseProvider():
             return num
 
     def do_keywords(self, keywords, do):
+        if not keywords:
+            return do
+
         def _and(do, keywords):
             for keyword in keywords:
                 targets = [getattr(self.cls, column).ilike(

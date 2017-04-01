@@ -34,8 +34,8 @@
 <body>
   <!-- Dropdown Structure -->
   <ul id="dropdown-time" class="dropdown-content">
-    <li><a href="/today">日報</a></li>
-    <li><a href="/week">週報</a></li>
+    <li><a href="/daily">日報</a></li>
+    <li><a href="/weekly">週報</a></li>
     <li class="divider"></li>
     <li><a href="/">總覽</a></li>
   </ul>
@@ -80,11 +80,11 @@
       <div class="card-content">
         <span class="card-title blue-text text-darken-1">
           <i class="material-icons">add</i>
-          {{ item['title'] | hightlight_keywords(data['_keyword']) | safe }}
+          {{ item['title'] | safe }}
         </span>
         <p class="left">
           <blockquote class="truncate">
-            {{ item['summary'] | hightlight_keywords(data['_keyword']) | safe }}
+            {{ item['summary'] | safe }}
           </blockquote>
         </p>
       </div>
@@ -198,10 +198,10 @@
       })
     }
 
-    if ('today' === jQuery.urlSub('today')) {
-      url = url + 'time=today&'
-    } else if ('week' === jQuery.urlSub('week')) {
-      url = url + 'time=week&'
+    if ('daily' === jQuery.urlSub('daily')) {
+      url = url + 'time=daily&'
+    } else if ('weekly' === jQuery.urlSub('weekly')) {
+      url = url + 'time=weekly&'
     }
 
     keyword = jQuery.urlParam('keyword') || ''
@@ -224,7 +224,7 @@
           showed = true
           return showed
         }
-        if (done) {
+        if (showed || done) {
           return done
         }
 
@@ -234,14 +234,15 @@
         fetch(url + params)
           .then(function(response) {
             return response.json()
-          }).then(function(json) {
-            if (json.length == 0) {
+          }).then(function(data) {
+            items = data.items
+            if (items.length == 0) {
               done = true
               return done
             }
             var source   = $("#card-template").html()
             var template = Handlebars.compile(source)
-            jQuery.each(json, function (index, item) {
+            jQuery.each(items, function (index, item) {
               var context = item
               var html = template(context)
               jQuery('#cards').append(html)

@@ -52,7 +52,6 @@ Session = sessionmaker(bind=engine)
 try:
     connection = engine.connect()
     connection.close()
-    pg_vacuum(db_url.startswith('postgresql://'))
 except:
     import sys
     sys.exit("[Connection Error: make sure the database is running.]")

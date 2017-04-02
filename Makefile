@@ -80,6 +80,10 @@ kill_all:
 	-pkill -f "make run_fbfeed"
 	-pkill -f "make run_news_archiver"
 	-pkill -f "make run_scheduler"
+
+restart:
+	make kill_all && make run_all
+
 deps:
 	pip3 freeze > ./requirements.txt
 

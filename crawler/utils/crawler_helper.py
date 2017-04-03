@@ -68,9 +68,13 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
                 else:
                     target_source = 'any'
             if __debug__:
-                print(f"[{target_source}:{connection}] ({url})")
+                if 'any' == target_source:
+                    print(f"[*skip*:{connection}] ({url})")
+                else:
+                    print(f"[{target_source}:{connection}] ({url})")
             if 'any' == target_source:
                 continue
+
             if remedy:
                 log.error(f"[{__name__}] Retry: {url}")
             try:

@@ -5,6 +5,7 @@ from utils.type_utils import sint
 from utils.data_utils import data_updater, hightlight_keywords
 from functools import partial
 from db.utils.db_utils import reload_keyword
+from utils.config_utils import load_lang
 
 async def as_request_report(request, time='any', hightlight=True, count=False):
     data = {}
@@ -13,6 +14,9 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
     data['page'] = sint(request.args.get('page', page), page)
     data['limit'] = sint(request.args.get('limit', limit), limit)
     data['category'] = request.args.get('cat', None)
+
+    if data['category']:
+        data['category_zh_tw'] = load_lang('zh_tw', data['category'])
 
     keyword = request.args.get('keyword', None)
     data['keyword'] = keyword
@@ -27,12 +31,6 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
     if count:
         data['count'] = await as_report_count(time, data['_keyword'], data['category'])
         data['parent_count'] = await as_report_count(time, data['parent'], data['category'])
-
-    if data['category']:
-        import configparser
-        config = configparser.ConfigParser()
-        config.read('config/feeds.cfg')
-        data['category_zh_tw'] = config.get('zh_tw', data['category'])
 
     if hightlight and data['keyword']:
         data['items'] = data_updater("title", "title", partial(

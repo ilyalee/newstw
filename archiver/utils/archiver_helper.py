@@ -18,11 +18,11 @@ async def as_fetch_report(page, limit, keywords, category):
 
 def fetch_report_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else ap.count_report(keyword, sources)
+    return 0 if category and not sources else ap.count_report(keyword, sources)
 
 async def as_fetch_report_count(keywords, category):
     sources = load_sources_by_category(category)
-    return [] if category and not sources else await ap.as_count_report(keywords, sources)
+    return 0 if category and not sources else await ap.as_count_report(keywords, sources)
 
 
 def fetch_report_daily_count(keywords, category):

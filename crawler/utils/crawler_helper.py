@@ -38,7 +38,7 @@ async def as_fetch_news(url, encoding='utf-8', timeout=60):
             return await NewsDataProcessor(resp.url, html).as_output()
 
 
-def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, total_connection=100, source=None):
+def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_connection=100, source=None):
     from concurrent.futures import ThreadPoolExecutor
     from requests_futures.sessions import FuturesSession
     import threading
@@ -69,6 +69,8 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, to
                     target_source = 'any'
             if __debug__:
                 print(f"[{target_source}:{connection}] ({url})")
+            if 'any' == target_source:
+                continue
             if remedy:
                 log.error(f"[{__name__}] Retry: {url}")
             try:
@@ -85,7 +87,8 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=False, to
             news = NewsDataProcessor(resp.url, html, target_source)
             output = news.output()
             collect.append(output)
-    if failed_urls:
+    if failed_urls and remedy < limit:
+        remedy = remedy + 1
         return collect + fetch_news_all(failed_urls, encoding, timeout, limit, True, total_connection, source)
     else:
         return collect

@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import better_exceptions
 from newsfeed import newsfeed
 import os
 

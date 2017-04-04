@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import better_exceptions
 import os
 import sys
 sys.path.append(os.getcwd())

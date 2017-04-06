@@ -52,7 +52,6 @@ class FbFeedFilter:
         return items
 
     async def as_output(self):
-        items = []
         items = await as_run(mode='process')(self._download)()
         items = await as_run(mode='process')(self._data_prepare)(items)
         items = await as_run(mode='process')(self._data_filter)(items)

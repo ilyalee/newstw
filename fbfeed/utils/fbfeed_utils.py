@@ -28,10 +28,10 @@ def get_all_connections(graph, fbid, connection, **args):
         del args['access_token']
 
 
-def load_group(graph, fbid, **args):
+def load_obj(graph, fbid, **args):
     try:
-        group = graph.get_object(fbid, **args)
-        return group
+        obj = graph.get_object(fbid, **args)
+        return obj
     except facebook.GraphAPIError as e:
         if __debug__:
             print(e)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from fbfeed.utils.fbfeed_utils import fb_init, load_group, load_pages
+from fbfeed.utils.fbfeed_utils import fb_init, load_obj, load_pages
 from utils.data_utils import fb_time_to_local, data_filter, data_inserter, data_cleaner, data_hasher
 import settings
 from utils.async_utils import as_run
@@ -22,8 +22,8 @@ class FbFeedFilter:
     def _download(self, encoding='utf-8'):
         items = []
         fields = ",".join(self.fields)
-        group = load_group(self.graph, self.fbid, search=self.search)
-        if group:
+        obj = load_obj(self.graph, self.fbid, search=self.search)
+        if obj:
             items = load_pages(self.graph, self.fbid, "feed", self.num,
                                search=self.search, date_format="U", fields=fields)
         return items

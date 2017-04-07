@@ -14,8 +14,11 @@ from utils.async_utils import as_run
 
 class ArchiveProvider(BaseProvider):
 
-    def __init__(self):
-        super().__init__(Archive)
+    def __init__(self, cls):
+        if not cls:
+            super().__init__(Archive)
+        else:
+            super().__init__(cls)
         self.tzinfo = settings.TIMEZONE
         self.search_columns = ["title", "summary"]
         self.order_by_columns = ["published"]

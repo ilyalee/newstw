@@ -63,6 +63,9 @@ run_scheduler:
 run_observer:
 	python3 -O scripts/observer.py
 
+run_observer_facebook:
+	python3 -O scripts/observer_facebook.py
+
 run_all:
 	make run_crawler >/dev/null 2>&1 &
 	make run_newsfeed>/dev/null 2>&1 &

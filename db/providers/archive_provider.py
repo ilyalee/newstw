@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.models.archives import Archive
+from db.models import Archive
 from sqlalchemy import exc
-from db.providers.base_provider import BaseProvider
+from db.providers import BaseProvider
 import arrow
 import settings
 from utils.data_utils import dict_blocker, time_localizer, data_updater, local_humanize
@@ -14,7 +14,7 @@ from utils.async_utils import as_run
 
 class ArchiveProvider(BaseProvider):
 
-    def __init__(self, cls):
+    def __init__(self, cls=None):
         if not cls:
             super().__init__(Archive)
         else:

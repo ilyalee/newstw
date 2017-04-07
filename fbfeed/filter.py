@@ -43,7 +43,7 @@ class FbFeedFilter:
         items = data_cleaner("story", items)
         items = data_inserter(self.include_text, "keyword", items)
         items = dict_renamer("fbid", "id", items)
-        items = data_hasher("hash", ["fbid", "updated_time"], items)
+        items = data_hasher("hash", ["fbid", "created_time"], items)
         items = data_updater("from_id", "from", lambda x: x["id"], True, items)
         items = data_updater("from_name", "from", lambda x: x["name"], True, items)
         items = dict_blocker(["from"], items)

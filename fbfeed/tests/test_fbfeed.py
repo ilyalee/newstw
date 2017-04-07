@@ -22,7 +22,7 @@ class TestFBFeed(unittest.TestCase):
         #self.assertIn("message", feed[0])
         self.assertIn("from_id", feed[0])
         self.assertIn("from_name", feed[0])
-        self.assertIn("permalink_url", feed[0])
+        self.assertIn("link", feed[0])
         self.assertIn("hash", feed[0])
         self.assertEqual(len(feed), num)
 

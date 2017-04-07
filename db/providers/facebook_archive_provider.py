@@ -14,19 +14,18 @@ class FacebookArchiveProvider(ArchiveProvider):
     def __init__(self):
         super().__init__(FacebookArchive)
         self.search_columns = ["from_name", "message"]
-        self.order_by_columns = ["created_time", "updated_time"]
+        self.order_by_columns = ["published"]
 
     def load(self, id, blockers=[]):
         item = super().load(id)
         item = dict_blocker(blockers, item)
-        (item,) = time_localizer("created_time", item)
-        (item,) = time_localizer("updated_time", item)
+        (item,) = time_localizer("published", item)
         return item
 
     async def as_load(self, id, blockers=[]):
         return await as_run()(self.load)(id, blockers)
 
-    @sqlite_datetime_compatibility(['created_time', 'updated_time'])
+    @sqlite_datetime_compatibility(['published'])
     def save_all(self, items):
         items = dict_blocker(["keyword"], items)
         return super().save_all(items)
@@ -47,9 +46,9 @@ class FacebookArchiveProvider(ArchiveProvider):
         start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
         end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
         if sources:
-            return self.count_items_by_values_and_datetime_between(sources, "source", "updated_time", start, end, keywords)
+            return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
         else:
-            return self.count_by_datetime_between("updated_time", start, end, keywords)
+            return self.count_by_datetime_between("published", start, end, keywords)
 
     async def as_count_report_daily(self, keywords, sources=None):
         return await as_run()(self.count_report_daily)(keywords, sources)
@@ -59,17 +58,16 @@ class FacebookArchiveProvider(ArchiveProvider):
             weeks=-1, days=-1).replace(hour=8).datetime
         end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
         if sources:
-            return self.count_items_by_values_and_datetime_between(sources, "source", "created_time", start, end, keywords)
+            return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
         else:
-            return self.count_by_datetime_between("created_time", start, end, keywords)
+            return self.count_by_datetime_between("published", start, end, keywords)
 
     async def as_count_report_weekly(self, keywords, sources=None):
         return await as_run()(self.count_report_weekly)(keywords, sources)
 
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)
-        items = time_localizer("created_time", items)
-        items = time_localizer("updated_time", items)
+        items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
         return items
@@ -79,8 +77,7 @@ class FacebookArchiveProvider(ArchiveProvider):
 
     def load_report_all(self, limit=None, offset=None, keyword=None):
         items = self.find_all(limit, offset, keyword)
-        items = time_localizer("created_time", items)
-        items = time_localizer("updated_time", items)
+        items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
         return items
@@ -96,14 +93,13 @@ class FacebookArchiveProvider(ArchiveProvider):
         end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
         if sources:
             items = self.find_items_by_values_and_datetime_between(
-                sources, "source", "created_time", start, end, limit, offset, keywords)
+                sources, "source", "published", start, end, limit, offset, keywords)
         else:
             items = self.find_items_by_datetime_between(
-                "created_time", start, end, limit, offset, keywords)
+                "published", start, end, limit, offset, keywords)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
-        items = data_updater("created_time_humanize", "created_time", local_humanize, True, items)
-        items = data_updater("updated_time_humanize", "updated_time", local_humanize, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
     async def as_load_report_daily(self, page=None, limit=None, keywords=None, sources=None):
@@ -116,14 +112,13 @@ class FacebookArchiveProvider(ArchiveProvider):
         end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
         if sources:
             items = self.find_items_by_values_and_datetime_between(
-                sources, "source", "created_time", start, end, limit, offset, keywords)
+                sources, "source", "published", start, end, limit, offset, keywords)
         else:
             items = self.find_items_by_datetime_between(
-                "created_time", start, end, limit, offset, keywords)
+                "published", start, end, limit, offset, keywords)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
-        items = data_updater("created_time_humanize", "created_time", local_humanize, True, items)
-        items = data_updater("updated_time_humanize", "updated_time", local_humanize, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
     async def as_load_report_weekly(self, page=None, limit=None, keywords=None, sources=None):
@@ -136,8 +131,7 @@ class FacebookArchiveProvider(ArchiveProvider):
         else:
             items = self.load_report_all(limit, offset, keywords)
 
-        items = data_updater("created_time_humanize", "created_time", local_humanize, True, items)
-        items = data_updater("updated_time_humanize", "updated_time", local_humanize, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
     async def as_load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
@@ -146,8 +140,7 @@ class FacebookArchiveProvider(ArchiveProvider):
             items = await self.as_load_report_by_sources(sources, limit, offset, keywords)
         else:
             items = await self.as_load_report_all(limit, offset, keywords)
-        items = data_updater("created_time_humanize", "created_time", local_humanize, True, items)
-        items = data_updater("updated_time_humanize", "updated_time", local_humanize, True, items)
+        items = data_updater("published_humanize", "published", local_humanize, True, items)
         return items
 
     def load_sources_by_category(self, category):

@@ -16,8 +16,7 @@ class FbFeedFilter:
         self.num = int(num)
         self.graph = fb_init()
         self.tzinfo = settings.TIMEZONE
-        self.fields = ["id", "message", "created_time",
-                       "updated_time", "from", "permalink_url"]
+        self.fields = ["id", "message", "created_time", "from", "permalink_url"]
 
     def _download(self, encoding='utf-8'):
         items = []
@@ -30,7 +29,6 @@ class FbFeedFilter:
 
     def _data_prepare(self, items):
         items = fb_time_to_local("created_time", self.tzinfo, items)
-        items = fb_time_to_local("updated_time", self.tzinfo, items)
         items = data_remover(None, "message", items)
         return items
 
@@ -43,7 +41,9 @@ class FbFeedFilter:
         items = data_cleaner("story", items)
         items = data_inserter(self.include_text, "keyword", items)
         items = dict_renamer("fbid", "id", items)
-        items = data_hasher("hash", ["fbid", "created_time"], items)
+        items = dict_renamer("link", "permalink_url", items)
+        items = dict_renamer("published", "created_time", items)
+        items = data_hasher("hash", ["fbid", "published"], items)
         items = data_updater("from_id", "from", lambda x: x["id"], True, items)
         items = data_updater("from_name", "from", lambda x: x["name"], True, items)
         items = dict_blocker(["from"], items)

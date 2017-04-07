@@ -115,8 +115,5 @@ revision_prod:
 upgrade_prod:
 	alembic -c prod.ini upgrade head
 
-downgrade_prod:
-	alembic -c prod.ini downgrade head
-
 sqlitedb:
 	mkdir sqlitedb

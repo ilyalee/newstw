@@ -12,13 +12,12 @@ class TestFacebookArchive(unittest.TestCase):
 
     def setUp(self):
         self.data = {
-            'created_time': arrow.get("2017-01-23 12:34:56+08:00").datetime,
-            'updated_time': arrow.get("2017-01-23 12:34:56+08:00").datetime,
+            'published': arrow.get("2017-01-23 12:34:56+08:00").datetime,
             'fbid': "1234567890",
             'from_id': "from_id test",
             'from_name': "from_name test",
             'message': "message test",
-            'permalink_url': "https://foo.bar.baz",
+            'link': "https://foo.bar.baz",
             'hash': "hash test",
             'source': "abc"
         }
@@ -36,7 +35,7 @@ class TestFacebookArchive(unittest.TestCase):
             self.assertEqual(archive.from_id, self.data['from_id'])
             self.assertEqual(archive.from_name, self.data['from_name'])
             self.assertEqual(archive.message, self.data['message'])
-            self.assertEqual(archive.permalink_url, self.data['permalink_url'])
+            self.assertEqual(archive.link, self.data['link'])
             self.assertEqual(archive.hash, self.data['hash'])
             self.assertEqual(archive.source, self.data['source'])
         # Update archive.

@@ -12,20 +12,19 @@ class TestFacebookArchiveProvider(unittest.TestCase):
         self.ap = FacebookArchiveProvider()
         self.data = {
             'fbid': '1234567890',
-            'updated_time': "2017-01-23 12:34:56+08:00",
-            'created_time': "2017-01-23 12:34:56+08:00",
+            'published': "2017-01-23 12:34:56+08:00",
             'from_id': "0987654321",
             'from_name': "from_name test",
             'message': "message test",
-            'permalink_url': "https://foo.bar.baz",
+            'link': "https://foo.bar.baz",
             'hash': "hash test",
             'source': "abc",
         }
         self.items = [
-            {'fbid': '1234567890', 'from_id': "0987654321", 'from_name': "from_name test1", 'hash': "test1", 'updated_time': "2017-01-01 01:02:03+08:00", 'created_time': "2017-01-23 12:34:56+08:00",
-                'message': "test1", 'permalink_url': "http://foo.bar.baz", 'source': "any"},
-            {'fbid': '1234567890', 'from_id': "0987654321", 'from_name': "from_name test2", 'hash': "test2", 'updated_time': "2017-12-12 12:12:12+08:00", 'created_time': "2017-01-23 12:34:56+08:00",
-                'message': "test2", 'permalink_url': "http://foo.bar.baz", 'source': "any"}
+            {'fbid': '1234567890', 'from_id': "0987654321", 'from_name': "from_name test1", 'hash': "test1", 'published': "2017-01-01 01:02:03+08:00",
+                'message': "test1", 'link': "http://foo.bar.baz", 'source': "any"},
+            {'fbid': '1234567890', 'from_id': "0987654321", 'from_name': "from_name test2", 'hash': "test2", 'published': "2017-12-12 12:12:12+08:00",
+                'message': "test2", 'link': "http://foo.bar.baz", 'source': "any"}
         ]
 
     def test_save_all(self):

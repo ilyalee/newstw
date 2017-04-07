@@ -14,13 +14,14 @@ class TestFBFeed(unittest.TestCase):
         pass
 
     def test_fetch_feed(self):
-        fbid = "SeeZhubei"
+        fbid = "forpeople"
         num = 40
         feed = fetch_feed(fbid, num)
         predict = ['failed']
         # pprint_color(feed[0])
         #self.assertIn("message", feed[0])
-        self.assertIn("from", feed[0])
+        self.assertIn("from_id", feed[0])
+        self.assertIn("from_name", feed[0])
         self.assertIn("permalink_url", feed[0])
         self.assertIn("hash", feed[0])
         self.assertEqual(len(feed), num)

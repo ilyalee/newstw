@@ -3,10 +3,9 @@
 
 from utils.pprint_helper import pprint_color
 from utils.data_utils import data_updater, datetime_encapsulator
-from db import models
 from db.database import scoped_session, Session
-from db.models.archives import Archive
-from db.providers.archive_provider import ArchiveProvider
+from db.models import Archive
+from db.providers import ArchiveProvider
 import unittest
 import settings
 

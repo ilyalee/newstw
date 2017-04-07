@@ -1,13 +1,14 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
-from utils.data_utils import dict_cleaner
-from crawler.utils.crawler_utils import detect_news_source
+from utils.data_utils import dict_cleaner, dict_blocker
+from utils.type_utils import sint
+from fbfeed.utils.fbfeed_helper import as_fetch_feed
 
 
-class NewsfeedController(HTTPMethodView):
+class FbfeedController(HTTPMethodView):
 
-    from db.providers import ArchiveProvider
-    ap = ArchiveProvider()
+    from db.providers import FacebookArchiveProvider
+    ap = FacebookArchiveProvider()
 
     async def get(self, request, hashid):
         """ show archive by hashid
@@ -19,24 +20,24 @@ class NewsfeedController(HTTPMethodView):
         return json(item, ensure_ascii=False)
 
     async def post(self, request):
-        """ create new archives for newsfeed from a feed url.
+        """ create new facebook archives for newsfeed from a fbid.
          Args:
-             request (str, str): [url, include_text]
+             request (str, int, str): [fbid, num, include_text]
         """
-        url = request.json.get('url')
+        fbid = request.json.get('fbid')
         include_text = request.json.get('include')
-        data = await archive_feed_by_filter(url, include_text, self.ap)
+        num = sint(request.json.get('num', 20), 20)
+        data = await archive_feed_by_filter(fbid, num, include_text, self.ap)
 
         return json(data, ensure_ascii=False)
 
-async def archive_feed_by_filter(url, include_text, ap=None, name=None):
-    from newsfeed.filter import NewsFeedFilter
+async def archive_feed_by_filter(fbid, num, include_text, ap=None, name=None):
+    from fbfeed.filter import FbFeedFilter
     if not ap:
-        from db.providers import ArchiveProvider
-        ap = ArchiveProvider()
+        from db.providers import FacebookArchiveProvider
+        ap = FacebookArchiveProvider()
 
-    items = await NewsFeedFilter(url, include_text, full_text=True, name=name).as_output()
-
+    items = await FbFeedFilter(fbid, num, include_text, search=True).as_output()
     total = len(items)
     # checking duplicate items by hash
     items = await ap.as_find_distinct_items_by("hash", items)
@@ -45,8 +46,7 @@ async def archive_feed_by_filter(url, include_text, ap=None, name=None):
     rejects = total - acceptances
 
     return dict_cleaner(None, {
-        'source': detect_news_source(url),
-        'url': url,
+        'source': fbid,
         'include': include_text,
         'acceptances': acceptances,
         'rejects': rejects,

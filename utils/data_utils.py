@@ -36,6 +36,12 @@ def dict_cleaner(value, items):
     return {key: value for key, value in items.items() if value}
 
 
+def dict_renamer(key, from_key, items):
+    for item in items:
+        item[key] = item.pop(from_key)
+    return items
+
+
 def data_filter(text, keys, items):
     if not text:
         return items
@@ -78,14 +84,14 @@ def data_updater(key, from_key, fn, condition, items):
         targets = dict_filter([from_key], items)
         select_key = isinstance(condition, bool)
         if not select_key:
-            value = fn(condition)
-        for i in range(len(targets)):
-            if select_key:
+            obj = fn(condition)
+            for i in range(len(targets)):
+                items[i][key] = obj
+        else:
+            for i in range(len(targets)):
                 if from_key in targets[i]:
                     obj = fn(targets[i][from_key])
-            else:
-                obj = value
-            items[i][key] = obj
+                    items[i][key] = obj
     return items
 
 
@@ -253,7 +259,7 @@ def githash(data, hexdigest=False):
 
 def fb_time_to_local(key, tzinfo, items):
     for item in (item for item in items if key in item):
-        item[key] = arrow.get(item[key]).replace(tzinfo=tzinfo).format()
+        item[key] = arrow.get(item[key]).to(tzinfo).format()
     return items
 
 

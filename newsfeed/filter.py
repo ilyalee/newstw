@@ -27,13 +27,13 @@ class NewsFeedFilter:
         self.include_text = include_text
         self.source = detect_news_source(url)
 
-    def _download(self, encoding='utf-8', timeout=30) -> Feeds:
+    def _download(self, encoding='utf-8', timeout=30, limit=5) -> Feeds:
         items = []
         if 'any' == self.source:
             return items
-        remedy = False
-        while True:
-            if remedy:
+        remedy = 0
+        while remedy < limit:
+            if remedy > 0:
                 log.error(f"[{__name__}] Retry: { self.url}")
             with requests.Session() as session:
                 try:
@@ -41,22 +41,22 @@ class NewsFeedFilter:
                     resp.encoding = encoding
                     text = resp.text
                 except RequestException as e:
-                    remedy = True
+                    remedy = remedy + 1
                     log.error(f"[{__name__}] Failure when trying to fetch { self.url}")
                     log.info(e, exc_info=True)
                 else:
-                    remedy = False
+                    remedy = 0
                     rawdata = feedparser.parse(resp.text)
                     items = self.postprocess(rawdata['entries'])
                     break
         return items
 
-    async def _as_download(self, encoding='utf-8', timeout=30) -> Feeds:
+    async def _as_download(self, encoding='utf-8', timeout=30, limit=5) -> Feeds:
         items = []
         url = self.url
-        remedy = False
-        while True:
-            if remedy:
+        remedy = 0
+        while remedy < limit:
+            if remedy > 0:
                 log.error(f"[{__name__}] Retry: {url}")
             with requests.Session() as session:
                 try:
@@ -64,11 +64,11 @@ class NewsFeedFilter:
                     resp.encoding = encoding
                     text = resp.text
                 except RequestException as e:
-                    remedy = True
+                    remedy = remedy + 1
                     log.error(f"[{__name__}] Failure when trying to fetch {url}")
                     log.info(e, exc_info=True)
                 else:
-                    remedy = False
+                    remedy = 0
                     rawdata = feedparser.parse(text)
                     items = await self.as_postprocess(rawdata['entries'])
                     break

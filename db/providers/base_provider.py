@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from db.database import scoped_session, query_session, Session
-from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str, reload_keyword, load_as_dicts
-from sqlalchemy import exc, desc, or_, func
-import settings
+from db.utils.db_utils import load_as_objs, decoded_hashid, encode_hashid_list, list2str, reload_keyword, load_as_dicts, auto_vacuum
+from sqlalchemy import exc, desc, or_, func, text
 import asyncio
 import functools
 import os
 import itertools
 from utils.async_utils import as_run
 from utils.data_utils import isiterable, clist
+from utils.debug_utils import debug_testing_mode
 
 
 class BaseProvider():
@@ -108,12 +108,17 @@ class BaseProvider():
                    for value in values)
         return do.filter(or_(*targets))
 
+    def do_orders(self, orders, do):
+        for order in orders:
+            do = do.order_by(desc(getattr(self.cls, order)))
+        return do
+
     def find_all(self, limit=None, offset=None, keywords=None):
         with query_session() as session:
             do = session.query(self.cls)
             do = self.do_keywords(keywords, do)
-            orders = list2str(self.order_by_columns)
-            result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
+            do = self.do_orders(self.order_by_columns, do)
+            result_set = do.limit(limit).offset(offset).all()
             return load_as_dicts(result_set)
 
     def find_items_by_datetime_between(self, datetime_column, start, end, limit=None, offset=None, keywords=None):
@@ -159,8 +164,8 @@ class BaseProvider():
             do = session.query(self.cls)
             do = self.do_values(values, values_column, do)
             do = self.do_keywords(keywords, do)
-            orders = list2str(self.order_by_columns)
-            result_set = do.order_by(desc(orders)).limit(limit).offset(offset).all()
+            do = self.do_orders(self.order_by_columns, do)
+            result_set = do.limit(limit).offset(offset).all()
             return load_as_dicts(result_set)
 
     def find_distinct_items_by(self, name, items):
@@ -185,6 +190,8 @@ class BaseProvider():
                         session.flush()
                         ids.append(obj.id)
                 except exc.IntegrityError as e:
-                    if __debug__ and settings.TESTING:
+                    if debug_testing_mode():
                         print(e)
+
+            auto_vacuum()
             return encode_hashid_list(ids)

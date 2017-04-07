@@ -1,11 +1,11 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
-from archiver.utils.archiver_helper import aph
+from archiver.utils.archiver_helper import fb_aph
 from utils.type_utils import sint
 from utils.data_utils import data_updater, hightlight_keywords, dict_cleaner
 from functools import partial
 from db.utils.db_utils import reload_keyword
-from utils.config_utils import load_lang
+from fbfeed.utils.fbfeed_utils import load_fb_source
 
 async def as_request_report(request, time='any', hightlight=True, count=False):
     data = {}
@@ -16,7 +16,7 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
     data['category'] = request.args.get('cat', None)
 
     if data['category']:
-        data['category_zh_tw'] = load_lang('zh_tw', data['category'])
+        data['category_name'] = load_fb_source(data['category'])
 
     keyword = request.args.get('keyword', None)
     data['keyword'] = keyword
@@ -33,9 +33,9 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
         data['parent_count'] = await as_report_count(time, data['parent'], data['category'])
 
     if hightlight and data['keyword']:
-        data['items'] = data_updater("title", "title", partial(
+        data['items'] = data_updater("from_name", "from_name", partial(
             hightlight_keywords, keywords=data['keyword']), True, data['items'])
-        data['items'] = data_updater("summary", "summary", partial(
+        data['items'] = data_updater("message", "message", partial(
             hightlight_keywords, keywords=data['keyword']), True, data['items'])
 
     if data['keyword']:
@@ -44,25 +44,26 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
 
 async def as_report(time, page, limit, keywords, category):
     funcs = {
-        'daily': aph.as_fetch_report_daily,
-        'weekly': aph.as_fetch_report_weekly
+        'daily': fb_aph.as_fetch_report_daily,
+        'weekly': fb_aph.as_fetch_report_weekly
     }
 
-    return await funcs.get(time, aph.as_fetch_report)(page, limit, keywords, category)
+    return await funcs.get(time, fb_aph.as_fetch_report)(page, limit, keywords, category)
 
 async def as_report_count(time, keywords, category):
     funcs = {
-        'daily': aph.as_fetch_report_daily_count,
-        'weekly': aph.as_fetch_report_weekly_count
+        'daily': fb_aph.as_fetch_report_daily_count,
+        'weekly': fb_aph.as_fetch_report_weekly_count
     }
-    return await funcs.get(time, aph.as_fetch_report_count)(keywords, category)
+    return await funcs.get(time, fb_aph.as_fetch_report_count)(keywords, category)
 
 
-class NewsfeedListController(HTTPMethodView):
+class FbfeedListController(HTTPMethodView):
     async def get(self, request):
         """
         fetch a list of archives by paging
         """
         time = request.args.get('time', 'any')
         hightlight = request.args.get('hightlight', True)
+
         return json(await as_request_report(request, time, hightlight), ensure_ascii=False)

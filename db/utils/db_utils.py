@@ -114,3 +114,10 @@ def reload_keyword(keyword):
         return (keywords, 'OR')
     else:
         return (keywords, 'OR')
+
+
+def auto_vacuum():
+    from db.database import pg_vacuum
+    import settings
+    db_url = settings.DATABASE_URL
+    pg_vacuum(db_url.startswith('postgres://'))

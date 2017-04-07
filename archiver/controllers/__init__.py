@@ -1,0 +1,4 @@
+from archiver.controllers.newsfeed import NewsfeedController
+from archiver.controllers.newsfeedlist import NewsfeedListController
+from archiver.controllers.fbfeed import FbfeedController
+from archiver.controllers.fbfeedlist import FbfeedListController

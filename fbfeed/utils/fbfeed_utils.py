@@ -40,5 +40,17 @@ def load_obj(graph, fbid, **args):
 
 def load_pages(graph, fbid, connection, num=1, **args):
     gen = get_all_connections(graph, fbid, connection, **args)
-    collect = list(islice(gen, 0, num))
+    collect = list(islice(gen, 0, num + 1))
     return collect
+
+
+def load_fb_source(fbid):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('config/fbfeeds.cfg')
+    try:
+        source = config.get("Graph Objects", fbid)
+    except configparser.NoOptionError:
+        return 'any'
+    else:
+        return source

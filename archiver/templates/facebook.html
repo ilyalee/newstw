@@ -34,27 +34,25 @@
 <body>
   <!-- Dropdown Structure -->
   <ul id="dropdown-time" class="dropdown-content">
-    <li><a href="/daily">日報</a></li>
-    <li><a href="/weekly">週報</a></li>
+    <li><a href="/fb/daily">日報</a></li>
+    <li><a href="/fb/weekly">週報</a></li>
     <li class="divider"></li>
-    <li><a href="/">總覽</a></li>
+    <li><a href="/fb">總覽</a></li>
   </ul>
   <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper teal lighten-2">
+      <div class="nav-wrapper blue lighten-2">
         <div class="row">
           <div class="col left">
             {% if not data['keyword'] and not data['category'] %}
             <ul class="header">
               <!-- Dropdown Trigger -->
               <li><a class="dropdown-button" href="#!" data-activates="dropdown-time">報表<i class="material-icons right">arrow_drop_down</i></a></li>
-              <li><a href="?cat=pmedia">平面</a></li>
-              <li><a href="?cat=emedia">電子</a></li>
             </ul>
             {% else %}
             <div class="header">
               <a class="breadcrumb" href="?keyword={{ data['parent'] | default('', true) }}">
-              {{ data['parent'] or data['category_zh_tw'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
+              {{ data['parent'] or data['category_name'] | default('總覽', true) }} ({{ data['parent_count'] }})</a>
               {% if data['keyword'] %}
               <a class="breadcrumb">{{ data['keyword'] }} ({{ data['count'] }})</a>
               {% endif %}
@@ -62,7 +60,7 @@
             {% endif %}
           </div>
           <div class="col right hide-on-small-only">
-            <form action="." method="get">
+            <form action="./fb" method="get">
               <div class="input-field">
                 <input name="keyword" id="keyword" type="search" required>
                 <input name="cat" id="cat" value="" type="hidden" />
@@ -81,17 +79,17 @@
   {% for item in data['items'] %}
     <li class="card-panel hoverable">
       <div class="card-content">
+        <img class="circle" style="float:right;" alt="" src="http://graph.facebook.com/{{ item['from_id'] }}/picture?type=square" />
         <span class="card-title blue-text text-darken-1">
-          <i class="material-icons">add</i>
-          {{ item['title'] | safe }}
+          {{ item['from_name'] | safe }}
         </span>
         <p class="left">
           <blockquote class="truncate">
-            {{ item['summary'] | safe }}
+            {{ item['message'] | safe }}
           </blockquote>
         </p>
       </div>
-      <span title="{{ item['published'] }}" class="chip grey-text">{{ item['published_humanize'] }}</span>
+      <span title="{{ item['created_time'] }}" class="chip grey-text">{{ item['created_time_humanize'] }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ item['source'] }}">{{ item['source'] }}</a>
       <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
       {% for keyword in item['founds'] %}
@@ -101,7 +99,7 @@
       {% endfor %}
       <div class="card-action">
         <p class="right-align">
-          <a class="waves-effect waves-light grey btn" target="_blank" href="{{ item['link'] }}">新聞連結</a>
+          <a class="waves-effect waves-light grey btn" target="_blank" href="{{ item['permalink_url'] }}">FB連結</a>
         </p>
       </div>
     </li>
@@ -110,7 +108,7 @@
   </ul>
 
   {% if debug %}
-  <script type="text/javascript" src="static/js/live.js"></script>
+  <script type="text/javascript" src="/static/js/live.js"></script>
   {% endif %}
   {% raw %}
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -124,16 +122,16 @@
     <li class="card-panel hoverable">
       <div class="card-content">
         <span class="card-title blue-text text-darken-1">
-          <i class="material-icons">add</i>
-          {{{ title }}}
+          <img class="circle" style="float:right;" alt="" src="http://graph.facebook.com/{{{ from_id }}}/picture?type=square" /><br/>
+          {{{ from_name }}}
         </span>
         <p class="left">
           <blockquote class="truncate">
-            {{{ summary }}}
+            {{{ message }}}
           </blockquote>
         </p>
       </div>
-      <span title="{{ timeformat published 'YYYY-MM-DD HH:mm:SSZZ' }}" class="chip grey-text">{{ published_humanize }}</span>
+      <span title="{{ timeformat created_time 'YYYY-MM-DD HH:mm:SSZZ' }}" class="chip grey-text">{{ created_time_humanize }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ source }}">{{ source }}</a>
       <span class="chip green lighten-3 white-text">#{{ id }}</span>
       {{#list founds}}
@@ -141,7 +139,7 @@
       {{/list}}
       <div class="card-action">
         <p class="right-align">
-          <a class="waves-effect waves-light grey btn" target="_blank" href="{{ link }}">新聞連結</a>
+          <a class="waves-effect waves-light grey btn" target="_blank" href="{{ link }}">FB連結</a>
         </p>
       </div>
     </li>
@@ -191,7 +189,7 @@
       return out
     })
 
-    var url = '/api/v1/archive/news/list?'
+    var url = '/api/v1/archive/facebook/list?'
     var page = 1
     var limit = 10
 

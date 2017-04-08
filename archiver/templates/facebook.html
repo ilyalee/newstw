@@ -34,14 +34,14 @@
 <body>
   <!-- Dropdown Structure -->
   <ul id="dropdown-time" class="dropdown-content">
-    <li><a href="/fb/daily">日報</a></li>
-    <li><a href="/fb/weekly">週報</a></li>
+    <li><a class="blue-text" href="/fb/daily">日報</a></li>
+    <li><a class="blue-text" href="/fb/weekly">週報</a></li>
     <li class="divider"></li>
-    <li><a href="/fb">總覽</a></li>
+    <li><a class="blue-text" href="/fb">總覽</a></li>
   </ul>
   <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper blue lighten-2">
+      <div class="nav-wrapper blue darken-1">
         <div class="row">
           <div class="col left">
             {% if not data['keyword'] and not data['category'] %}
@@ -81,6 +81,7 @@
       <div class="card-content">
         <img class="circle" style="float:right;" alt="" src="http://graph.facebook.com/{{ item['from_id'] }}/picture?type=square" />
         <span class="card-title blue-text text-darken-1">
+          <i class="material-icons">add</i>
           {{ item['from_name'] | safe }}
         </span>
         <p class="left">
@@ -121,8 +122,9 @@
   <script id="card-template" type="text/x-handlebars-template">
     <li class="card-panel hoverable">
       <div class="card-content">
+        <img class="circle" style="float:right;" alt="" src="http://graph.facebook.com/{{{ from_id }}}/picture?type=square" />
         <span class="card-title blue-text text-darken-1">
-          <img class="circle" style="float:right;" alt="" src="http://graph.facebook.com/{{{ from_id }}}/picture?type=square" /><br/>
+          <i class="material-icons">add</i>
           {{{ from_name }}}
         </span>
         <p class="left">

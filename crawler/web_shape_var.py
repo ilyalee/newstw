@@ -100,9 +100,9 @@ context['appledaily'] = [
     {'tzinfo': "Asia/Taipei", 'format': ["YYYY年MM月DD日HH:mm", "YYYY年MM月DD日"]}
 ]
 context['udn'] = [
-    {'save': "title", 'path': "#story_body_content > h1", 'ind': 0},
+    {'save': "title", 'path': ["#story_body_content > h1", "#story_art_title"], 'ind': 0},
     {'save': "summary", 'path': "p", 'ind': -1},
-    {'save': "_rawtime", 'path': ".story_bady_info_author", 'ind': 0},
+    {'save': "_rawtime", 'path': [".story_bady_info_author", "time"], 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
 ]
 context['pts'] = [

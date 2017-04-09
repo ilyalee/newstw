@@ -67,30 +67,38 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
                     target_source = source
                 else:
                     target_source = 'any'
+
             if __debug__:
                 if 'any' == target_source:
                     print(f"[*skip*:{connection}] ({url})")
                 else:
                     print(f"[{target_source}:{connection}] ({url})")
-            if 'any' == target_source:
-                continue
 
             if remedy:
                 log.error(f"[{__name__}] Retry: {url}")
+
             try:
                 with sem:
-                    resopones.append((target_source, future.result()))
+                    if target_source != 'any':
+                        resopones.append((target_source, future.result()))
+                    else:
+                        resopones.append((target_source, None))
             except requests.exceptions.RequestException as e:
                 failed_urls.append(url)
                 log.error(f"[{__name__}] Failure when trying to fetch {url}")
                 log.info(e, exc_info=True)
                 continue
+
         for (target_source, resp) in resopones:
-            resp.encoding = encoding
-            html = clean_html(resp.text)
-            news = NewsDataProcessor(resp.url, html, target_source)
-            output = news.output()
+            if resp:
+                resp.encoding = encoding
+                html = clean_html(resp.text)
+                news = NewsDataProcessor(resp.url, html, target_source)
+                output = news.output()
+            else:
+                output = {}
             collect.append(output)
+
     if failed_urls and remedy < limit:
         remedy = remedy + 1
         return collect + fetch_news_all(failed_urls, encoding, timeout, limit, True, total_connection, source)

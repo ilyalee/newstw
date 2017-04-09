@@ -64,14 +64,10 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
                 source = detect_news_source(url)
             else:
                 url_source = detect_news_source(url)
-                if 'supplements' == source:
-                    target_source = url_source
-                elif url_source == source:
-                    target_source = source
-                elif 'youtube' == url_source:
-                    target_source = source
-                else:
-                    target_source = 'any'
+            if 'youtube' == url_source:
+                target_source = source
+            else:
+                target_source = url_source
 
             if __debug__:
                 if 'any' == target_source:

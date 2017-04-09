@@ -34,7 +34,7 @@ class NewsFeedFilter:
         remedy = 0
         while remedy < limit:
             if remedy > 0:
-                log.error(f"[{__name__}] Retry: { self.url}")
+                log.error(f"[{__name__}] Retry: {self.url}")
             with requests.Session() as session:
                 try:
                     resp = session.get(self.url, timeout=timeout)

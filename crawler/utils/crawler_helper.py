@@ -87,7 +87,6 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
                     if target_source != 'any':
                         resopones.append((target_source, future.result()))
                     else:
-                        print(url)
                         resopones.append((target_source, None))
             except requests.exceptions.RequestException as e:
                 failed_urls.append(url)

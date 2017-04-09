@@ -29,13 +29,13 @@ class NewsfeedController(HTTPMethodView):
 
         return json(data, ensure_ascii=False)
 
-async def archive_feed_by_filter(url, include_text, ap=None, name=None):
+async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
     from newsfeed.filter import NewsFeedFilter
     if not ap:
         from db.providers import ArchiveProvider
         ap = ArchiveProvider()
 
-    items = await NewsFeedFilter(url, include_text, full_text=True, name=name).as_output()
+    items = await NewsFeedFilter(url, include_text, full_text=True, total_connection=connections).as_output()
 
     total = len(items)
     # checking duplicate items by hash

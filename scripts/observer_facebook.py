@@ -34,7 +34,6 @@ async def facebook_observer(progress=False):
             'fbid': fbid,
             'include_text': keyword_builder(keywords),
             'ap': ap,
-            'name': name,
             'num': 100
         } for fbid, name in feeds
     )

@@ -20,12 +20,12 @@ Feeds = List[dict]
 
 class NewsFeedFilter:
 
-    def __init__(self, url, include_text='', full_text=False, name=None):
-        self.name = name
+    def __init__(self, url, include_text='', full_text=False, total_connection=None):
         self.url = url
         self.full_text = full_text
         self.include_text = include_text
         self.source = detect_news_source(url)
+        self.total_connection = total_connection
 
     def _download(self, encoding='utf-8', timeout=30, limit=5) -> Feeds:
         items = []
@@ -87,7 +87,7 @@ class NewsFeedFilter:
         items = data_cleaner("summary", items)
 
         remote_items = data_kv_updater_all_load("link", partial(
-            fetch_news_all, source=self.source), self.full_text, items)
+            fetch_news_all, source=self.source, total_connection=self.total_connection), self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
             remote_items, "summary", "summary", self.full_text, items)
         items = data_kv_updater_all_by_remote_items(

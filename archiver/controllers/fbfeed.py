@@ -31,7 +31,7 @@ class FbfeedController(HTTPMethodView):
 
         return json(data, ensure_ascii=False)
 
-async def archive_feed_by_filter(fbid, num, include_text, ap=None, name=None):
+async def archive_feed_by_filter(fbid, num, include_text, ap=None):
     from fbfeed.filter import FbFeedFilter
     if not ap:
         from db.providers import FacebookArchiveProvider

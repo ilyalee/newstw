@@ -44,7 +44,7 @@ async def news_observer(progress=False):
             'url': url.strip(),
             'include_text': keyword_builder(keywords),
             'ap': ap,
-            'connections': 1000
+            'connections': 100
         } for name, url in feeds
     )
     return await run_all_async(archive_feed_by_filter, kwargslist, sem, progress)

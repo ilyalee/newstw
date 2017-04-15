@@ -86,6 +86,12 @@ class NewsFeedFilter:
         items = data_cleaner("title", items)
         items = data_cleaner("summary", items)
 
+        if not self.full_text:
+            items = data_updater("source", "link", detect_news_source, self.url, items)
+        else:
+            items = data_updater("source", "link", detect_news_source, True, items)
+        items = data_remover("any", "source", items)
+
         remote_items = data_kv_updater_all_load("link", partial(
             fetch_news_all, source=self.source, total_connection=self.total_connection), self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
@@ -102,12 +108,6 @@ class NewsFeedFilter:
 
     def _data_produce(self, items):
         items = data_inserter(self.include_text, "keyword", items)
-        if not self.full_text:
-            if "supplements" == self.source:
-                items = data_updater("source", "link", detect_news_source, True, items)
-            else:
-                items = data_updater("source", "link", detect_news_source, self.url, items)
-        items = data_remover("any", "source", items)
         if (__debug__) and 0 == len(items) and 'any' == self.source:
             print("please debug this source: {} | {}".format(
                 self.url, detect_news_source(self.url)))

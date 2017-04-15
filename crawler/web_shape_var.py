@@ -88,10 +88,13 @@ context['chinatimes'] = [
     {'tzinfo': "Asia/Taipei", 'format': "YYYY年MM月DD日 HH:mm"}
 ]
 context['ltn'] = [
-    {'save': "title", 'path': "h1", 'ind': 0},
-    {'save': "summary", 'path': ["#newstext > p", ".news_content"], 'ind': -1},
-    {'save': "_rawtime", 'path': ["#newstext > span", ".news_content > .date"], 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm", "YYYY/MM/DD HH:mm", "YYYY-MM-DD"]}
+    {'save': "title", 'path': [".caption > h2", ".container > h2", "h1"], 'ind': 0},
+    {'save': "summary", 'path': ["#newstext", ".news_content",
+                                 ".wordright", "article > .boxTitle"], 'ind': -1},
+    {'save': "_rawtime", 'path': ["#newstext > span",
+                                  ".news_content > .date", ".time", ".label-date", "h1 > span"], 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm",
+                                         "YYYY/MM/DD HH:mm", "YYYY-MM-DD", "MMM. DD YYYY"]}
 ]
 context['appledaily'] = [
     {'save': "title", 'path': "header > hgroup > h1", 'ind': 0},

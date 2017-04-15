@@ -87,7 +87,10 @@ class NewsFeedFilter:
         items = data_cleaner("summary", items)
 
         if not self.full_text:
-            items = data_updater("source", "link", detect_news_source, self.url, items)
+            if 'supplements' == self.source:
+                items = data_updater("source", "link", detect_news_source, True, items)
+            else:
+                items = data_updater("source", "link", detect_news_source, self.url, items)
         else:
             items = data_updater("source", "link", detect_news_source, True, items)
         items = data_remover("any", "source", items)

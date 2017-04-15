@@ -195,3 +195,17 @@ class BaseProvider():
 
             auto_vacuum()
             return encode_hashid_list(ids)
+
+    @decoded_hashid
+    def remove(self, id):
+        status = False
+        if isinstance(id, str):
+            return status
+
+        with scoped_session() as session:
+            try:
+                status = session.query(self.cls).filter(getattr(self.cls, 'id') == id).delete()
+            except exc.IntegrityError as e:
+                print(e)
+
+            return status

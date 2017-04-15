@@ -2,6 +2,7 @@ from sanic.response import json
 from sanic.views import HTTPMethodView
 from utils.data_utils import dict_cleaner
 from crawler.utils.crawler_utils import detect_news_source
+import settings
 
 
 class NewsfeedController(HTTPMethodView):
@@ -28,6 +29,24 @@ class NewsfeedController(HTTPMethodView):
         data = await archive_feed_by_filter(url, include_text, self.ap)
 
         return json(data, ensure_ascii=False)
+
+    async def delete(self, request):
+        """ delete an archive by hashid.
+         Args:
+             request (str, str): [hashid]
+        """
+        hashid = request.json.get('id')
+        delete_key = request.json.get('key')
+
+        if not settings.DELETE_KEY or delete_key != settings.DELETE_KEY:
+            data = {'auth': False}
+        else:
+            data = {
+                'auth': True,
+                'deleted': await self.ap.as_remove(hashid)
+            }
+        return json(data, ensure_ascii=False)
+
 
 async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
     from newsfeed.filter import NewsFeedFilter

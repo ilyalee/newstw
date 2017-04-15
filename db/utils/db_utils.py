@@ -25,7 +25,10 @@ def decoded_hashid(func):
 
     def wrapper(*args, **kargs):
         args = list(args)
-        (args[1],) = hashids.decode(args[1])
+        try:
+            (args[1],) = hashids.decode(args[1])
+        except ValueError:
+            pass
         result = func(*args, **kargs)
         return result
     return wrapper

@@ -160,3 +160,9 @@ class ArchiveProvider(BaseProvider):
         sources_fn = lambda category: [category] if category in set(
             sources_pm) or category in set(sources_em) else None
         return {'pmedia': sources_pm, 'emedia': sources_em}.get(category, sources_fn(category))
+
+    def remove(self, id):
+        return super().remove(id)
+
+    async def as_remove(self, id):
+        return await as_run()(self.remove)(id)

@@ -27,3 +27,5 @@ TIMEZONE = os.environ.get("TIMEZONE")
 LIMIT = sint(os.environ.get("LIMIT"), 1)
 
 TOTAL_CONNECTION = sint(os.environ.get("TOTAL_CONNECTION"), 100)
+
+DELETE_KEY = os.environ.get("DELETE_KEY")

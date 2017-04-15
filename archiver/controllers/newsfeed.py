@@ -54,7 +54,7 @@ async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
         from db.providers import ArchiveProvider
         ap = ArchiveProvider()
 
-    items = await NewsFeedFilter(url, include_text, full_text=True, total_connection=connections).as_output()
+    items = await NewsFeedFilter(url, include_text, full_text=True, connections=connections).as_output()
 
     total = len(items)
     # checking duplicate items by hash

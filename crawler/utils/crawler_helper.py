@@ -39,16 +39,13 @@ async def as_fetch_news(url, encoding='utf-8', timeout=60):
             return await NewsDataProcessor(resp.url, html).as_output()
 
 
-def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_connection=None, source=None):
+def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, source=None):
     from concurrent.futures import ThreadPoolExecutor
     from requests_futures.sessions import FuturesSession
     import threading
     sem = threading.Semaphore(limit)
     collect = []
     resopones = []
-
-    if not total_connection:
-        total_connection = settings.TOTAL_CONNECTION
 
     with FuturesSession(session=requests.Session(),
                         executor=ThreadPoolExecutor(max_workers=os.cpu_count())) as session:
@@ -57,8 +54,6 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
         futures = ((url, session.get(url, timeout=timeout)) for url in urls)
         for url, future in futures:
             connection = connection + 1
-            if connection > total_connection:
-                break
             target_source = None
             if not source:
                 source = detect_news_source(url)
@@ -102,6 +97,6 @@ def fetch_news_all(urls, encoding='utf-8', timeout=60, limit=5, remedy=0, total_
 
     if failed_urls and remedy < limit:
         remedy = remedy + 1
-        return collect + fetch_news_all(failed_urls, encoding, timeout, limit, True, total_connection, source)
+        return collect + fetch_news_all(failed_urls, encoding, timeout, limit, True, source)
     else:
         return collect

@@ -291,6 +291,7 @@ def hightlight_keywords(value, keywords):
         keywords = clist(keywords)
 
     for keyword in keywords:
+        keyword = re.escape(keyword)
         value = re.sub(f'({keyword})', f'<strong style="color: #E57373;">\g<1></strong>', value, flags=re.I)
     return value
 

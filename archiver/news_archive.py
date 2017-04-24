@@ -8,6 +8,7 @@ from sanic.response import html
 from jinja2 import Environment, PackageLoader, select_autoescape
 from sanic.config import Config
 import setproctitle
+from html import unescape
 
 setproctitle.setproctitle(__name__)
 
@@ -20,6 +21,7 @@ env = Environment(
     loader=PackageLoader('archiver', 'templates'),
     autoescape=select_autoescape(['html'])
 )
+env.filters['unescape'] = unescape
 template = env.get_template('index.html')
 facebook_template = env.get_template('facebook.html')
 

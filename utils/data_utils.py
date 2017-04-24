@@ -287,9 +287,8 @@ def keyword_builder(keywords):
 def hightlight_keywords(value, keywords):
     if not keywords:
         return value
-    if not isiterable(keywords):
-        keywords = clist(keywords)
-
+    keywords = re.findall(r"[\w']+", keywords)
+    print(keywords)
     for keyword in keywords:
         keyword = re.escape(keyword)
         value = re.sub(f'({keyword})', f'<strong style="color: #E57373;">\g<1></strong>', value, flags=re.I)

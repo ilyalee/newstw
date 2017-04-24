@@ -85,8 +85,6 @@ class NewsFeedFilter:
         items = time_corrector("published", items)
         items = time_corrector("updated", items)
         items = link_corrector("link", items)
-        items = data_cleaner("title", items)
-        items = data_cleaner("summary", items)
 
         if not self.full_text:
             if 'supplements' == self.source:
@@ -105,6 +103,10 @@ class NewsFeedFilter:
             remote_items, "published", "published", self.full_text, items)
         items = data_kv_updater_all_by_remote_items(
             remote_items, "source", "source", self.full_text, items)
+
+        items = data_cleaner("summary", items)
+        items = data_cleaner("title", items)
+
         return items
 
     def _data_filter(self, items):

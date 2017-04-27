@@ -94,7 +94,7 @@ class NewsDataProcessor:
                         'msg': "failed to get news content",
                         'context': c
                     }
-        self._soup = None
+        self.soup = None
         gc.collect()
 
     def _time_corrector(self):

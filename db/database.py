@@ -2,6 +2,7 @@ import settings
 from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 
 def pg_vacuum(go):
@@ -41,7 +42,7 @@ else:
         engine = create_engine(db_url, connect_args={
                                'check_same_thread': False})
     else:
-        engine = create_engine(db_url)
+        engine = create_engine(db_url, poolclass=NullPool)
 
 if sqlite_memory_mode:
     from db.models import Base

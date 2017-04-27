@@ -50,6 +50,8 @@ if __name__ == '__main__':
     for data in result:
         print("[{}] {}".format(data['source'], data['info']))
 
+    result = None
+
     auto_vacuum()
 
     loop.close()

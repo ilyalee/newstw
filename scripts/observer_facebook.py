@@ -16,6 +16,7 @@ import configparser
 from db.providers import FacebookArchiveProvider
 from db.utils.db_utils import auto_vacuum
 import setproctitle
+import gc
 
 setproctitle.setproctitle(__name__)
 
@@ -51,6 +52,7 @@ if __name__ == '__main__':
         print("[{}] {}".format(data['source'], data['info']))
 
     result = None
+    gc.collect()
 
     auto_vacuum()
 

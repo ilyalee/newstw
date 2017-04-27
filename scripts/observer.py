@@ -16,6 +16,7 @@ import configparser
 from db.providers import ArchiveProvider
 from db.utils.db_utils import auto_vacuum
 import setproctitle
+import gc
 
 setproctitle.setproctitle(__name__)
 
@@ -64,6 +65,7 @@ if __name__ == '__main__':
                 print("→({}){}".format(data['url'], data['items']))
 
     result = None
+    gc.collect()
 
     auto_vacuum()
 

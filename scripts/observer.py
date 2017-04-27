@@ -63,6 +63,8 @@ if __name__ == '__main__':
             if 'supplements' == data['source'] and 'items' in data:
                 print("→({}){}".format(data['url'], data['items']))
 
+    result = None
+
     auto_vacuum()
 
     loop.close()

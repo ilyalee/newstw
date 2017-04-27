@@ -23,7 +23,6 @@ greenlet==0.4.12
 grequests==0.3.0
 gunicorn==19.7.1
 hashids==1.2.0
-html5lib==0.9999999
 httptools==0.0.9
 idna==2.2
 import-string==0.1.0

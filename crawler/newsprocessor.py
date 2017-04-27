@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext, detect_news_source
 from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime, normalize_link
 from utils.async_utils import as_run
+import gc
 
 
 class NewsDataProcessor:
@@ -93,6 +94,8 @@ class NewsDataProcessor:
                         'msg': "failed to get news content",
                         'context': c
                     }
+        self._soup = None
+        gc.collect()
 
     def _time_corrector(self):
         for c in (c for c in self.context if '_rawtime' in self.data):

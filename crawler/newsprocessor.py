@@ -30,7 +30,7 @@ class NewsDataProcessor:
         self._process(self.html)
 
         if __debug__:
-            if not self.data['pass']:
+            if 'pass' in self.data and not self.data['pass']:
                 log.info("[WARN] (%s) %s", self.data["link"], self.data["debug"])
 
         self.data['pass'] = self.data.get("pass", True)
@@ -40,7 +40,7 @@ class NewsDataProcessor:
         await as_run(mode='process')(self._process)(self.html)
 
         if __debug__:
-            if not self.data['pass']:
+            if 'pass' in self.data and not self.data['pass']:
                 log.info("[WARN] (%s) %s", self.data["link"], self.data["debug"])
 
         self.data['pass'] = self.data.get("pass", True)

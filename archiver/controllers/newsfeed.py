@@ -40,7 +40,7 @@ class NewsfeedController(HTTPMethodView):
         url = request.json.get('url')
         item = await as_fetch_news(url)
         if item['pass']:
-            (item,) = data_hasher("hash", ["title", "published", "source"], items)
+            (item,) = data_hasher("hash", ["title", "published", "source"], item)
             if item['hash'] == hashid:
                 ids = await self.ap.as_update(hashid, item)
                 return json({'updated': ids}, ensure_ascii=False)

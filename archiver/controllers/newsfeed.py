@@ -40,10 +40,10 @@ class NewsfeedController(HTTPMethodView):
         url = request.json.get('url')
         item = await as_fetch_news(url)
         if item['pass']:
-            (item,) = data_hasher("hash", ["title", "published", "source"], item)
-            if item['hash'] == hashid:
-                ids = await self.ap.as_update(hashid, item)
-                return json({'updated': ids}, ensure_ascii=False)
+            ids = await self.ap.as_update(hashid, item)
+            return json({'updated': ids}, ensure_ascii=False)
+
+        return json({'auth': False}, ensure_ascii=False)
 
     async def delete(self, request, hashid):
         """ delete an archive by hashid.

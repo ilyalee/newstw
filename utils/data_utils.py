@@ -131,6 +131,10 @@ def data_kv_updater_all(key, from_key, fn, go, items):
 
 
 def data_hasher(key, keys, items):
+    if not isiterable(keys):
+        keys = clist(keys)
+    if not isiterable(items):
+        items = clist(items)
     for item in items:
         text = "".join(item[key] for key in keys if key in item)
         item[key] = githash(text.translate(dict.fromkeys(map(ord, whitespace))), hexdigest=True)

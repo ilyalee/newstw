@@ -1,6 +1,7 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
 from utils.data_utils import dict_cleaner
+from crawler.utils.crawler_helper import as_fetch_news
 from crawler.utils.crawler_utils import detect_news_source
 import settings
 
@@ -29,6 +30,17 @@ class NewsfeedController(HTTPMethodView):
         data = await archive_feed_by_filter(url, include_text, self.ap)
 
         return json(data, ensure_ascii=False)
+
+    async def put(self, request):
+        """ update archives for newsfeed from a news url.
+         Args:
+             request (str): [url]
+        """
+        url = request.json.get('url')
+        data = await as_fetch_news(url)
+        if data['pass']:
+            ids = await self.ap.as_update(data)
+            return json({'item': ids}, ensure_ascii=False)
 
     async def delete(self, request):
         """ delete an archive by hashid.

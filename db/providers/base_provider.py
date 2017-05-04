@@ -196,6 +196,19 @@ class BaseProvider():
             auto_vacuum()
             return encode_hashid_list(ids)
 
+    def update(self, name, item):
+        with scoped_session() as session:
+            ids = []
+            (obj,) = self.reload([item])
+            do = session.query(self.cls)
+            do = do.filter(getattr(self.cls, name) == item[name])
+            do = do.update(item)
+            do = session.query(self.cls)
+            obj = do.filter(getattr(self.cls, name) == item[name]).first()
+            ids.append(obj.id)
+            auto_vacuum()
+            return encode_hashid_list(ids)
+
     @decoded_hashid
     def remove(self, id):
         status = False

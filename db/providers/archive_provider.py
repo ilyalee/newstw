@@ -7,7 +7,7 @@ from sqlalchemy import exc
 from db.providers import BaseProvider
 import arrow
 import settings
-from utils.data_utils import dict_blocker, time_localizer, data_updater, local_humanize
+from utils.data_utils import dict_blocker, data_hasher, time_localizer, data_updater, local_humanize
 from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list, id2hashid
 from utils.async_utils import as_run
 
@@ -160,6 +160,14 @@ class ArchiveProvider(BaseProvider):
         sources_fn = lambda category: [category] if category in set(
             sources_pm) or category in set(sources_em) else None
         return {'pmedia': sources_pm, 'emedia': sources_em}.get(category, sources_fn(category))
+
+    def update(self, item):
+        (item,) = data_hasher("hash", ["title", "published", "source"], item)
+        (item,) = dict_blocker(["_rawtime", "pass", "founds"], item)
+        return super().update("hash", item)
+
+    async def as_update(self, item):
+        return await as_run()(self.update)(item)
 
     def remove(self, id):
         return super().remove(id)

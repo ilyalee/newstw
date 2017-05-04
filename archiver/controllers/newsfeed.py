@@ -42,7 +42,7 @@ class NewsfeedController(HTTPMethodView):
             ids = await self.ap.as_update(data)
             return json({'item': ids}, ensure_ascii=False)
 
-    async def delete(self, reques, hashid):
+    async def delete(self, request, hashid):
         """ delete an archive by hashid.
          Args:
             hashid: contains a str of hashed id.

@@ -37,13 +37,21 @@ class NewsfeedController(HTTPMethodView):
             hashid: contains a str of hashed id.
             request (str): [url]
         """
-        url = request.json.get('url')
-        item = await as_fetch_news(url)
-        if item['pass']:
-            ids = await self.ap.as_update(hashid, item)
-            return json({'updated': ids}, ensure_ascii=False)
+        delete_key = request.json.get('key')
+        data = {'auth': False}
 
-        return json({'auth': False}, ensure_ascii=False)
+        if not settings.DELETE_KEY or delete_key != settings.DELETE_KEY:
+            pass
+        else:
+            url = request.json.get('url')
+            item = await as_fetch_news(url)
+            if item['pass']:
+                data = {
+                    'auth': True,
+                    'updated': await self.ap.as_update(hashid, item)
+                }
+
+        return json(data, ensure_ascii=False)
 
     async def delete(self, request, hashid):
         """ delete an archive by hashid.
@@ -52,9 +60,9 @@ class NewsfeedController(HTTPMethodView):
             request (str): [key]
         """
         delete_key = request.json.get('key')
-
+        data = {'auth': False}
         if not settings.DELETE_KEY or delete_key != settings.DELETE_KEY:
-            data = {'auth': False}
+            pass
         else:
             data = {
                 'auth': True,

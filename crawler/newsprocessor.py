@@ -6,6 +6,9 @@ from crawler.utils.crawler_utils import load_context, load_skips, load_trimtext,
 from utils.data_utils import normalize_news, del_key, trim_data_val, localize_datetime, normalize_link
 from utils.async_utils import as_run
 import gc
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class NewsDataProcessor:
@@ -24,14 +27,22 @@ class NewsDataProcessor:
         self.dummy = {'pass': False, 'link': '', 'source': 'any'}
 
     def output(self):
-        if 'any' == self.source:
-            return self.dummy
         self._process(self.html)
+
+        if __debug__:
+            if not self.data['pass']:
+                log.info("[WARN] (%s) %s", self.data["link"], self.data["debug"])
+
         self.data['pass'] = self.data.get("pass", True)
         return self.data
 
     async def as_output(self):
         await as_run(mode='process')(self._process)(self.html)
+
+        if __debug__:
+            if not self.data['pass']:
+                log.info("[WARN] (%s) %s", self.data["link"], self.data["debug"])
+
         self.data['pass'] = self.data.get("pass", True)
         return self.data
 

@@ -12,9 +12,9 @@ bp_v1 = Blueprint('v1', url_prefix='/api/v1')
 async def api_v1_root(request):
     return text('ARCHIVE SERIES API VERSION 1')
 
-bp_v1.add_route(NewsfeedController().as_view(), '/archive/news', methods=['POST', 'PUT'])
+bp_v1.add_route(NewsfeedController().as_view(), '/archive/news', methods=['POST'])
 bp_v1.add_route(NewsfeedController().as_view(), '/archive/news/<hashid>',
-                methods=['GET', 'DELETE'])
+                methods=['GET', 'PUT', 'DELETE'])
 bp_v1.add_route(NewsfeedListController().as_view(), '/archive/news/list', methods=['GET'])
 
 

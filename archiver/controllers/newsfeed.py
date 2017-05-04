@@ -13,8 +13,8 @@ class NewsfeedController(HTTPMethodView):
 
     async def get(self, request, hashid):
         """ show archive by hashid
-         Args:
-             hashid: contains a str of hashed id.
+        Args:
+            hashid: contains a str of hashed id.
         """
         item = await self.ap.as_load(hashid, ['id', 'hash'])
 
@@ -22,7 +22,7 @@ class NewsfeedController(HTTPMethodView):
 
     async def post(self, request):
         """ create new archives for newsfeed from a feed url.
-         Args:
+        Args:
              request (str, str): [url, include_text]
         """
         url = request.json.get('url')
@@ -31,20 +31,21 @@ class NewsfeedController(HTTPMethodView):
 
         return json(data, ensure_ascii=False)
 
-    async def put(self, request):
-        """ update archives for newsfeed from a news url.
-         Args:
-             request (str): [url]
+    async def put(self, request, hashid):
+        """ update archives by hashid and news url.
+        Args:
+            hashid: contains a str of hashed id.
+            request (str): [url]
         """
         url = request.json.get('url')
         data = await as_fetch_news(url)
         if data['pass']:
-            ids = await self.ap.as_update(data)
-            return json({'item': ids}, ensure_ascii=False)
+            ids = await self.ap.as_update(hashid, data)
+            return json({'updated': ids}, ensure_ascii=False)
 
     async def delete(self, request, hashid):
         """ delete an archive by hashid.
-         Args:
+        Args:
             hashid: contains a str of hashed id.
             request (str): [key]
         """

@@ -161,13 +161,12 @@ class ArchiveProvider(BaseProvider):
             sources_pm) or category in set(sources_em) else None
         return {'pmedia': sources_pm, 'emedia': sources_em}.get(category, sources_fn(category))
 
-    def update(self, item):
-        (item,) = data_hasher("hash", ["title", "published", "source"], item)
+    def update(self, value, item):
         (item,) = dict_blocker(["_rawtime", "pass", "founds"], item)
-        return super().update("hash", item)
+        return super().update("hash", value, item)
 
-    async def as_update(self, item):
-        return await as_run()(self.update)(item)
+    async def as_update(self, value, item):
+        return await as_run()(self.update)(value, item)
 
     def remove(self, id):
         return super().remove(id)

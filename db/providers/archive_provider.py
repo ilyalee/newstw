@@ -7,7 +7,7 @@ from sqlalchemy import exc
 from db.providers import BaseProvider
 import arrow
 import settings
-from utils.data_utils import dict_blocker, data_hasher, time_localizer, data_updater, local_humanize
+from utils.data_utils import dict_blocker, time_localizer, data_updater, local_humanize
 from db.utils.db_utils import sqlite_datetime_compatibility, list_as_str, str2list, id2hashid
 from utils.async_utils import as_run
 

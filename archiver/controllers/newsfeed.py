@@ -1,6 +1,6 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
-from utils.data_utils import dict_cleaner
+from utils.data_utils import dict_cleaner, data_hasher
 from crawler.utils.crawler_helper import as_fetch_news
 from crawler.utils.crawler_utils import detect_news_source
 import settings

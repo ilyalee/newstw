@@ -147,9 +147,10 @@ context['ctitv'] = [
 ]
 context['ettoday'] = [
     {'save': "title", 'path': ["h2", "h1.title"], 'ind': 0},
-    {'save': "summary", 'path': ["section > p", ".subjcet_article > .story"], 'ind': -1},
+    {'save': "summary", 'path': ["section > p", ".subjcet_article > .story", ".story"], 'ind': -1},
     {'save': "_rawtime", 'path': [".news-time", ".date"], 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': ["YYYY年MM月DD日 HH:mm", "時間： YYYY/MM/DD HH:mm"]}
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY年MM月DD日 HH:mm",
+                                         "時間： YYYY/MM/DD HH:mm", "YYYY年MM月D日 HH:mm"]}
 ]
 context['ebc'] = [
     {'save': "title", 'path': ".newsTargetTitle > h1", 'ind': 0},

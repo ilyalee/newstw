@@ -163,7 +163,7 @@ class ArchiveProvider(BaseProvider):
 
     def update(self, value, item):
         (item,) = dict_blocker(["_rawtime", "pass", "founds"], item)
-        return super().update("hash", value, item)
+        return super().update(value, "hash", item)
 
     async def as_update(self, value, item):
         return await as_run()(self.update)(value, item)

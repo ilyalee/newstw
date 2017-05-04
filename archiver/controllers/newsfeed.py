@@ -38,10 +38,12 @@ class NewsfeedController(HTTPMethodView):
             request (str): [url]
         """
         url = request.json.get('url')
-        data = await as_fetch_news(url)
-        if data['pass']:
-            ids = await self.ap.as_update(hashid, data)
-            return json({'updated': ids}, ensure_ascii=False)
+        item = await as_fetch_news(url)
+        if item['pass']:
+            (item,) = data_hasher("hash", ["title", "published", "source"], items)
+            if item['hash'] == hashid:
+                ids = await self.ap.as_update(hashid, item)
+                return json({'updated': ids}, ensure_ascii=False)
 
     async def delete(self, request, hashid):
         """ delete an archive by hashid.

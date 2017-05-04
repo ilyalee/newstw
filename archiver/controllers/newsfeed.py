@@ -14,7 +14,7 @@ class NewsfeedController(HTTPMethodView):
     async def get(self, request, hashid):
         """ show archive by hashid
          Args:
-             hashed: contains a str of hashed id.
+             hashid: contains a str of hashed id.
         """
         item = await self.ap.as_load(hashid, ['id', 'hash'])
 
@@ -42,12 +42,12 @@ class NewsfeedController(HTTPMethodView):
             ids = await self.ap.as_update(data)
             return json({'item': ids}, ensure_ascii=False)
 
-    async def delete(self, request):
+    async def delete(self, reques, hashid):
         """ delete an archive by hashid.
          Args:
-             request (str, str): [hashid]
+            hashid: contains a str of hashed id.
+            request (str): [key]
         """
-        hashid = request.json.get('id')
         delete_key = request.json.get('key')
 
         if not settings.DELETE_KEY or delete_key != settings.DELETE_KEY:

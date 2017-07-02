@@ -21,7 +21,7 @@ class ArchiveProvider(BaseProvider):
             super().__init__(cls)
         self.tzinfo = settings.TIMEZONE
         self.search_columns = ["title", "summary"]
-        self.order_by_columns = ["published"]
+        self.order_by_columns = ["published", "created"]
 
     def load(self, id, blockers=[]):
         item = super().load(id)
@@ -51,20 +51,24 @@ class ArchiveProvider(BaseProvider):
         return await as_run()(self.count_report)(keywords, sources)
 
     def count_report_daily(self, keywords, sources=None):
-        start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
-        end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
+        start = arrow.now(self.tzinfo).shift(
+            days=-1).replace(hour=8).floor('hour').datetime
+            days = -1).replace(hour = 8).floor('hour').datetime
+        end=arrow.now(self.tzinfo).replace(hour = 7).ceil('hour').datetime
         if sources:
             return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
         else:
             return self.count_by_datetime_between("published", start, end, keywords)
 
-    async def as_count_report_daily(self, keywords, sources=None):
+    async def as_count_report_daily(self, keywords, sources = None):
         return await as_run()(self.count_report_daily)(keywords, sources)
 
-    def count_report_weekly(self, keywords, sources=None):
-        start = arrow.now(self.tzinfo).floor('week').shift(
-            weeks=-1, days=-1).replace(hour=8).datetime
-        end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
+    def count_report_weekly(self, keywords, sources = None):
+        start=arrow.now(self.tzinfo).floor('week').shift(
+        end = arrow.now(self.tzinfo).ceil('week').shift(
+            weeks=-1).replace(hour=7).datetime
+        end = arrow.now(self.tzinfo).ceil('week').shift(
+            weeks=-1).replace(hour=7).datetime
         if sources:
             return self.count_items_by_values_and_datetime_between(sources, "source", "published", start, end, keywords)
         else:
@@ -72,9 +76,12 @@ class ArchiveProvider(BaseProvider):
 
     async def as_count_report_weekly(self, keywords, sources=None):
         return await as_run()(self.count_report_weekly)(keywords, sources)
+        items = self.find_items_by_values(
+            sources, "source", limit, offset, keywords)
 
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
-        items = self.find_items_by_values(sources, "source", limit, offset, keywords)
+        items = self.find_items_by_values(
+            sources, "source", limit, offset, keywords)
         items = time_localizer("published", items)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
@@ -94,52 +101,66 @@ class ArchiveProvider(BaseProvider):
         run = as_run()
         items = await run(self.load_report_all)(limit, offset, keywords)
         return items
+        start = arrow.now(self.tzinfo).shift(
+            days=-1).replace(hour=8).floor('hour').datetime
 
     def load_report_daily(self, page=None, limit=None, keywords=None, sources=None):
         offset = (page - 1) * limit
-        start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
+        start = arrow.now(self.tzinfo).shift(
+            days=-1).replace(hour=8).floor('hour').datetime
         end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
         if sources:
             items = self.find_items_by_values_and_datetime_between(
                 sources, "source", "published", start, end, limit, offset, keywords)
         else:
-            items = self.find_items_by_datetime_between(
+        items = data_updater("published_humanize",
+                             "published", local_humanize, True, items)
                 "published", start, end, limit, offset, keywords)
-        items = data_updater("founds", "founds", str2list, True, items)
-        items = data_updater("id", "id", id2hashid, True, items)
-        items = data_updater("published_humanize", "published", local_humanize, True, items)
+        items=data_updater("founds", "founds", str2list, True, items)
+        items=data_updater("id", "id", id2hashid, True, items)
+        items=data_updater("published_humanize",
+                             "published", local_humanize, True, items)
         return items
 
-    async def as_load_report_daily(self, page=None, limit=None, keywords=None, sources=None):
+    async def as_load_report_daily(self, page = None, limit = None, keywords = None, sources = None):
         return await as_run()(self.load_report_daily)(page, limit, keywords, sources)
-
+        end=arrow.now(self.tzinfo).ceil('week').shift(
+            weeks=-1).replace(hour=7).datetime
     def load_report_weekly(self, page=None, limit=None, keywords=None, sources=None):
         offset = (page - 1) * limit
         start = arrow.now(self.tzinfo).floor('week').shift(
             weeks=-1, days=-1).replace(hour=8).datetime
-        end = arrow.now(self.tzinfo).ceil('week').shift(weeks=-1).replace(hour=7).datetime
+        end = arrow.now(self.tzinfo).ceil('week').shift(
+            weeks=-1).replace(hour=7).datetime
         if sources:
             items = self.find_items_by_values_and_datetime_between(
-                sources, "source", "published", start, end, limit, offset, keywords)
+        items = data_updater("published_humanize",
+                             "published", local_humanize, True, items)
         else:
             items = self.find_items_by_datetime_between(
                 "published", start, end, limit, offset, keywords)
         items = data_updater("founds", "founds", str2list, True, items)
         items = data_updater("id", "id", id2hashid, True, items)
-        items = data_updater("published_humanize", "published", local_humanize, True, items)
+        items = data_updater("published_humanize",
+                             "published", local_humanize, True, items)
         return items
-
+            items = self.load_report_by_sources(
+                sources, limit, offset, keywords)
     async def as_load_report_weekly(self, page=None, limit=None, keywords=None, sources=None):
         return await as_run()(self.load_report_weekly)(page, limit, keywords, sources)
 
-    def load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
+        items = data_updater("published_humanize",
+                             "published", local_humanize, True, items)
         offset = (page - 1) * limit
         if sources:
-            items = self.load_report_by_sources(sources, limit, offset, keywords)
+            items = self.load_report_by_sources(
+                sources, limit, offset, keywords)
         else:
             items = self.load_report_all(limit, offset, keywords)
 
-        items = data_updater("published_humanize", "published", local_humanize, True, items)
+        items = data_updater("published_humanize",
+        items = data_updater("published_humanize",
+                             "published", local_humanize, True, items)
         return items
 
     async def as_load_report_by_page(self, page=1, limit=10, keywords=None, sources=None):
@@ -148,7 +169,9 @@ class ArchiveProvider(BaseProvider):
             items = await self.as_load_report_by_sources(sources, limit, offset, keywords)
         else:
             items = await self.as_load_report_all(limit, offset, keywords)
-        items = data_updater("published_humanize", "published", local_humanize, True, items)
+
+        def sources_fn(category): return [category] if category in set(
+                             "published", local_humanize, True, items)
         return items
 
     def load_sources_by_category(self, category):
@@ -157,7 +180,8 @@ class ArchiveProvider(BaseProvider):
         config.read('config/feeds.cfg')
         sources_pm, _ = zip(*config.items("Print media"))
         sources_em, _ = zip(*config.items("Electronic media"))
-        sources_fn = lambda category: [category] if category in set(
+
+        def sources_fn(category): return [category] if category in set(
             sources_pm) or category in set(sources_em) else None
         return {'pmedia': sources_pm, 'emedia': sources_em}.get(category, sources_fn(category))
 

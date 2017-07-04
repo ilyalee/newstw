@@ -24,6 +24,7 @@ env = Environment(
 env.filters['unescape'] = unescape
 template = env.get_template('index.html')
 facebook_template = env.get_template('facebook.html')
+stats_template = env.get_template('stats.html')
 
 
 @app.route('/')
@@ -66,3 +67,9 @@ async def index(request, methods=['GET']):
 async def index(request, methods=['GET']):
     from archiver.controllers.fbfeedlist import as_request_report
     return html(facebook_template.render(data=await as_request_report(request, 'weekly', count=True), debug=__debug__))
+
+
+@app.route('/stats')
+@app.head('/stats')
+async def index(request, methods=['GET']):
+    return html(stats_template.render([], debug=__debug__))

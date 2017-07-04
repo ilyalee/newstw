@@ -49,17 +49,15 @@ def data_filter(text, keys, items):
     collect = []
     if not isiterable(keys):
         keys = clist(keys)
-
     pat = re.compile(text, re.UNICODE)
     seen = set()
-
     for item in items:
         founds = []
         item["founds"] = []
         for key in keys:
             if key in item:
                 founds = re.findall(pat, item[key])
-                if len(founds) > 0:
+                if len(founds) > 0 and founds[0]:
                     item["founds"] += founds
         if item["founds"]:
             item["founds"] = set(item["founds"])
@@ -284,7 +282,6 @@ def keyword_builder(keywords):
             keyword_list.append(keyword)
 
     keyword_list = '|'.join(keyword_list)
-
     return keyword_list
 
 
@@ -292,7 +289,6 @@ def hightlight_keywords(value, keywords):
     if not keywords:
         return value
     keywords = re.findall(r"[\w']+", keywords)
-    print(keywords)
     for keyword in keywords:
         keyword = re.escape(keyword)
         value = re.sub(f'({keyword})', f'<strong style="color: #E57373;">\g<1></strong>', value, flags=re.I)

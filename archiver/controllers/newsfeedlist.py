@@ -42,7 +42,7 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
         (data['_keyword'], _) = reload_keyword(data['_keyword'])
     return data
 
-async def as_report(time, page, limit, keywords, category):
+async def as_report(time=None, page=None, limit=None, keywords=None, category=None):
     funcs = {
         'daily': aph.as_fetch_report_daily,
         'weekly': aph.as_fetch_report_weekly
@@ -50,10 +50,13 @@ async def as_report(time, page, limit, keywords, category):
 
     return await funcs.get(time, aph.as_fetch_report)(page, limit, keywords, category)
 
-async def as_report_count(time, keywords, category):
+async def as_report_count(time=None, keywords=None, category=None):
     funcs = {
         'daily': aph.as_fetch_report_daily_count,
-        'weekly': aph.as_fetch_report_weekly_count
+        'weekly': aph.as_fetch_report_weekly_count,
+        'today': aph.as_fetch_report_today_count,
+        'month': aph.as_fetch_report_month_count,
+        'yesterday': aph.as_fetch_report_yesterday_count
     }
     return await funcs.get(time, aph.as_fetch_report_count)(keywords, category)
 

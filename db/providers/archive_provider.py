@@ -61,6 +61,28 @@ class ArchiveProvider(BaseProvider):
     async def as_count_report_daily(self, keywords, sources=None):
         return await as_run()(self.count_report_daily)(keywords, sources)
 
+    def count_report_today(self, keywords, sources=None):
+        start = arrow.now(self.tzinfo).shift(days=-1).replace(hour=8).floor('hour').datetime
+        end = arrow.now(self.tzinfo).replace(hour=7).ceil('hour').datetime
+        if sources:
+            return self.count_items_by_values_and_datetime_between(sources, "source", "created", start, end, keywords)
+        else:
+            return self.count_by_datetime_between("created", start, end, keywords)
+
+    async def as_count_report_today(self, keywords, sources=None):
+        return await as_run()(self.count_report_today)(keywords, sources)
+
+    def count_report_yesterday(self, keywords, sources=None):
+        start = arrow.now(self.tzinfo).shift(days=-2).replace(hour=8).floor('hour').datetime
+        end = arrow.now(self.tzinfo).shift(days=-1).replace(hour=7).ceil('hour').datetime
+        if sources:
+            return self.count_items_by_values_and_datetime_between(sources, "source", "created", start, end, keywords)
+        else:
+            return self.count_by_datetime_between("created", start, end, keywords)
+
+    async def as_count_report_yesterday(self, keywords, sources=None):
+        return await as_run()(self.count_report_yesterday)(keywords, sources)
+
     def count_report_weekly(self, keywords, sources=None):
         start = arrow.now(self.tzinfo).floor('week').shift(
             weeks=-1, days=-1).replace(hour=8).datetime
@@ -72,6 +94,17 @@ class ArchiveProvider(BaseProvider):
 
     async def as_count_report_weekly(self, keywords, sources=None):
         return await as_run()(self.count_report_weekly)(keywords, sources)
+
+    def count_report_month(self, keywords, sources=None):
+        start = arrow.now(self.tzinfo).floor('month').shift(days=-1).replace(hour=8).datetime
+        end = arrow.now(self.tzinfo).ceil('month').shift(days=-1).replace(hour=7).datetime
+        if sources:
+            return self.count_items_by_values_and_datetime_between(sources, "source", "created", start, end, keywords)
+        else:
+            return self.count_by_datetime_between("created", start, end, keywords)
+
+    async def as_count_report_month(self, keywords, sources=None):
+        return await as_run()(self.count_report_month)(keywords, sources)
 
     def load_report_by_sources(self, sources, limit=None, offset=None, keywords=None):
         items = self.find_items_by_values(sources, "source", limit, offset, keywords)

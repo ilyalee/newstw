@@ -7,11 +7,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
+    .site-title {
+      font-size: 16px;
+      padding: 10px 10px;
+    }
+    .title {
+      font-size: 26px;
+    }
+    .number {
+      font-size: 54px;
+    }
   </style>
 </head>
 
 <body>
-  test
+  <header class="site-title teal center-align"><div class="white-text">大肚台地計畫：平面及電子媒體台中相關新聞剪報系統</div><small class="white-text">version: 1.0</small></header>
+  <div class="container">
+    <div class="card teal lighten-2">
+      <div class="card-content white-text center-align">
+        <h1 class="title"><div>輿情總數：{{ data['count'] }}</div></h1>
+        <small>起始日 {{ data['since'] }}</small>
+      </div>
+      <div class="card-tabs">
+        <ul class="tabs tabs-fixed-width tabs-transparent">
+          <li class="tab"><a href="#yesterday">昨日</a></li>
+          <li class="tab"><a class="active" href="#today">今日</a></li>
+          <li class="tab"><a href="#month">本月</a></li>
+        </ul>
+      </div>
+      <div class="card-content grey lighten-4 center-align">
+        <div id="yesterday"><span class="number">{{ data['yesterday'] }}</span></div>
+        <div id="today"><span class="number">{{ data['today'] }}</span></div>
+        <div id="month"><span class="number">{{ data['month'] }}</span></div>
+      </div>
+    </div>
+
+    <div class="card teal lighten-2">
+      <div class="card-content white-text center-align">
+        <h1 class="title">掃描總數：</h1>
+      </div>
+      <div class="card-tabs">
+        <ul class="tabs tabs-fixed-width tabs-transparent">
+          <li class="tab"><a href="#yesterday-observer">昨日</a></li>
+          <li class="tab"><a class="active" href="#today-observer">今日</a></li>
+          <li class="tab"><a href="#thismonth-observer">本月</a></li>
+        </ul>
+      </div>
+      <div class="card-content grey lighten-4 center-align">
+        <div id="yesterday-observer"><span class="number">N/A</span></div>
+        <div id="today-observer"><span class="number">N/A</span></div>
+        <div id="thismonth-observer"><span class="number">N/A</span></div>
+      </div>
+    </div>
+  </div>
   {% if debug %}
   <script type="text/javascript" src="static/js/live.js"></script>
   {% endif %} {% raw %}

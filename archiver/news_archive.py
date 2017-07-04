@@ -72,4 +72,15 @@ async def index(request, methods=['GET']):
 @app.route('/stats')
 @app.head('/stats')
 async def index(request, methods=['GET']):
-    return html(stats_template.render([], debug=__debug__))
+    import arrow
+    from archiver.controllers.newsfeedlist import as_report_count, as_report
+    firstone = (await as_report(None, 1, 1))[0]
+    data = {
+        'count': await as_report_count(),
+        'today': await as_report_count('today'),
+        'yesterday': await as_report_count('yesterday'),
+        'month': await as_report_count('month'),
+        'since': arrow.get(firstone['created']).format('YYYY.MM.DD'),
+    }
+
+    return html(stats_template.render(data=data, debug=__debug__))

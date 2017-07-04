@@ -1,9 +1,10 @@
 <html>
-<title>大肚山計畫媒體輿情剪報系統 - PROTOTYPE</title>
+<title>大肚台地計畫：平面及電子媒體台中相關新聞剪報系統</title>
+
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     blockquote {
@@ -13,8 +14,9 @@
       color: #999;
     }
 
-    ul.header > li > a, .card-title {
-      font-size: large;
+    ul.header>li>a,
+    .card-title {
+      font-size: 17px;
     }
 
     .chip {
@@ -29,8 +31,14 @@
       cursor: pointer;
     }
 
+    .site-title {
+      font-size: 16px;
+      padding: 10px 10px;
+    }
+
   </style>
 </head>
+
 <body>
   <!-- Dropdown Structure -->
   <ul id="dropdown-time" class="dropdown-content">
@@ -50,6 +58,7 @@
               <li><a class="dropdown-button" href="#!" data-activates="dropdown-time">報表<i class="material-icons right">arrow_drop_down</i></a></li>
               <li><a href="?cat=pmedia">平面</a></li>
               <li><a href="?cat=emedia">電子</a></li>
+              <li><a href="/stat">統計</a></li>
             </ul>
             {% else %}
             <div class="header">
@@ -76,9 +85,22 @@
       </div>
     </nav>
   </div>
+  <nav class="hide-on-med-and-up">
+    <div class="nav-wrapper teal lighten-3">
+      <form action="." method="get">
+        <div class="input-field">
+          <input name="keyword" id="keyword" type="search" required>
+          <input name="cat" id="cat" value="" type="hidden" />
+          <input name="parent" id="parent" value="" type="hidden" />
+          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+  <header class="site-title teal center-align"><div class="white-text">大肚台地計畫：平面及電子媒體台中相關新聞剪報系統</div><small class="white-text">version: 1.0</small></header>
   <ul id="cards">
-  {% if 'items' in data %}
-  {% for item in data['items'] %}
+    {% if 'items' in data %} {% for item in data['items'] %}
     <li class="card-panel hoverable">
       <div class="card-content">
         <span class="card-title blue-text text-darken-1">
@@ -93,26 +115,22 @@
       </div>
       <span title="{{ item['published'] }}" class="chip grey-text">{{ item['published_humanize'] }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ item['source'] }}">{{ item['source'] }}</a>
-      <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span>
-      {% for keyword in item['founds'] %}
+      <span class="chip green lighten-3 white-text">#{{ item['id'] }}</span> {% for keyword in item['founds'] %}
       <a class="chip red lighten-3 white-text" href="?keyword={{ keyword }}">
         {{ keyword }}
-      </a>
-      {% endfor %}
+      </a> {% endfor %}
       <div class="card-action">
         <p class="right-align">
           <a class="waves-effect waves-light grey btn" target="_blank" href="{{ item['link'] }}">新聞連結</a>
         </p>
       </div>
     </li>
-  {% endfor %}
-  {% endif %}
+    {% endfor %} {% endif %}
   </ul>
 
   {% if debug %}
   <script type="text/javascript" src="static/js/live.js"></script>
-  {% endif %}
-  {% raw %}
+  {% endif %} {% raw %}
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
@@ -135,10 +153,7 @@
       </div>
       <span title="{{ timeformat published 'YYYY-MM-DD HH:mm:SSZZ' }}" class="chip grey-text">{{ published_humanize }}</span>
       <a class="chip orange lighten-3 white-text" href="?cat={{ source }}">{{ source }}</a>
-      <span class="chip green lighten-3 white-text">#{{ id }}</span>
-      {{#list founds}}
-        {{keyword}}
-      {{/list}}
+      <span class="chip green lighten-3 white-text">#{{ id }}</span> {{#list founds}} {{keyword}} {{/list}}
       <div class="card-action">
         <p class="right-align">
           <a class="waves-effect waves-light grey btn" target="_blank" href="{{ link }}">新聞連結</a>
@@ -148,19 +163,21 @@
   </script>
 
   <script type="text/javascript">
-    jQuery('#cards').delegate('blockquote','click',function() {
-        jQuery(this).toggleClass('truncate')
+    jQuery('#cards').delegate('blockquote', 'click', function () {
+      jQuery(this).toggleClass('truncate')
     })
 
     jQuery(document).ready(function () {
-      jQuery('.dropdown-button').dropdown({ hover: true })
+      jQuery('.dropdown-button').dropdown({
+        hover: true
+      })
     })
 
-    jQuery.urlContain = function(name) {
-      return (window.location.pathname.indexOf(name) !=-1)
+    jQuery.urlContain = function (name) {
+      return (window.location.pathname.indexOf(name) != -1)
     }
 
-    jQuery.urlSub = function(name) {
+    jQuery.urlSub = function (name) {
       var results = window.location.pathname.match(/([^\/]*)\/*$/)
       if (results) {
         return results[0].replace('/', '')
@@ -169,7 +186,7 @@
       }
     }
 
-    jQuery.urlParam = function(name) {
+    jQuery.urlParam = function (name) {
       var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
       if (results) {
         return results[1] || 0
@@ -179,14 +196,15 @@
     }
 
     Handlebars.registerHelper('timeformat', function (date, format) {
-        var mmnt = moment.unix(date)
-        return mmnt.format(format)
+      var mmnt = moment.unix(date)
+      return mmnt.format(format)
     })
 
-    Handlebars.registerHelper('list', function(items) {
+    Handlebars.registerHelper('list', function (items) {
       var out = ''
-      for(var i = 0, l = items.length; i < l; i++) {
-        out = out + '<a class="chip red lighten-3 white-text" href="?keyword='+ items[i] +'">' + items[i] + '</a>'
+      for (var i = 0, l = items.length; i < l; i++) {
+        out = out + '<a class="chip red lighten-3 white-text" href="?keyword=' + items[i] + '">' + items[i] +
+          '</a>'
       }
       return out
     })
@@ -197,7 +215,7 @@
 
     if (jQuery.urlContain('news_archiver')) {
       url = '/news_archiver' + url
-      jQuery('ul#dropdown-time > li > a').each(function(i, link) {
+      jQuery('ul#dropdown-time > li > a').each(function (i, link) {
         link = jQuery(link).attr('href', '/news_archiver' + jQuery(link).attr('href'))
       })
     }
@@ -221,7 +239,7 @@
 
     var done = false
     var showed = false
-    window.addEventListener('scroll', jQuery.throttle(250, function() {
+    window.addEventListener('scroll', jQuery.throttle(250, function () {
       var wrap = document.getElementById('cards')
       var contentHeight = wrap.offsetHeight
       var yOffset = window.pageYOffset
@@ -237,31 +255,36 @@
         }
 
         page = page + 1
-        var params = jQuery.param({ page, limit, cat, keyword })
+        var params = jQuery.param({
+          page,
+          limit,
+          cat,
+          keyword
+        })
 
         fetch(url + params)
-          .then(function(response) {
+          .then(function (response) {
             return response.json()
-          }).then(function(data) {
+          }).then(function (data) {
             items = data.items
             if (!items || items.length === 0) {
               done = true
               return done
             }
-            var source   = $("#card-template").html()
+            var source = $("#card-template").html()
             var template = Handlebars.compile(source)
             jQuery.each(items, function (index, item) {
               var context = item
               var html = template(context)
               jQuery('#cards').append(html)
             })
-          }).catch(function(ex) {
+          }).catch(function (ex) {
             // pass
           })
-        }
-      }))
-
+      }
+    }))
   </script>
   {% endraw %}
 </body>
+
 </html>

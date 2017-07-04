@@ -70,6 +70,9 @@ source['supplements'] = [
     "04784784225885481651/3004179234881120660",
     "04784784225885481651/3004179234881119137"
 ]
+source['mirrormedia'] = [
+    "mirrormedia.mg"
+]
 source['youtube'] = [
     "youtube.com",
     "youtu.be"
@@ -91,8 +94,10 @@ context['ltn'] = [
     {'save': "title", 'path': [".caption > h2", ".container > h2", "h1"], 'ind': 0},
     {'save': "summary", 'path': ["#newstext", ".news_content",
                                  ".wordright", "article > .boxTitle", ".text > p"], 'ind': -1},
-    {'save': "_rawtime", 'path': ["#newstext > span",".news_content > .date", ".time", ".label-date", "h1 > span", ".text > span"], 'ind': 0},
-    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm", "YYYY/MM/DD HH:mm", "YYYY-MM-DD HH:mm", "YYYY-MM-DD", "MMM. DD YYYY"]}
+    {'save': "_rawtime", 'path': ["#newstext > span", ".news_content > .date",
+                                  ".time", ".label-date", "h1 > span", ".text > span"], 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': ["YYYY-MM-DD\ \ HH:mm",
+                                         "YYYY/MM/DD HH:mm", "YYYY-MM-DD HH:mm", "YYYY-MM-DD", "MMM. DD YYYY"]}
 ]
 context['appledaily'] = [
     {'save': "title", 'path': "header > hgroup > h1", 'ind': 0},
@@ -155,6 +160,12 @@ context['ebc'] = [
     {'save': "summary", 'path': "#contentBody", 'ind': 0},
     {'save': "_rawtime", 'path': ".ml15.mt10", 'ind': 0},
     {'tzinfo': "Asia/Taipei", 'format': "YYYY-MM-DD HH:mm"}
+]
+context['mirrormedia'] = [
+    {'save': "title", 'path': ".article_title > h1", 'ind': 0},
+    {'save': "summary", 'path': "article", 'ind': 0},
+    {'save': "_rawtime", 'path': ".date", 'ind': 0},
+    {'tzinfo': "Asia/Taipei", 'format': "YYYY.MM.DD HH:mm"}
 ]
 
 skip['any'] = []

@@ -58,3 +58,5 @@ make run_observer
 ### Production
 
 We recommend you install `circus` to run services as daemon, also see `config/circus_newstw.conf`.
+
+https://circus.readthedocs.io

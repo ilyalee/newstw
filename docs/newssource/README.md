@@ -1,5 +1,7 @@
 # Add a News source by Example (Mirror Media)
 
+https://www.mirrormedia.mg
+
 ### Tips and Step-by-step guide
 
 1. edit `config/lang/zh_tw.cfg`, append the translaton: `mirrormedia: 鏡週刊` to the end of file.

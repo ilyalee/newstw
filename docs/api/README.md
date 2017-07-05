@@ -1,6 +1,7 @@
 # WEB API Reference
 
 Use `httpie` to test all Web APIs
+
 https://github.com/jakubroztocil/httpie
 
 ### Crawler
@@ -36,7 +37,7 @@ make run_fbfeed
 #### GET Facebook posts by fbid
 
 ```bash
-http http://0.0.0.0:9529 fbid==[facebook id or name] search==true include==<keyword> num==20
+http http://0.0.0.0:9529 fbid==[facebook id or name] search==true include==[keyword] num==20
 ```
 
 ### Archiver

@@ -71,11 +71,14 @@ class NewsfeedController(HTTPMethodView):
         return json(data, ensure_ascii=False)
 
 
-async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
+async def archive_feed_by_filter(url, include_text, ap=None, osp=None, connections=None):
     from newsfeed.filter import NewsFeedFilter
     if not ap:
         from db.providers import ArchiveProvider
         ap = ArchiveProvider()
+    if not osp:
+        from db.providers import ObserverStatProvider
+        osp = ObserverStatProvider()
 
     nff = NewsFeedFilter(url, include_text, full_text=True, connections=connections)
     items = await nff.as_output()
@@ -86,6 +89,13 @@ async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
     ids = list(await ap.as_save_all(items))
     acceptances = len(ids)
     rejects = total - acceptances
+
+    await osp.as_save({
+        'count': count,
+        'total': total,
+        'acceptances': acceptances,
+        'rejects': rejects
+    })
 
     return dict_cleaner(None, {
         'source': detect_news_source(url),

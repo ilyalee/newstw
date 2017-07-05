@@ -47,10 +47,13 @@ async def news_observer(progress=False):
             'url': url.strip(),
             'include_text': keyword_builder(keywords),
             'ap': ap,
+            'osp': osp,
             'connections': settings.CONNECTIONS_PER_FEED
         } for name, url in feeds
     )
-    return await run_all_async(archive_feed_by_filter, kwargslist, sem, progress)
+    result = await run_all_async(archive_feed_by_filter, kwargslist, sem, progress)
+
+    return result
 
 if __name__ == '__main__':
     import signal
@@ -61,8 +64,6 @@ if __name__ == '__main__':
     result = loop.run_until_complete(news_observer(progress=True))
 
     for data in result:
-        if 'count' in data:
-            osp.save(data)
         print("[{}] {}".format(data['source'], data['info']))
         if __debug__:
             if 'supplements' == data['source'] and 'items' in data:

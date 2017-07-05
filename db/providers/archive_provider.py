@@ -62,8 +62,8 @@ class ArchiveProvider(BaseProvider):
         return await as_run()(self.count_report_daily)(keywords, sources)
 
     def count_report_today(self, keywords, sources=None):
-        start = arrow.now(self.tzinfo).shift(days=-1).floor('hour').datetime
-        end = arrow.now(self.tzinfo).ceil('hour').datetime
+        start = arrow.now(self.tzinfo).floor('day').datetime
+        end = arrow.now(self.tzinfo).ceil('day').datetime
         if sources:
             return self.count_items_by_values_and_datetime_between(sources, "source", "created", start, end, keywords)
         else:
@@ -73,8 +73,8 @@ class ArchiveProvider(BaseProvider):
         return await as_run()(self.count_report_today)(keywords, sources)
 
     def count_report_yesterday(self, keywords, sources=None):
-        start = arrow.now(self.tzinfo).shift(days=-2).floor('hour').datetime
-        end = arrow.now(self.tzinfo).shift(days=-1).ceil('hour').datetime
+        start = arrow.now(self.tzinfo).shift(days=-1).floor('day').datetime
+        end = arrow.now(self.tzinfo).shift(days=-1).ceil('day').datetime
         if sources:
             return self.count_items_by_values_and_datetime_between(sources, "source", "created", start, end, keywords)
         else:

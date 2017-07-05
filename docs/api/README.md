@@ -64,7 +64,7 @@ http http://0.0.0.0:9530/api/v1/archive/news/<hashid>
 http http://0.0.0.0:9530/api/v1/archive/facebook/list include==[keyword]
 ```
 
-#### GET A facbook archive by hashid
+#### GET A facebook archive by hashid
 
 ```bash
 http http://0.0.0.0:9530/api/v1/archive/facebook/<hashid> 

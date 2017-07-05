@@ -137,7 +137,7 @@ class BaseProvider():
         with query_session() as session:
             do = session.query(self.cls)
             do = self.do_keywords(keywords, do)
-            if limit == 1 and offset == 1:
+            if limit != 1 and offset != 1:
                 do = self.do_orders(self.order_by_columns, do)
             result_set = do.limit(limit).offset(offset).all()
             return load_as_dicts(result_set)

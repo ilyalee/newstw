@@ -153,7 +153,7 @@ def normalize_news(text):
 
 def trim_data_val(key, trimtext, data):
     if isinstance(trimtext, str) and key in data:
-        data[key] = re.sub(u'%s$' % trimtext, '', data[key])
+        data[key] = re.split(trimtext, data[key])[0]
 
 
 def del_key(key, ok, data):

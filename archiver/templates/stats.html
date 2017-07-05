@@ -11,22 +11,32 @@
       font-size: 16px;
       padding: 10px 10px;
     }
-    .title {
-      font-size: 26px;
+    h1.title {
+      font-size: 18px;
+    }
+    h2.title {
+      font-size: 42px;
+    }
+    small.title {
+      font-size: 13px;
     }
     .number {
-      font-size: 54px;
+      font-size: 36px;
+    }
+    .bottom-blank {
+      margin: 100px;
     }
   </style>
 </head>
 
 <body>
-  <header class="site-title teal center-align"><div class="white-text">大肚台地計畫：平面及電子媒體台中相關新聞剪報系統</div><small class="white-text">version: 1.0</small></header>
+  {% include 'header.html' %}
   <div class="container">
-    <div class="card teal lighten-2">
+    <div class="card teal lighten-1">
       <div class="card-content white-text center-align">
-        <h1 class="title"><div>輿情總數：{{ data['count'] }}</div></h1>
-        <small>起始日 {{ data['since'] }}</small>
+        <h1 class="title"><div>輿情總數</div></h1>
+        <h2 class="title">{{ data['count'] or '0' }}</h2>
+        <small class="title">起始日 {{ data['since'] or '0' }}</small>
       </div>
       <div class="card-tabs">
         <ul class="tabs tabs-fixed-width tabs-transparent">
@@ -36,30 +46,39 @@
         </ul>
       </div>
       <div class="card-content grey lighten-4 center-align">
-        <div id="yesterday"><span class="number">{{ data['yesterday'] }}</span></div>
-        <div id="today"><span class="number">{{ data['today'] }}</span></div>
-        <div id="month"><span class="number">{{ data['month'] }}</span></div>
+        <div id="yesterday"><span class="number">{{ data['yesterday'] or '0' }}</span></div>
+        <div id="today"><span class="number">{{ data['today'] or '0' }}</span></div>
+        <div id="month"><span class="number">{{ data['month'] or '0' }}</span></div>
       </div>
     </div>
 
-    <div class="card teal lighten-2">
+    <div class="card teal lighten-1">
       <div class="card-content white-text center-align">
-        <h1 class="title">掃描總數：</h1>
+        <h1 class="title"><div>掃描總數</div></h1>
+        <h2 class="title">{{ data['observer_count'] or '0' }}</h2>
+        <small class="title">起始日 {{ data['observer_since'] or '0' }}</small>
       </div>
       <div class="card-tabs">
         <ul class="tabs tabs-fixed-width tabs-transparent">
           <li class="tab"><a href="#yesterday-observer">昨日</a></li>
           <li class="tab"><a class="active" href="#today-observer">今日</a></li>
-          <li class="tab"><a href="#thismonth-observer">本月</a></li>
+          <li class="tab"><a href="#month-observer">本月</a></li>
         </ul>
       </div>
       <div class="card-content grey lighten-4 center-align">
-        <div id="yesterday-observer"><span class="number">N/A</span></div>
-        <div id="today-observer"><span class="number">N/A</span></div>
-        <div id="thismonth-observer"><span class="number">N/A</span></div>
+        <div id="yesterday-observer"><span class="number">{{ data['observer_yesterday'] or '0' }}</span></div>
+        <div id="today-observer"><span class="number">{{ data['observer_today'] or '0' }}</span></div>
+        <div id="month-observer"><span class="number">{{ data['observer_month'] or '0' }}</span></div>
       </div>
     </div>
   </div>
+
+  <div class="center-align">
+    <a class="waves-effect waves-light btn-large" href="/">回首頁</a>
+  </div>
+  
+  <div class="bottom-blank"></div>
+
   {% if debug %}
   <script type="text/javascript" src="static/js/live.js"></script>
   {% endif %} {% raw %}

@@ -30,7 +30,7 @@ class TestCrawler(unittest.TestCase):
         url['pts'][0] = "http://news.pts.org.tw/article/350012"
 
         url['ftv'] = [None] * 1
-        url['ftv'][0] = "http://news.ftv.com.tw/NewsContent.aspx?ntype=class&sno=2017220L01M1"
+        url['ftv'][0] = "https://news.ftv.com.tw/news/detail/2017703P07M1"
 
         url['setn'] = [None] * 2
         url['setn'][0] = "http://www.setn.com/News.aspx?NewsID=226627"
@@ -73,6 +73,7 @@ class TestCrawler(unittest.TestCase):
                 self.assertIn("published", news)
                 self.assertIn("link", news)
                 self.assertIn("source", news)
+                print(url)
                 self.assertTrue(news["pass"])
                 self.assertTrue(True)
                 # pprint_color(news)

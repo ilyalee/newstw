@@ -1,6 +1,7 @@
 from sanic.response import json
 from sanic.views import HTTPMethodView
 from archiver.utils.archiver_helper import aph
+from archiver.utils.observer_stats_helper import osh
 from utils.type_utils import sint
 from utils.data_utils import data_updater, hightlight_keywords, dict_cleaner
 from functools import partial
@@ -45,7 +46,8 @@ async def as_request_report(request, time='any', hightlight=True, count=False):
 async def as_report(time=None, page=None, limit=None, keywords=None, category=None):
     funcs = {
         'daily': aph.as_fetch_report_daily,
-        'weekly': aph.as_fetch_report_weekly
+        'weekly': aph.as_fetch_report_weekly,
+        'all': aph.as_fetch_report
     }
 
     return await funcs.get(time, aph.as_fetch_report)(page, limit, keywords, category)
@@ -56,9 +58,27 @@ async def as_report_count(time=None, keywords=None, category=None):
         'weekly': aph.as_fetch_report_weekly_count,
         'today': aph.as_fetch_report_today_count,
         'month': aph.as_fetch_report_month_count,
-        'yesterday': aph.as_fetch_report_yesterday_count
+        'yesterday': aph.as_fetch_report_yesterday_count,
+        'all': aph.as_fetch_report_count
     }
     return await funcs.get(time, aph.as_fetch_report_count)(keywords, category)
+
+
+async def as_observer(time=None, page=None, limit=None):
+    funcs = {
+        'all': osh.as_fetch_observer
+    }
+
+    return await funcs.get(time, osh.as_fetch_observer)(page, limit)
+
+async def as_observer_count(time=None):
+    funcs = {
+        'today': osh.as_fetch_observer_today_count,
+        'month': osh.as_fetch_observer_month_count,
+        'yesterday': osh.as_fetch_observer_yesterday_count,
+        'all': osh.as_fetch_observer_count
+    }
+    return await funcs.get(time, osh.as_fetch_observer_count)()
 
 
 class NewsfeedListController(HTTPMethodView):

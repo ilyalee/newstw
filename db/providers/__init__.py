@@ -1,3 +1,4 @@
 from db.providers.base_provider import BaseProvider
 from db.providers.archive_provider import ArchiveProvider
 from db.providers.facebook_archive_provider import FacebookArchiveProvider
+from db.providers.observer_stat_provider import ObserverStatProvider

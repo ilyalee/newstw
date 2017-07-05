@@ -78,6 +78,26 @@ class BaseProvider():
             num = do.with_entities(func.count(self.cls.id)).scalar()
             return num
 
+    def sum(self, column):
+        if not column:
+            return
+        with query_session() as session:
+            do = session.query(self.cls)
+            num = do.with_entities(func.sum(getattr(self.cls, column))).scalar()
+            return num
+
+    def sum_by_datetime_between(self, column, datetime_column, start, end):
+        if not column:
+            return
+        if not datetime_column:
+            return
+        with query_session() as session:
+            do = session.query(self.cls)
+            do = do.filter(getattr(self.cls, datetime_column).between(
+                start, end))
+            num = do.with_entities(func.sum(getattr(self.cls, column))).scalar()
+            return num
+
     def do_keywords(self, keywords, do):
         if not keywords:
             return do
@@ -117,7 +137,8 @@ class BaseProvider():
         with query_session() as session:
             do = session.query(self.cls)
             do = self.do_keywords(keywords, do)
-            do = self.do_orders(self.order_by_columns, do)
+            if limit > 1 and offset > 1:
+                do = self.do_orders(self.order_by_columns, do)
             result_set = do.limit(limit).offset(offset).all()
             return load_as_dicts(result_set)
 
@@ -195,6 +216,9 @@ class BaseProvider():
 
             auto_vacuum()
             return encode_hashid_list(ids)
+
+    def save(self, items):
+        return self.save_all(items)
 
     def update(self, value, name, item):
         with scoped_session() as session:

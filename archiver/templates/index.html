@@ -98,7 +98,7 @@
       </form>
     </div>
   </nav>
-  <header class="site-title teal center-align"><div class="white-text">大肚台地計畫：平面及電子媒體台中相關新聞剪報系統</div><small class="white-text">version: 1.0</small></header>
+  {% include 'header.html' %}
   <ul id="cards">
     {% if 'items' in data %} {% for item in data['items'] %}
     <li class="card-panel hoverable">

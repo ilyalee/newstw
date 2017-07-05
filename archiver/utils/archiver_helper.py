@@ -81,6 +81,5 @@ class ArchiverHelper():
         sources = self.ap.load_sources_by_category(category)
         return [] if category and not sources else await self.ap.as_load_report_weekly(page, limit, keywords, sources)
 
-
 aph = ArchiverHelper(ArchiveProvider())
 fb_aph = ArchiverHelper(FacebookArchiveProvider())

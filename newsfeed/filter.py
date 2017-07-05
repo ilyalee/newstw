@@ -26,6 +26,7 @@ class NewsFeedFilter:
         self.include_text = include_text
         self.source = detect_news_source(url)
         self.connections = connections
+        self.count = 0
 
     def _download(self, encoding='utf-8', timeout=30, limit=5) -> Feeds:
         items = []
@@ -75,6 +76,8 @@ class NewsFeedFilter:
         return items
 
     def _data_prepare(self, items):
+        self.count = len(items)
+
         items = items[:self.connections]
 
         keys = ['title', 'published', 'link', 'summary', 'updated', 'full_text']
@@ -134,6 +137,9 @@ class NewsFeedFilter:
 
     def output(self):
         return self._download()
+
+    def feedCount(self):
+        return self.count
 
     async def as_output(self):
         return await self._as_download()

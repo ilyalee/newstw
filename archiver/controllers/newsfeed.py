@@ -77,8 +77,9 @@ async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
         from db.providers import ArchiveProvider
         ap = ArchiveProvider()
 
-    items = await NewsFeedFilter(url, include_text, full_text=True, connections=connections).as_output()
-
+    nff = NewsFeedFilter(url, include_text, full_text=True, connections=connections)
+    items = await nff.as_output()
+    count = nff.feedCount()
     total = len(items)
     # checking duplicate items by hash
     items = await ap.as_find_distinct_items_by("hash", items)
@@ -90,6 +91,8 @@ async def archive_feed_by_filter(url, include_text, ap=None, connections=None):
         'source': detect_news_source(url),
         'url': url,
         'include': include_text,
+        'count': count,
+        'total': total,
         'acceptances': acceptances,
         'rejects': rejects,
         'items': ids,

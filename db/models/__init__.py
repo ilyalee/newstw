@@ -10,3 +10,4 @@ Base.to_dict = to_dict
 
 from db.models.archives import Archive
 from db.models.facebook_archives import FacebookArchive
+from db.models.observer_stats import ObserverStat

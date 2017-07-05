@@ -73,14 +73,23 @@ async def index(request, methods=['GET']):
 @app.head('/stats')
 async def index(request, methods=['GET']):
     import arrow
-    from archiver.controllers.newsfeedlist import as_report_count, as_report
-    firstone = (await as_report(None, 1, 1))[0]
+    from archiver.controllers.newsfeedlist import as_report_count, as_report, as_observer_count, as_observer
     data = {
         'count': await as_report_count(),
         'today': await as_report_count('today'),
         'yesterday': await as_report_count('yesterday'),
         'month': await as_report_count('month'),
-        'since': arrow.get(firstone['created']).format('YYYY.MM.DD'),
+        'observer_count': await as_observer_count(),
+        'observer_today': await as_observer_count('today'),
+        'observer_yesterday': await as_observer_count('yesterday'),
+        'observer_month': await as_observer_count('month')
     }
+
+    firstone = await as_report(None, 1, 1)
+    observer_firstone = await as_observer(None, 1, 1)
+    if firstone:
+        data['since'] = arrow.get(firstone[0]['created']).format('YYYY.MM.DD')
+    if observer_firstone:
+        data['observer_since'] = arrow.get(observer_firstone[0]['created']).format('YYYY.MM.DD')
 
     return html(stats_template.render(data=data, debug=__debug__))

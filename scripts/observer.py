@@ -14,6 +14,7 @@ from itertools import chain, repeat
 import settings
 import configparser
 from db.providers import ArchiveProvider
+from db.providers import ObserverStatProvider
 from db.utils.db_utils import auto_vacuum
 import setproctitle
 import gc
@@ -37,6 +38,7 @@ feeds = load_feeds(config, ['Print media', 'Electronic media'])
 keywords = config.get("Feed filter", "keywords")
 
 ap = ArchiveProvider()
+osp = ObserverStatProvider()
 
 async def news_observer(progress=False):
     sem = asyncio.Semaphore(settings.LIMIT)
@@ -59,6 +61,8 @@ if __name__ == '__main__':
     result = loop.run_until_complete(news_observer(progress=True))
 
     for data in result:
+        if 'count' in data:
+            osp.save(data)
         print("[{}] {}".format(data['source'], data['info']))
         if __debug__:
             if 'supplements' == data['source'] and 'items' in data:

@@ -34,6 +34,15 @@ cp .env.example .env
 
 You should check and set `DATABASE_URL` and `FACEBOOK_ACCESS_TOKEN` in the `.env` file.
 
+after you set up, initialize the database tables:
+
+```bash
+make revision
+make upgrade
+```
+
+Congratulations, now you can run the services:
+
 #### Web Server
 
 ```bash

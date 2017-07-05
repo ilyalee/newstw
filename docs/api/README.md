@@ -58,6 +58,18 @@ http http://0.0.0.0:9530/api/v1/archive/news/list include==[keyword]
 http http://0.0.0.0:9530/api/v1/archive/news/<hashid> 
 ```
 
+#### [UPDATE] A news archive by page url and hashid
+
+```bash
+http PUT http://0.0.0.0:9530/api/v1/archive/news/<hashid> url=[news page] key=[DELETE_KEY]
+```
+
+#### [DELETE] A news archive by hashid
+
+```bash
+http DELETE http://0.0.0.0:9530/api/v1/archive/news/<hashid> key=[DELETE_KEY]
+```
+
 #### [GET] Facebook archives with keywords
 
 ```bash

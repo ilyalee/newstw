@@ -27,7 +27,7 @@ source ./venv/bin/activate
 Setup your database settings (Default to SQLite):
 
 ```bash
-mkdir storage
+mkdir -p storage
 cp alembic.ini dev.ini
 cp .env.example .env
 ```
@@ -37,6 +37,7 @@ You should check and set `DATABASE_URL` and `FACEBOOK_ACCESS_TOKEN` in the `.env
 after you set up, initialize the database tables:
 
 ```bash
+source .env
 make revision
 make upgrade
 ```

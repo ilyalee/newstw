@@ -16,13 +16,15 @@ cd newstw
 make install
 ```
 
-### Usage
+### Virtual Environment
 
 First you should activate the Python Virtual Environment:
 
 ```bash
 source ./venv/bin/activate
 ```
+
+### Database
 
 Setup your database settings (Default to SQLite):
 
@@ -56,7 +58,25 @@ make run_news_archiver
 make run_observer
 ```
 
-### Production
+## Production
+
+Follow `Installation` and `Virtual Environment` instructions.
+
+### Database
+
+```bash
+cp alembic.ini prod.ini
+cp .env.example .env
+```
+
+Modify `DATABASE_URL` and `FACEBOOK_ACCESS_TOKEN` in the `.env` file.
+Modify `DELETE_KEY` if you want delete or update some articles via web APIs.
+
+```bash
+source .env
+make revision
+make upgrade
+```
 
 We recommend you install `circus` to run services as daemon, also see `config/circus_newstw.conf`.
 

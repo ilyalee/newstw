@@ -35,16 +35,16 @@ class ObserverStatProvider(BaseProvider):
         return await as_run()(self.sum)()
 
     def sum_observer_today(self):
-        start = arrow.now(self.tzinfo).shift(days=-1).floor('hour').datetime
-        end = arrow.now(self.tzinfo).ceil('hour').datetime
+        start = arrow.now(self.tzinfo).floor('day').datetime
+        end = arrow.now(self.tzinfo).ceil('day').datetime
         return self.sum_by_datetime_between("count", "created", start, end)
 
     async def as_sum_observer_today(self):
         return await as_run()(self.sum_observer_today)()
 
     def sum_observer_yesterday(self):
-        start = arrow.now(self.tzinfo).shift(days=-2).floor('hour').datetime
-        end = arrow.now(self.tzinfo).shift(days=-1).ceil('hour').datetime
+        start = arrow.now(self.tzinfo).shift(days=-1).floor('day').datetime
+        end = arrow.now(self.tzinfo).shift(days=-1).ceil('day').datetime
         return self.sum_by_datetime_between("count", "created", start, end)
 
     async def as_sum_observer_yesterday(self):

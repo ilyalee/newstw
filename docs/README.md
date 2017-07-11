@@ -52,7 +52,7 @@ Congratulations, now you can run the services:
 make run_news_archiver
 ```
 
-#### Scheduler
+#### Observer
 
 ```bash
 make run_observer
